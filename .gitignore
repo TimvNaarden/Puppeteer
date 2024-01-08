@@ -1,0 +1,10 @@
+bin/*
+bin-int/*
+*/bin/*
+*/bin-int/*
+
+Makefile 
+*.obj
+*.o
+
+.vs/*
