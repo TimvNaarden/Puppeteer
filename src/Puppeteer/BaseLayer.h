@@ -2,6 +2,8 @@
 
 #include "Core/Layer.h"
 #include "Renderer/Framebuffer.h"
+#include "Platform/Windows/DirectX11/DirectX11.h"
+#include "Platform/Windows/PCInfo/PCInfo.h"
 
 #include <glm/glm.hpp>
 
@@ -10,6 +12,8 @@ namespace Puppeteer
 	class BaseLayer : public Layer
 	{
 	public:
+		DirectX11 dx11;
+		PCInfo pc;
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate(float dt) override;

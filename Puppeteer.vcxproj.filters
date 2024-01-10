@@ -70,6 +70,8 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Platform\Windows\DirectX11\DirectX11.h" />
+    <ClInclude Include="src\Platform\Windows\PCInfo\PCInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -98,5 +100,7 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Platform\Windows\DirectX11\DirectX11.cpp" />
+    <ClCompile Include="src\Platform\Windows\PCInfo\PCInfo.cpp" />
   </ItemGroup>
 </Project>

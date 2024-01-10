@@ -38,23 +38,4 @@ namespace Puppeteer
 
         static Scope<Window> Create(const WindowProps& props = WindowProps());
     };
-
-    //void streamScreen(GLFWwindow* window);
-    //GLFWwindow* createGLFWWindow(int width, int height, const char* title);
-
-    //void destroyGLFWWindow(GLFWwindow* window);
-
-    //void setupImGui(GLFWwindow* window);
-
-    //void renderImGui(GLFWwindow* window);
-
-    //void destroyImGui();
-
-    //vec2 getScreenSize();
-
-    //void displayPicture(ImTextureID textureID);
-
-    //vec2 getWindowSize();
-
-    //void startRender();
 }
