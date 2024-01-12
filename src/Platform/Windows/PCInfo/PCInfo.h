@@ -1,55 +1,17 @@
-#ifndef PCINFO_H
-#define PCINFO_H
+#pragma once
+
 #include <WbemCli.h>
-#include <list>
-
-#include<windows.h>
-#include <sysinfoapi.h>
-
-
 #pragma comment(lib, "wbemuuid.lib")
 
-#pragma pack(push) 
-#pragma pack(1)
 
-struct RawSMBIOSData
-{
-    BYTE    Used20CallingMethod;
-    BYTE    SMBIOSMajorVersion;
-    BYTE    SMBIOSMinorVersion;
-    BYTE    DmiRevision;
-    DWORD   Length;
-    BYTE    SMBIOSTableData[];
-};
+#include <windows.h>
+#include <sysinfoapi.h>
 
-struct SMBIOSHEADER
-{
-    BYTE type;
-    BYTE length;
-    WORD handle;
-};
+#include <list>
 
-struct MemoryInformation {
-    SMBIOSHEADER header;
-    WORD physicalArrayHandle;
-    WORD errorInformationHandle;
-    WORD totalWidth;
-    WORD dataWidth;
-    WORD size;
-    BYTE formFactor; 
-    BYTE deviceSet;
-    BYTE deviceLocator;
-    BYTE bankLocator;
-    BYTE memoryType;
-    WORD typeDetail;
-};
 
-#pragma pack(pop)
 
-std::string getMemoryType(BYTE b);
-std::string BstrToStdString(BSTR bstr);
-std::string getMediaType(int i);
-MemoryInformation* getMemoryInformation();
+
 
 namespace Puppeteer
 {
@@ -84,9 +46,49 @@ namespace Puppeteer
         PCInfo();
         ~PCInfo() = default;
 
+    private:
+        #pragma pack(push) 
+        #pragma pack(1)
+
+                struct RawSMBIOSData
+                {
+                    BYTE    Used20CallingMethod;
+                    BYTE    SMBIOSMajorVersion;
+                    BYTE    SMBIOSMinorVersion;
+                    BYTE    DmiRevision;
+                    DWORD   Length;
+                    BYTE    SMBIOSTableData[];
+                };
+
+                struct SMBIOSHEADER
+                {
+                    BYTE type;
+                    BYTE length;
+                    WORD handle;
+                };
+
+                struct MemoryInformation {
+                    SMBIOSHEADER header;
+                    WORD physicalArrayHandle;
+                    WORD errorInformationHandle;
+                    WORD totalWidth;
+                    WORD dataWidth;
+                    WORD size;
+                    BYTE formFactor;
+                    BYTE deviceSet;
+                    BYTE deviceLocator;
+                    BYTE bankLocator;
+                    BYTE memoryType;
+                    WORD typeDetail;
+                };
+
+        #pragma pack(pop)
+        std::string getMemoryType(BYTE b);
+        std::string BstrToStdString(BSTR bstr);
+        std::string getMediaType(int i);
+        MemoryInformation* getMemoryInformation();
     };
 }
 
-#endif
 
 

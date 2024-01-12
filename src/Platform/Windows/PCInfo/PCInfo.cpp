@@ -6,6 +6,7 @@
 namespace Puppeteer 
 {
 	HRESULT	m_hr = S_OK;
+
 	PCInfo::PCInfo()
 	{
 		//Initialize VARS
@@ -402,81 +403,25 @@ namespace Puppeteer
 		MemoryInformation* memoryInformation = getMemoryInformation();
 		m_MemoryType = getMemoryType(memoryInformation->memoryType);
 	}
-}
 
-MemoryInformation* getMemoryInformation()
-{
-	RawSMBIOSData* smBiosData = nullptr;
-
-	DWORD smBiosDataSize = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
-
-	if (smBiosDataSize == 0) 
+	std::string PCInfo::BstrToStdString(BSTR bstr)
 	{
-		std::cerr << "Failed to get SMBIOS data size." << std::endl;
-		return nullptr;
+		if (!bstr) return "";
+
+		int len = SysStringLen(bstr);
+		std::wstring wideStr(bstr, len);
+
+		int size_needed = WideCharToMultiByte(CP_ACP, 0, &wideStr[0], len, nullptr, 0, nullptr, nullptr);
+		std::string result(size_needed, 0);
+		WideCharToMultiByte(CP_ACP, 0, &wideStr[0], len, &result[0], size_needed, nullptr, nullptr);
+
+		return result;
 	}
 
-	smBiosData = (RawSMBIOSData*)HeapAlloc(GetProcessHeap(), 0, smBiosDataSize);
-
-	DWORD bytesRetrieved = GetSystemFirmwareTable('RSMB',0, smBiosData, smBiosDataSize);
-
-	if (bytesRetrieved != smBiosDataSize) 
+	std::string PCInfo::getMemoryType(BYTE b)
 	{
-		std::cerr << "Failed to get SMBIOS data." << std::endl;
-		HeapFree(GetProcessHeap(), 0, smBiosData);
-		return nullptr;
-	}
-
-	BYTE* data = smBiosData->SMBIOSTableData;
-
-	while (data < smBiosData->SMBIOSTableData + smBiosData->Length) 
-	{
-		BYTE* next;
-		SMBIOSHEADER* header = (SMBIOSHEADER*)data;
-
-		if (header->length < 4)
+		switch (b)
 		{
-			break;
-		}
-
-		if (header->type == 0x11 && header->length >= 0x19 ) 
-		{
-			return (MemoryInformation*)header;
-		}
-
-		next = data + header->length;
-
-		while (next < smBiosData->SMBIOSTableData + smBiosData->Length && (next[0] != 0 || next[1] != 0)) {
-			next++;
-		}
-		next += 2;
-
-		data = next;
-
-	}
-
-	std::cerr << "Failed to get SMBIOS data." << std::endl; 
-	HeapFree(GetProcessHeap(), 0, smBiosData);
-	return nullptr;
-}
-std::string BstrToStdString(BSTR bstr) 
-{
-	if (!bstr) return "";
-
-	int len = SysStringLen(bstr);
-	std::wstring wideStr(bstr, len);
-
-	int size_needed = WideCharToMultiByte(CP_ACP, 0, &wideStr[0], len, nullptr, 0, nullptr, nullptr);
-	std::string result(size_needed, 0);
-	WideCharToMultiByte(CP_ACP, 0, &wideStr[0], len, &result[0], size_needed, nullptr, nullptr);
-
-	return result;
-}
-
-std::string getMemoryType(BYTE b)
-{
-	switch (b)
-	{
 		case 0x01:
 			return "Other";
 		case 0x02:
@@ -545,13 +490,13 @@ std::string getMemoryType(BYTE b)
 			return "HBM3";
 		default:
 			return "Unknown";
-	};
-}
+		};
+	}
 
-std::string getMediaType(int i) 
-{
-	switch (i) 
+	std::string PCInfo::getMediaType(int i)
 	{
+		switch (i)
+		{
 		case 0:
 			return "Unspecified";
 		case 3:
@@ -562,5 +507,63 @@ std::string getMediaType(int i)
 			return "SCM";
 		default:
 			return "Unknown";
-	};
+		};
+	}
+
+	PCInfo::MemoryInformation* PCInfo::getMemoryInformation()
+	{
+		RawSMBIOSData* smBiosData = nullptr;
+
+		DWORD smBiosDataSize = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
+
+		if (smBiosDataSize == 0)
+		{
+			std::cerr << "Failed to get SMBIOS data size." << std::endl;
+			return nullptr;
+		}
+
+		smBiosData = (RawSMBIOSData*)HeapAlloc(GetProcessHeap(), 0, smBiosDataSize);
+
+		DWORD bytesRetrieved = GetSystemFirmwareTable('RSMB', 0, smBiosData, smBiosDataSize);
+
+		if (bytesRetrieved != smBiosDataSize)
+		{
+			std::cerr << "Failed to get SMBIOS data." << std::endl;
+			HeapFree(GetProcessHeap(), 0, smBiosData);
+			return nullptr;
+		}
+
+		BYTE* data = smBiosData->SMBIOSTableData;
+
+		while (data < smBiosData->SMBIOSTableData + smBiosData->Length)
+		{
+			BYTE* next;
+			SMBIOSHEADER* header = (SMBIOSHEADER*)data;
+
+			if (header->length < 4)
+			{
+				break;
+			}
+
+			if (header->type == 0x11 && header->length >= 0x19)
+			{
+				return (MemoryInformation*)header;
+			}
+
+			next = data + header->length;
+
+			while (next < smBiosData->SMBIOSTableData + smBiosData->Length && (next[0] != 0 || next[1] != 0)) {
+				next++;
+			}
+			next += 2;
+
+			data = next;
+
+		}
+
+		std::cerr << "Failed to get SMBIOS data." << std::endl;
+		HeapFree(GetProcessHeap(), 0, smBiosData);
+		return nullptr;
+	}
 }
+
