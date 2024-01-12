@@ -23,8 +23,6 @@ namespace Puppeteer
 		m_MemoryType = "";
 		m_MemoryDimms = 0;
 
-
-        // Get the cpu info using wmi
 		m_hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 		if (FAILED(m_hr)) 
 		{
@@ -92,7 +90,6 @@ namespace Puppeteer
 		}
 		else 
 		{			
-			// get the processor 
 			m_hr = pEnumerator->Next(0, 1, &clsObject, &returned);
 			if (FAILED(m_hr)) 
 			{ 
@@ -177,7 +174,6 @@ namespace Puppeteer
 		}
 		else 
 		{			
-			// get the memory
 			m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned);
 			if (FAILED(m_hr)) 
 			{ 
@@ -196,18 +192,6 @@ namespace Puppeteer
 				else
 				{
 					m_MemorySpeed = vtProp.intVal;
-					VariantClear(&vtProp);
-				}
-
-				m_hr = clsObject->Get(L"MemoryType", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
-				{
-					std::cout << "Failed to get memory type" << std::endl;
-					VariantClear(&vtProp);
-				}
-				else
-				{
-					m_MemoryType = getMemoryType(vtProp.intVal);
 					VariantClear(&vtProp);
 				}
 
@@ -254,7 +238,6 @@ namespace Puppeteer
 		}
 		else 
 		{			
-			// get the memory
 			m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned);
 			if (FAILED(m_hr)) 
 			{ 
@@ -301,7 +284,6 @@ namespace Puppeteer
 		}
 		else 
 		{
-			// get the video
 			while((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
 			{
 				m_hr = clsObject->Get(L"Name", 0, &vtProp, 0, 0);
@@ -342,7 +324,6 @@ namespace Puppeteer
 		}
 		else
 		{
-			// get the network
 			while((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
 			{
 				m_hr = clsObject->Get(L"MACAddress", 0, &vtProp, 0, 0);
@@ -352,8 +333,11 @@ namespace Puppeteer
 					VariantClear(&vtProp);
 				} 
 				else {
-					m_MACAddres.push_back(BstrToStdString(vtProp.bstrVal));
-					VariantClear(&vtProp);
+					if (vtProp.bstrVal != L"")
+					{
+						m_MACAddres.push_back(BstrToStdString(vtProp.bstrVal));
+						VariantClear(&vtProp);
+					}
 				}
 							
 				clsObject->Release();	
@@ -382,8 +366,7 @@ namespace Puppeteer
 					VariantClear(&vtProp);
 				}
 
-
-				m_hr = clsObject->Get(L"DeviceId", 0, &vtProp, 0, 0);
+				m_hr = clsObject->Get(L"FriendlyName", 0, &vtProp, 0, 0);
 				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get storage name" << std::endl;
@@ -391,9 +374,10 @@ namespace Puppeteer
 				}
 				else 
 				{
-					m_StorageNames.push_back(getMediaType(vtProp.intVal));
+					m_StorageNames.push_back(BstrToStdString(vtProp.bstrVal));
 					VariantClear(&vtProp);
 				}
+
 				m_hr = clsObject->Get(L"MediaType", 0, &vtProp, 0, 0);
 				if (FAILED(m_hr))
 				{
@@ -402,23 +386,7 @@ namespace Puppeteer
 				}
 				else
 				{
-					switch (vtProp.intVal) {
-						case 0:
-							m_DiskType.push_back("Unspecified");
-							break;
-						case 3:
-							m_DiskType.push_back("HDD");
-							break;
-						case 4:
-							m_DiskType.push_back("SSD");
-							break;
-						case 5:
-							m_DiskType.push_back("SCM");
-							break;
-						default:
-							m_DiskType.push_back("Unknown");
-							break;
-					}	
+					m_DiskType.push_back(getMediaType(vtProp.intVal));
 					VariantClear(&vtProp);
 				}
 				clsObject->Release();		
@@ -426,7 +394,70 @@ namespace Puppeteer
 			pEnumerator->Release();
 		}
 
+		// Cleanup
+		pService->Release();
+		pLocator->Release();
+		CoUninitialize();
+
+		MemoryInformation* memoryInformation = getMemoryInformation();
+		m_MemoryType = getMemoryType(memoryInformation->memoryType);
 	}
+}
+
+MemoryInformation* getMemoryInformation()
+{
+	RawSMBIOSData* smBiosData = nullptr;
+
+	DWORD smBiosDataSize = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
+
+	if (smBiosDataSize == 0) 
+	{
+		std::cerr << "Failed to get SMBIOS data size." << std::endl;
+		return nullptr;
+	}
+
+	smBiosData = (RawSMBIOSData*)HeapAlloc(GetProcessHeap(), 0, smBiosDataSize);
+
+	DWORD bytesRetrieved = GetSystemFirmwareTable('RSMB',0, smBiosData, smBiosDataSize);
+
+	if (bytesRetrieved != smBiosDataSize) 
+	{
+		std::cerr << "Failed to get SMBIOS data." << std::endl;
+		HeapFree(GetProcessHeap(), 0, smBiosData);
+		return nullptr;
+	}
+
+	BYTE* data = smBiosData->SMBIOSTableData;
+
+	while (data < smBiosData->SMBIOSTableData + smBiosData->Length) 
+	{
+		BYTE* next;
+		SMBIOSHEADER* header = (SMBIOSHEADER*)data;
+
+		if (header->length < 4)
+		{
+			break;
+		}
+
+		if (header->type == 0x11 && header->length >= 0x19 ) 
+		{
+			return (MemoryInformation*)header;
+		}
+
+		next = data + header->length;
+
+		while (next < smBiosData->SMBIOSTableData + smBiosData->Length && (next[0] != 0 || next[1] != 0)) {
+			next++;
+		}
+		next += 2;
+
+		data = next;
+
+	}
+
+	std::cerr << "Failed to get SMBIOS data." << std::endl; 
+	HeapFree(GetProcessHeap(), 0, smBiosData);
+	return nullptr;
 }
 std::string BstrToStdString(BSTR bstr) 
 {
@@ -442,110 +473,94 @@ std::string BstrToStdString(BSTR bstr)
 	return result;
 }
 
-
-std::string getMediaType(int input)  
+std::string getMemoryType(BYTE b)
 {
-	switch(input) {
-		case 0:
+	switch (b)
+	{
+		case 0x01:
+			return "Other";
+		case 0x02:
 			return "Unknown";
+		case 0x03:
+			return "DRAM";
+		case 0x04:
+			return "EDRAM";
+		case 0x05:
+			return "VRAM";
+		case 0x06:
+			return "SRAM";
+		case 0x07:
+			return "RAM";
+		case 0x08:
+			return "ROM";
+		case 0x09:
+			return "FLASH";
+		case 0x0A:
+			return "EEPROM";
+		case 0x0B:
+			return "FEPROM";
+		case 0x0C:
+			return "EPROM";
+		case 0x0D:
+			return "CDRAM";
+		case 0x0E:
+			return "3DRAM";
+		case 0x0F:
+			return "SDRAM";
+		case 0x10:
+			return "SGRAM";
+		case 0x11:
+			return "RDRAM";
+		case 0x12:
+			return "DDR";
+		case 0x13:
+			return "DDR2";
+		case 0x14:
+			return "DDR2 FB-DIMM";
+		case 0x18:
+			return "DDR3";
+		case 0x19:
+			return "FBD2";
+		case 0x1A:
+			return "DDR4";
+		case 0x1B:
+			return "LPDDR";
+		case 0x1C:
+			return "LPDDR2";
+		case 0x1D:
+			return "LPDDR3";
+		case 0x1E:
+			return "LPDDR4";
+		case 0x1F:
+			return "Logical non-volatile device";
+		case 0x20:
+			return "HBM";
+		case 0x21:
+			return "HBM2";
+		case 0x22:
+			return "DDR5";
+		case 0x23:
+			return "LPDDR5";
+		case 0x24:
+			return "HBM3";
+		default:
+			return "Unknown";
+	};
+}
 
+std::string getMediaType(int i) 
+{
+	switch (i) 
+	{
+		case 0:
+			return "Unspecified";
 		case 3:
 			return "HDD";
-
 		case 4:
 			return "SSD";
-
 		case 5:
 			return "SCM";
-
 		default:
-			return "Unknown";			
-	}
-}
-
-std::string getMemoryType(int input) 
-{
-	switch(input) {
-		case 0:
 			return "Unknown";
-
-		case 1:
-			return "Other";
-
-		case 2:
-			return "DRAM";
-
-		case 3:
-			return "Synchronous DRAM";
-
-		case 4:
-			return "Cache DRAM";
-
-		case 5:
-			return "EDO";
-
-		case 6:
-			return "EDRAM";
-
-		case 7:
-			return "VRAM";
-
-		case 8:
-			return "SRAM";
-
-		case 9:
-			return "RAM";
-
-		case 10:
-			return "ROM";
-
-		case 11:
-			return "Flash";
-
-		case 12:
-			return "EEPROM";
-
-		case 13:
-			return "FEPROM";
-
-		case 14:
-			return "EPROM";
-
-		case 15:
-			return "CDRAM";
-
-		case 16:
-			return "3DRAM";
-
-		case 17:
-			return "SDRAM";
-
-		case 18:
-			return "SGRAM";
-
-		case 19:
-			return "RDRAM";
-
-		case 20:
-			return "DDR";
-
-		case 21:
-			return "DDR2";
-
-		case 22:	
-			return "DDR2 FB-DIMM";
-
-		case 24:
-			return "DDR3";
-
-		case 25:
-			return "FBD2";
-
-		case 26:
-			return "DDR4";
-
-		default:
-			return "Unknown";			
-	}
+	};
 }
-
