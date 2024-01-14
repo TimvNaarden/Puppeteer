@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="DirectX11">
+      <UniqueIdentifier>{5A877304-C6F1-277B-0F30-D9207BD905D0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCInfo">
+      <UniqueIdentifier>{040A62C7-F0AB-8C9D-D966-A0F1C5A713EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{5032B729-BC11-36C5-C529-C19B31889C26}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\DirectX11\DirectX11.h">
+      <Filter>DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PCInfo\PCInfo.h">
+      <Filter>PCInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DirectX11\DirectX11.cpp">
+      <Filter>DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PCInfo\PCInfo.cpp">
+      <Filter>PCInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Windows\ValidateLogin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+  </ItemGroup>
+</Project>
