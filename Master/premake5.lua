@@ -18,19 +18,23 @@ workspace "Master"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/libs/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/libs/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/libs/ImGui"
-IncludeDir["glm"] = "%{wks.location}/libs/glm"
+IncludeDir["GLFW"] = "%{wks.location}/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/vendor/ImGui"
+IncludeDir["glm"] = "%{wks.location}/vendor/glm"
+IncludeDir["Networking"] = "%{wks.location}/vendor/Networking"
+IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 
 filter {}
-
 -- Create a solution folder inside visual studio
 group "Dependencies"
-    include "libs/GLFW"
-    include "libs/Glad"
-    include "libs/ImGui"
+    include "vendor/GLFW"
+    include "vendor/Glad"
+    include "vendor/ImGui"
+    include "vendor/Networking"
+    include "vendor/Database"
 group "" -- End the solution folder here
+
 
 project "Master"
     kind "ConsoleApp"
@@ -51,7 +55,7 @@ project "Master"
     }
 
     defines
-    {
+    {   
         "GLFW_INCLUDE_NONE",
     }
  
@@ -62,13 +66,21 @@ project "Master"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
+        "%{IncludeDir.Networking}",
+        "%{IncludeDir.Database}",
     }
 
+    libdirs
+    {
+        "libs"
+    }
     links
     {
         "GLFW",
         "Glad",
         "ImGui",
+        "Networking",
+        "Database",
     }
 
     filter "system:windows"

@@ -2,7 +2,7 @@
 #include "Window.h"
 
 #ifdef PLATFORM_WINDOWS
-#include "Platform/Windows/WindowsWindow.h"
+#include "Platform/Windows/Window/WindowsWindow.h"
 #endif
 #ifdef PLATFORM_LINUX
 #include "Platform/Linux/LinuxWindow.h"

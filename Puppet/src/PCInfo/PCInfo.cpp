@@ -1,11 +1,13 @@
-#include "pch.h"
 #include "PCInfo.h"
-
 
 
 namespace Puppeteer 
 {
 	HRESULT	m_hr = S_OK;
+	IWbemLocator* m_pLocator;
+	IWbemServices* m_pService;
+	IWbemServices* m_pServiceDisk;
+	int PCInfoCounter = 0;
 
 	PCInfo::PCInfo()
 	{
@@ -24,85 +26,187 @@ namespace Puppeteer
 		m_MemoryType = "";
 		m_MemoryDimms = 0;
 
-		m_hr = CoInitializeEx(0, COINIT_MULTITHREADED);
-		if (FAILED(m_hr)) 
-		{
-			std::cout << "Failed to initialize COM library" << std::endl;
-			return;
-		}
+		m_MACAddres = {};
+		m_StorageNames = {};
+		m_DiskSize = {};
+		m_DiskType = {};
+		m_VideoName = {};
+		m_Vram = {};
 
-		m_hr = CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE, 0);
-		if (FAILED(m_hr)) 
-		{
-			std::cout << "Failed to initialize security" << std::endl;
-			CoUninitialize();
-			return;
-		}
+		//Initialize COM
+		if (PCInfoCounter == 0) {
+			m_hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+			if (FAILED(m_hr))
+			{
+				std::cout << "Failed to initialize COM library" << std::endl;
+				return;
+			}
 
-		IWbemLocator* pLocator = NULL;
-		m_hr = CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&pLocator);
-		if(FAILED(m_hr))
-		{
-			std::cout << "Failed to create IWbemLocator object" << std::endl;
-			CoUninitialize();
-			return;
-		}
+			m_hr = CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE, 0);
+			if (FAILED(m_hr))
+			{
+				std::cout << "Failed to initialize security" << std::endl;
 
-		IWbemServices* pService = NULL;
-		m_hr = pLocator->ConnectServer(L"root\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &pService);
-		if (FAILED(m_hr)) 
-		{
-			std::cout << "Could not connect" << std::endl;
-			pLocator->Release();
-			CoUninitialize();
-			return;
-		}
+			}
 
-		IWbemServices* pServiceDisk = NULL;
-		m_hr = pLocator->ConnectServer(L"root\\microsoft\\windows\\storage", NULL, NULL, 0, NULL, 0, 0, &pServiceDisk);
-		if (FAILED(m_hr))
-		{
-			std::cout << "Could not connect" << std::endl;
-			pLocator->Release();
-			CoUninitialize();
-			return;
-		}
 
-		m_hr = CoSetProxyBlanket(pService, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
-		if (FAILED(m_hr))
-		{
-			std::cout << "Could not set proxy blanket" << std::endl;
-			pService->Release();
-			pLocator->Release();
-			CoUninitialize();
-			return;
-		}
+			m_hr = CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&m_pLocator);
+			if (FAILED(m_hr))
+			{
+				std::cout << "Failed to create IWbemLocator object" << std::endl;
+				CoUninitialize();
+				return;
+			}
 
+
+			m_hr = m_pLocator->ConnectServer(L"root\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &m_pService);
+			if (FAILED(m_hr))
+			{
+				std::cout << "Could not connect" << std::endl;
+				m_pLocator->Release();
+				CoUninitialize();
+				return;
+			}
+
+
+			m_hr = m_pLocator->ConnectServer(L"root\\microsoft\\windows\\storage", NULL, NULL, 0, NULL, 0, 0, &m_pServiceDisk);
+			if (FAILED(m_hr))
+			{
+				std::cout << "Could not connect" << std::endl;
+				m_pLocator->Release();
+				CoUninitialize();
+				return;
+			}
+
+			m_hr = CoSetProxyBlanket(m_pService, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
+			if (FAILED(m_hr))
+			{
+				std::cout << "Could not set proxy blanket" << std::endl;
+				m_pService->Release();
+				m_pLocator->Release();
+				CoUninitialize();
+				return;
+			}
+		}
+		PCInfoCounter++;
+		renew();
+	}
+
+
+
+	PCInfo::PCInfo(std::map<std::string, std::string> map)
+	{
+		m_CPUName = map["CPUName"];
+		m_Cores = std::stoi(map["Cores"]);
+		m_ThreadCount = std::stoi(map["ThreadCount"]);
+		m_BaseClockSpeed = std::stoi(map["BaseClockSpeed"]);
+
+		m_Mob = map["Mob"];
+
+		m_Systemname = map["Systemname"];
+
+		m_MemoryCapacity = std::stoull(map["MemoryCapacity"]);
+		m_MemorySpeed = std::stoi(map["MemorySpeed"]);
+		m_MemoryType = map["MemoryType"];		
+		m_MemoryDimms = std::stoi(map["MemoryDimms"]);
+
+		m_MACAddres = ParseJson<std::vector<std::string>>(map["MACAddres"]);
+
+		m_StorageNames = ParseJson<std::vector<std::string>>(map["StorageNames"]);
+		m_DiskSize = ParseJson<std::vector<UINT64>>(map["DiskSize"]);
+		m_DiskType = ParseJson<std::vector<std::string>>(map["DiskType"]);
+
+		m_VideoName = ParseJson<std::vector<std::string>>(map["VideoName"]);
+		m_Vram = ParseJson<std::vector<UINT32>>(map["Vram"]);
+	}
+
+	PCInfo::~PCInfo()
+	{
+		PCInfoCounter--;
+		if (PCInfoCounter != 0) return;
+		// Cleanup
+		m_pService->Release();
+		m_pLocator->Release();
+		CoUninitialize();
+	}
+
+	std::map<std::string, std::string> PCInfo::toMap()
+	{
+		std::map<std::string, std::string> map;
+		map["CPUName"] = m_CPUName;
+		map["Cores"] = std::to_string(m_Cores);
+		map["ThreadCount"] = std::to_string(m_ThreadCount);
+		map["BaseClockSpeed"] = std::to_string(m_BaseClockSpeed);
+
+		map["Mob"] = m_Mob;
+
+		map["Systemname"] = m_Systemname;
+
+		map["MemoryCapacity"] = std::to_string(m_MemoryCapacity);
+		map["MemorySpeed"] = std::to_string(m_MemorySpeed);
+		map["MemoryType"] = m_MemoryType;
+		map["MemoryDimms"] = std::to_string(m_MemoryDimms);
+
+
+		map["MACAddres"] = WriteJson(m_MACAddres);
+
+		map["StorageNames"] = WriteJson(m_StorageNames);
+		map["DiskSize"] = WriteJson(m_DiskSize);
+		map["DiskType"] = WriteJson(m_DiskType);
+
+		map["VideoName"] = WriteJson(m_VideoName);
+		map["Vram"] = WriteJson(m_Vram);
+		return map;
+	}
+
+	void PCInfo::renew()
+	{
+		// reset all values
+		m_CPUName = "";
+		m_Cores = 0;
+		m_ThreadCount = 0;
+		m_BaseClockSpeed = 0;
+
+		m_Mob = "";
+
+		m_Systemname = "";
+
+		m_MemoryCapacity = 0;
+		m_MemorySpeed = 0;
+		m_MemoryType = "";
+		m_MemoryDimms = 0;
+
+		m_MACAddres = {};
+		m_StorageNames = {};
+		m_DiskSize = {};
+		m_DiskType = {};
+		m_VideoName = {};
+		m_Vram = {};
 
 		VARIANT vtProp = {};
 		IEnumWbemClassObject* pEnumerator = NULL;
 		IWbemClassObject* clsObject = 0;
 		ULONG returned = 0;
 
-		m_hr = pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_Processor", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
-		if(FAILED(m_hr)) 
+		m_hr = m_pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_Processor", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
+		if (FAILED(m_hr))
 		{
 			std::cout << "Query for processor failed" << std::endl;
 		}
-		else 
-		{			
+		else
+		{
 			m_hr = pEnumerator->Next(0, 1, &clsObject, &returned);
-			if (FAILED(m_hr)) 
-			{ 
+			if (FAILED(m_hr))
+			{
 				std::cout << m_hr << std::endl;
 				std::cout << "Failed iteration" << std::endl;
 				clsObject->Release();
 				pEnumerator->Release();
-			} 
-			else 
+			}
+			else
 			{
 				m_hr = clsObject->Get(L"Name", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get processor name" << std::endl;
 					VariantClear(&vtProp);
@@ -114,7 +218,7 @@ namespace Puppeteer
 				}
 
 				m_hr = clsObject->Get(L"SystemName", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get system name" << std::endl;
 					VariantClear(&vtProp);
@@ -126,7 +230,7 @@ namespace Puppeteer
 				}
 
 				m_hr = clsObject->Get(L"ThreadCount", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get amount of threads" << std::endl;
 					VariantClear(&vtProp);
@@ -139,24 +243,24 @@ namespace Puppeteer
 
 
 				m_hr = clsObject->Get(L"NumberOfCores", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get number of cores" << std::endl;
 					VariantClear(&vtProp);
 				}
-				else 
+				else
 				{
 					m_Cores = vtProp.intVal;
 					VariantClear(&vtProp);
 				}
 
 				m_hr = clsObject->Get(L"MaxClockSpeed", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get max clock speed" << std::endl;
 					VariantClear(&vtProp);
 				}
-				else 
+				else
 				{
 					m_BaseClockSpeed = vtProp.intVal;
 					VariantClear(&vtProp);
@@ -164,97 +268,32 @@ namespace Puppeteer
 
 				clsObject->Release();
 				pEnumerator->Release();
-			}	
-		}
-
-		m_hr = pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_PhysicalMemory", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
-		if(FAILED(m_hr)) 
-		{
-			std::cout << "Query for memory failed" << std::endl;
-			pEnumerator->Release();
-		}
-		else 
-		{			
-			m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned);
-			if (FAILED(m_hr)) 
-			{ 
-				std::cout << "Failed iteration" << std::endl;
-				clsObject->Release();
-				pEnumerator->Release();
-			} 
-			else 
-			{		
-				m_hr = clsObject->Get(L"Speed", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
-				{
-					std::cout << "Failed to get memory speed" << std::endl;
-					VariantClear(&vtProp);
-				}
-				else
-				{
-					m_MemorySpeed = vtProp.intVal;
-					VariantClear(&vtProp);
-				}
-
-				m_hr = clsObject->Get(L"capacity", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr))
-				{
-					std::cout << "Failed to get memory capacity" << std::endl;
-					VariantClear(&vtProp);
-				}
-				else
-				{
-					m_MemoryCapacity += vtProp.ullVal;
-					VariantClear(&vtProp);
-				}
-
-				m_MemoryDimms += 1;
-				while ((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
-				{
-					m_MemoryDimms += 1;
-					m_hr = clsObject->Get(L"capacity", 0, &vtProp, 0, 0);
-					if (FAILED(m_hr))
-					{
-						std::cout << "Failed to get memory capacity" << std::endl;
-						VariantClear(&vtProp);
-					}
-					else
-					{
-						m_MemoryCapacity += vtProp.ullVal;
-						VariantClear(&vtProp);
-					}
-					
-				}
-
-				clsObject->Release();
-				pEnumerator->Release();
-
 			}
 		}
 
-		m_hr = pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_BaseBoard", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
-		if(FAILED(m_hr)) 
+		m_hr = m_pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_BaseBoard", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
+		if (FAILED(m_hr))
 		{
 			std::cout << "Query for motherboard failed" << std::endl;
 		}
-		else 
-		{			
+		else
+		{
 			m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned);
-			if (FAILED(m_hr)) 
-			{ 
+			if (FAILED(m_hr))
+			{
 				std::cout << "Failed iteration" << std::endl;
 				clsObject->Release();
 				pEnumerator->Release();
-			} 
-			else 
+			}
+			else
 			{
 				m_hr = clsObject->Get(L"Manufacturer", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get motherboard manufacturer" << std::endl;
 					VariantClear(&vtProp);
 				}
-				else 
+				else
 				{
 					m_Mob = BstrToStdString(vtProp.bstrVal);
 					VariantClear(&vtProp);
@@ -262,7 +301,7 @@ namespace Puppeteer
 				}
 
 				m_hr = clsObject->Get(L"Product", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get motherboard name" << std::endl;
 					VariantClear(&vtProp);
@@ -278,17 +317,17 @@ namespace Puppeteer
 			}
 		}
 
-		m_hr = pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_VideoController", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
-		if(FAILED(m_hr)) 
+		m_hr = m_pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_VideoController", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
+		if (FAILED(m_hr))
 		{
 			std::cout << "Query for video failed" << std::endl;
 		}
-		else 
+		else
 		{
-			while((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
+			while ((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
 			{
 				m_hr = clsObject->Get(L"Name", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get video name" << std::endl;
 					VariantClear(&vtProp);
@@ -300,7 +339,7 @@ namespace Puppeteer
 				}
 
 				m_hr = clsObject->Get(L"AdapterRAM", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get video ram" << std::endl;
 					VariantClear(&vtProp);
@@ -316,23 +355,23 @@ namespace Puppeteer
 			pEnumerator->Release();
 
 		}
-		
-		m_hr = pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_NetworkAdapterConfiguration", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
-		if(FAILED(m_hr))
+
+		m_hr = m_pService->ExecQuery(L"WQL", L"SELECT * FROM Win32_NetworkAdapterConfiguration", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
+		if (FAILED(m_hr))
 		{
 			std::cout << "Query for network failed" << std::endl;
 			pEnumerator->Release();
 		}
 		else
 		{
-			while((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
+			while ((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
 			{
 				m_hr = clsObject->Get(L"MACAddress", 0, &vtProp, 0, 0);
-				if (FAILED(m_hr)) 
+				if (FAILED(m_hr))
 				{
 					std::cout << "Failed to get mac address" << std::endl;
 					VariantClear(&vtProp);
-				} 
+				}
 				else {
 					if (vtProp.bstrVal != L"")
 					{
@@ -340,17 +379,17 @@ namespace Puppeteer
 						VariantClear(&vtProp);
 					}
 				}
-							
-				clsObject->Release();	
+
+				clsObject->Release();
 			}
 			pEnumerator->Release();
 		}
 
-		m_hr = pServiceDisk->ExecQuery(L"WQL", L"SELECT * FROM MSFT_PhysicalDisk", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
+		m_hr = m_pServiceDisk->ExecQuery(L"WQL", L"SELECT * FROM MSFT_PhysicalDisk", WBEM_FLAG_FORWARD_ONLY, NULL, &pEnumerator);
 		if (FAILED(m_hr))
 		{
 			std::cout << "Failed to open namespace" << std::endl;
-			
+
 		}
 		else {
 			while ((int)(m_hr = pEnumerator->Next(WBEM_INFINITE, 1, &clsObject, &returned)) == (int)WBEM_S_NO_ERROR)
@@ -363,7 +402,7 @@ namespace Puppeteer
 				}
 				else
 				{
-					m_DiskSize.push_back(vtProp.ullVal);
+					m_DiskSize.push_back(std::stoull(vtProp.bstrVal));
 					VariantClear(&vtProp);
 				}
 
@@ -373,7 +412,7 @@ namespace Puppeteer
 					std::cout << "Failed to get storage name" << std::endl;
 					VariantClear(&vtProp);
 				}
-				else 
+				else
 				{
 					m_StorageNames.push_back(BstrToStdString(vtProp.bstrVal));
 					VariantClear(&vtProp);
@@ -390,18 +429,25 @@ namespace Puppeteer
 					m_DiskType.push_back(getMediaType(vtProp.intVal));
 					VariantClear(&vtProp);
 				}
-				clsObject->Release();		
+				clsObject->Release();
 			}
 			pEnumerator->Release();
 		}
 
-		// Cleanup
-		pService->Release();
-		pLocator->Release();
-		CoUninitialize();
-
-		MemoryInformation* memoryInformation = getMemoryInformation();
-		m_MemoryType = getMemoryType(memoryInformation->memoryType);
+		std::vector<MemoryInformation*> memoryInformation = getMemoryInformation();
+		for (auto& memoryInformation1 : memoryInformation) {
+			if (memoryInformation1->size == 32767)
+			{
+				m_MemoryCapacity += memoryInformation1->extendedSize;
+			}
+			else
+			{
+				m_MemoryCapacity += memoryInformation1->size;
+			}
+			m_MemoryDimms++;
+		}
+		m_MemorySpeed = memoryInformation.front()->speed;
+		m_MemoryType = getMemoryType(memoryInformation.front()->memoryType);
 	}
 
 	std::string PCInfo::BstrToStdString(BSTR bstr)
@@ -510,8 +556,9 @@ namespace Puppeteer
 		};
 	}
 
-	PCInfo::MemoryInformation* PCInfo::getMemoryInformation()
+	std::vector<PCInfo::MemoryInformation*> PCInfo::getMemoryInformation()
 	{
+		std::vector<MemoryInformation*> smBiosDataVec = {};
 		RawSMBIOSData* smBiosData = nullptr;
 
 		DWORD smBiosDataSize = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
@@ -519,7 +566,7 @@ namespace Puppeteer
 		if (smBiosDataSize == 0)
 		{
 			std::cerr << "Failed to get SMBIOS data size." << std::endl;
-			return nullptr;
+			return smBiosDataVec;
 		}
 
 		smBiosData = (RawSMBIOSData*)HeapAlloc(GetProcessHeap(), 0, smBiosDataSize);
@@ -530,7 +577,7 @@ namespace Puppeteer
 		{
 			std::cerr << "Failed to get SMBIOS data." << std::endl;
 			HeapFree(GetProcessHeap(), 0, smBiosData);
-			return nullptr;
+			return smBiosDataVec;
 		}
 
 		BYTE* data = smBiosData->SMBIOSTableData;
@@ -547,7 +594,7 @@ namespace Puppeteer
 
 			if (header->type == 0x11 && header->length >= 0x19)
 			{
-				return (MemoryInformation*)header;
+				smBiosDataVec.push_back((MemoryInformation*)header);
 			}
 
 			next = data + header->length;
@@ -561,9 +608,60 @@ namespace Puppeteer
 
 		}
 
-		std::cerr << "Failed to get SMBIOS data." << std::endl;
+		//std::cerr << "Failed to get SMBIOS data." << std::endl;
 		HeapFree(GetProcessHeap(), 0, smBiosData);
-		return nullptr;
+		return smBiosDataVec;
+	}
+	std::ostream& operator<<(std::ostream& os, const PCInfo& pcInfo)
+	{
+		os << "CPU Name: " << pcInfo.m_CPUName << std::endl;
+		os << "Cores: " << pcInfo.m_Cores << std::endl;
+		os << "Thread Count: " << pcInfo.m_ThreadCount << std::endl;
+		os << "Base Clock Speed: " << pcInfo.m_BaseClockSpeed << std::endl;
+		os << "Motherboard: " << pcInfo.m_Mob << std::endl;
+		os << "System Name: " << pcInfo.m_Systemname << std::endl;
+		os << "Memory Capacity: " << pcInfo.m_MemoryCapacity << std::endl;
+		os << "Memory Speed: " << pcInfo.m_MemorySpeed << std::endl;
+		os << "Memory Type: " << pcInfo.m_MemoryType << std::endl;
+		os << "Memory Dimms: " << pcInfo.m_MemoryDimms << std::endl;
+		os << "MAC Addresses: ";
+		for (auto& mac : pcInfo.m_MACAddres)
+		{
+			os << mac << ", ";
+		}
+		os << std::endl;
+		os << "Storage Names: ";
+		for (auto& storage : pcInfo.m_StorageNames)
+		{
+			os << storage << ", ";
+		}
+		os << std::endl;
+		os << "Disk Sizes: ";
+		for (auto& size : pcInfo.m_DiskSize)
+		{
+			os << size << ", ";
+		}
+		os << std::endl;
+		os << "Disk Types: ";
+		for (auto& type : pcInfo.m_DiskType)
+		{
+			os << type << ", ";
+		}
+		os << std::endl;
+		os << "Video Names: ";
+		for (auto& video : pcInfo.m_VideoName)
+		{
+			os << video << ", ";
+		}
+		os << std::endl;
+		os << "Vram: ";
+		for (auto& vram : pcInfo.m_Vram)
+		{
+			os << vram << ", ";
+		}
+		os << std::endl;
+		return os;
+		
 	}
 }
 

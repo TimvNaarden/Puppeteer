@@ -1,19 +1,16 @@
-#include "pch.h"
-#include "PCInfo/PCInfo.h"
+#include "Network/PClientSocket.h"
 
-namespace Puppeteer {
-
-	int main(void) 
-	{
-		PCInfo pc;
-		
-		
-		
+namespace Puppeteer
+{
+	static int RunPuppet() {
+		Puppeteer::PClientSocket client;
+		client.Create(IPV4, TCP, SERVER, 54000, "192.168.2.62", true);
+		client.HandleServerSocket();
 		return 0;
 	}
 }
 
-int main(void)
-{
-	return Puppeteer::main();
+
+int main() {
+	return Puppeteer::RunPuppet();
 }

@@ -8,3 +8,25 @@ Makefile
 *.o
 
 .vs/*
+
+*/*.sln
+*/*.vcxproj
+*/*.vcxproj.filters
+*/*.vcxproj.user*
+
+*/imgui.ini
+*/.vs/*
+
+*.crt
+*/*.crt
+*.key
+*/*.key
+*.pem
+*/*.pem
+
+Makefile
+MakeFile
+*.make
+*.Make
+
+*/compile_commands.json

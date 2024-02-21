@@ -22,8 +22,17 @@
     <Filter Include="Platform\Windows\PCInfo">
       <UniqueIdentifier>{92EFDA59-FE26-23F1-0731-871473E749EA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\Windows\Validate">
+      <UniqueIdentifier>{7D067C1C-E9C8-AFA6-3279-3E339E7A8884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows\Window">
+      <UniqueIdentifier>{CBCFF26C-3707-3B04-4011-9F27ACC761FD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Puppeteer">
       <UniqueIdentifier>{9F82370D-0BED-EB83-542B-9D29C0D4C9D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Puppeteer\Network">
+      <UniqueIdentifier>{189447A7-84AA-453D-CD21-D15E397716C5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Renderer">
       <UniqueIdentifier>{7CCE658F-689B-C09A-91B4-AE427DE0F528}</UniqueIdentifier>
@@ -72,11 +81,17 @@
     <ClInclude Include="src\Platform\Windows\PCInfo\PCInfo.h">
       <Filter>Platform\Windows\PCInfo</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
-      <Filter>Platform\Windows</Filter>
+    <ClInclude Include="src\Platform\Windows\Validate\ValidateLogin.h">
+      <Filter>Platform\Windows\Validate</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\Window\WindowsWindow.h">
+      <Filter>Platform\Windows\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Puppeteer\BaseLayer.h">
       <Filter>Puppeteer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Puppeteer\Network\PClientSocket.h">
+      <Filter>Puppeteer\Network</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Framebuffer.h">
       <Filter>Renderer</Filter>
@@ -105,14 +120,17 @@
     <ClCompile Include="src\Platform\Windows\PCInfo\PCInfo.cpp">
       <Filter>Platform\Windows\PCInfo</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\ValidateLogin.cpp">
-      <Filter>Platform\Windows</Filter>
+    <ClCompile Include="src\Platform\Windows\Validate\ValidateLogin.cpp">
+      <Filter>Platform\Windows\Validate</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
-      <Filter>Platform\Windows</Filter>
+    <ClCompile Include="src\Platform\Windows\Window\WindowsWindow.cpp">
+      <Filter>Platform\Windows\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\Puppeteer\BaseLayer.cpp">
       <Filter>Puppeteer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Puppeteer\Network\PClientSocket.cpp">
+      <Filter>Puppeteer\Network</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Framebuffer.cpp">
       <Filter>Renderer</Filter>

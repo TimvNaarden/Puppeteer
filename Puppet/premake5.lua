@@ -18,10 +18,20 @@ workspace "Puppet"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
+IncludeDir["GLFW"] = "%{wks.location}/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/vendor/ImGui"
+IncludeDir["glm"] = "%{wks.location}/vendor/glm"
+IncludeDir["Networking"] = "%{wks.location}/vendor/Networking"
+IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 
+filter {}
+-- Create a solution folder inside visual studio
 group "Dependencies"
+    include "vendor/Networking"
+    include "vendor/Database"
+group "" -- End the solution folder here
 
-group ""
 
 project "Puppet"
     kind "ConsoleApp"
@@ -32,8 +42,6 @@ project "Puppet"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-    pchheader "pch.h"
-    pchsource "src/pch.cpp"
 
     files
     {
@@ -41,17 +49,22 @@ project "Puppet"
         "src/**.cpp",
     }
 
-    defines
-    {
-    }
  
     includedirs
     {
         "src",
+        "%{IncludeDir.Networking}",
+        "%{IncludeDir.Database}",
     }
 
+    libdirs
+    {
+        "libs"
+    }
     links
     {
+        "Networking",
+        "Database",
     }
 
     filter "system:windows"
