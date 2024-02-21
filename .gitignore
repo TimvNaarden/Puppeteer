@@ -1,45 +1,63 @@
 bin/*
 bin-int/*
+
 */bin/*
 */bin-int/*
+
 **/bin/*
 **/bin-int/*
 
-*/.vs/*
 .vs/*
+*/.vs/*
+**/.vs/*
+
+.sln
+.vcxproj
+.vcxproj.filters
+.vcxproj.user
 
 */*.sln
 */*.vcxproj
 */*.vcxproj.filters
 */*.vcxproj.user
 
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+**/*.sln
+**/*.vcxproj
+**/*.vcxproj.filters
+**/*.vcxproj.user
 
+imgui.ini
 */imgui.ini
-*/.vs/*
+**/imgui.ini
 
 *.crt
-*/*.crt
 *.key
-*/*.key
 *.pem
+
+*/*.crt
+*/*.key
 */*.pem
 
-Makefile
-MakeFile
+**/*.crt
+**/*.key
+**/*.pem
+
 *.make
 *.Make
+Makefile
+MakeFile
 
-*/Makefile
-*/MakeFile
 */*.make
 */*.Make
+*/Makefile
+*/MakeFile
+
+**/*.make
+**/*.Make
+**/Makefile
+**/MakeFile
 
 CppProperties.json
 */CppProperties.json
+**/CppProperties.json
 
-CppProperties.json
-*/CppProperties.json
