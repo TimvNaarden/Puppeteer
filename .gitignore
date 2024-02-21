@@ -3,16 +3,18 @@ bin-int/*
 */bin/*
 */bin-int/*
 
-Makefile 
-*.obj
-*.o
-
+*/.vs/*
 .vs/*
 
 */*.sln
 */*.vcxproj
 */*.vcxproj.filters
-*/*.vcxproj.user*
+*/*.vcxproj.user
+
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 
 */imgui.ini
 */.vs/*
@@ -29,4 +31,13 @@ MakeFile
 *.make
 *.Make
 
-*/compile_commands.json
+*/Makefile
+*/MakeFile
+*/*.make
+*/*.Make
+
+CppProperties.json
+*/CppProperties.json
+
+CppProperties.json
+*/CppProperties.json
