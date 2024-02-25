@@ -135,9 +135,12 @@ namespace Puppeteer
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
+
 				MouseMovedEvent event((float)xPos, (float)yPos);
 				data.EventCallback(event);
+				
 			});
+		
 	}
 
 	WindowsWindow::~WindowsWindow()

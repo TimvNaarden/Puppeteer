@@ -18,6 +18,7 @@ namespace Puppeteer
 		m_LayerInsertIndex++;
 	}
 
+
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
 		m_Layers.emplace_back(overlay);
@@ -25,13 +26,18 @@ namespace Puppeteer
 
 	void LayerStack::PopLayer(Layer* layer)
 	{
-		auto it = std::find(m_Layers.begin(), m_Layers.begin() + m_LayerInsertIndex, layer);
-		if (it != m_Layers.begin() + m_LayerInsertIndex)
+		for (auto it = m_Layers.rbegin(); it != m_Layers.rend(); ++it)
 		{
-			layer->OnDetach();
-			m_Layers.erase(it);
-			m_LayerInsertIndex--;
+			if (*it == layer)
+			{
+				layer->OnDetach();
+				it = decltype(it)(m_Layers.erase(std::next(it).base())); // erase returns iterator to the next valid element
+				m_LayerInsertIndex = std::distance(m_Layers.begin(), it.base()); // update m_LayerInsertIndex
+				break; // break the loop after erasing the element
+			}
 		}
+		delete layer;
+
 	}
 
 	void LayerStack::PopOverlay(Layer* overlay)

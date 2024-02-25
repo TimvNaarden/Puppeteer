@@ -8,8 +8,9 @@
 
 #include <windows.h>
 #include <sysinfoapi.h>
+#include <combaseapi.h>
 #include <map>
-#include <list>
+
 
 namespace Puppeteer
 {
@@ -42,6 +43,8 @@ namespace Puppeteer
 
         PCInfo();
         PCInfo(std::map<std::string, std::string> map);
+        //Used to create an empty object to be filled with the renew function
+        PCInfo(int placeholder);
         ~PCInfo();
 
 
@@ -84,17 +87,20 @@ namespace Puppeteer
             BYTE bankLocator;
             BYTE memoryType;
             WORD typeDetail;
+            WORD speed;
+            BYTE manufacturer;
+            BYTE serialNumber;
+            BYTE assetTag;
+            BYTE partNumber;
+            BYTE attributes;
+            DWORD extendedSize;
         };
 
         #pragma pack(pop)
         std::string getMemoryType(BYTE b);
         std::string BstrToStdString(BSTR bstr);
         std::string getMediaType(int i);
-        MemoryInformation* getMemoryInformation();
-
-        IWbemLocator* m_pLocator;
-        IWbemServices* m_pService;
-        IWbemServices* m_pServiceDisk;
+        std::vector<MemoryInformation*> getMemoryInformation();
 
     };
 }

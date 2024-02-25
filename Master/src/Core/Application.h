@@ -5,6 +5,7 @@
 #include "Event/ApplicationEvent.h"
 #include "Event/Event.h"
 #include "ImGui/ImGuiLayer.h"
+#include <queue>
 
 #include <GLFW/glfw3.h>
 
@@ -29,6 +30,8 @@ namespace Puppeteer
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
+		void RemoveLayer(Layer* layer);
+
 		void Run();
 		void Exit() { m_Running = false; }
 
@@ -42,6 +45,8 @@ namespace Puppeteer
 	private:
 		Scope<Window> m_Window;
 		LayerStack m_LayerStack;
+		std::queue<Layer*> m_LayersToRemove;
+		std::queue<Layer*> m_LayersToPush;
 		ImGuiLayer* m_ImGuiLayer;
 
 		bool m_Running = false;

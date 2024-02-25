@@ -24,6 +24,7 @@ IncludeDir["ImGui"] = "%{wks.location}/vendor/ImGui"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
 IncludeDir["Networking"] = "%{wks.location}/vendor/Networking"
 IncludeDir["Database"] = "%{wks.location}/vendor/Database"
+IncludeDir["ZLib"] = "%{wks.location}/vendor/zlib"
 
 filter {}
 -- Create a solution folder inside visual studio
@@ -68,6 +69,7 @@ project "Master"
         "%{IncludeDir.glm}",
         "%{IncludeDir.Networking}",
         "%{IncludeDir.Database}",
+		"%{IncludeDir.ZLib}",
     }
 
     libdirs

@@ -1,0 +1,12 @@
+bin-int
+bin-int/*
+
+bin
+bin/*
+
+Database.*
+Makefile
+MakeFile
+*.make
+*.Make
+compile_commands.json

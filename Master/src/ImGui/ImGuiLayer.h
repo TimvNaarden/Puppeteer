@@ -17,14 +17,21 @@ namespace Puppeteer
 		virtual void OnDetach() override;
 		virtual void OnEvent(Event& e) override;
 
+		ImGuiID dockspace_id;
+		ImGuiID dock_main_id;
+		ImGuiID dock_left_id;
+
 		void Begin();
 		void End();
 
 		void BlockEvents(bool block) { m_BlockEvents = block; }
+
 	private:
 		void SetThemeColors();
 	private:
 		bool m_BlockEvents = true;
 		float m_Time = 0.0f;
+		int m_Initialized = 0;
+		
 	};
 }

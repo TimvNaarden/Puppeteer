@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <map>
 
 namespace Puppeteer
 {
@@ -8,7 +9,7 @@ namespace Puppeteer
 
 	namespace Mouse
 	{
-		enum : MouseCode
+		typedef enum : MouseCode
 		{
 			// From glfw3.h
 			Button0 = 0,
@@ -24,6 +25,21 @@ namespace Puppeteer
 			ButtonLeft = Button0,
 			ButtonRight = Button1,
 			ButtonMiddle = Button2
+		} MouseCodes;
+		static std::map<int, int> WindowsMouseDown =
+		{
+			{MouseCodes::ButtonLeft, 0x0002},
+			{MouseCodes::ButtonRight,	0x0008},
+			{MouseCodes::ButtonMiddle, 0x0020},
+			{MouseCodes::ButtonLast, 0x0080},
+		};
+
+		static std::map<int, int> WindowsMouseUp =
+		{
+			{MouseCodes::ButtonLeft, 0x0004},
+			{MouseCodes::ButtonRight,	0x0010},
+			{MouseCodes::ButtonMiddle, 0x0040},
+			{MouseCodes::ButtonLast, 0x00100},
 		};
 	}
 }

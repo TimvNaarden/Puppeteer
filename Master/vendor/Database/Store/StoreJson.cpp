@@ -63,3 +63,11 @@ int ReplaceJsonTable(std::string table, std::string condition, std::string input
   ResultFile << Result.str();
   return 0;
 }
+
+int OverrideJsonTable(std::string table, std::string input) {
+    if (CheckJsonTable(table))
+		return 1;
+    std::ofstream MyFile("Data/Json/" + table);
+    MyFile << input << std::endl;
+    return !MyFile.good();
+}

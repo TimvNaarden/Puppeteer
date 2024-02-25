@@ -16,11 +16,18 @@ namespace Puppeteer
         uint32_t Width = 1280;
         uint32_t Height = 720;
     };
+    static void EventCallbackFn1(Event& e) {
+        std::cout << e.ToString() << std::endl;
+    }
 
     class Window
     {
     public:
+
+        
         using EventCallbackFn = std::function<void(Event&)>;
+        EventCallbackFn m_EventCallback = EventCallbackFn1;
+
 
         virtual ~Window() = default;
 

@@ -28,6 +28,8 @@ int RemoveJsonTable(std::string table, std::string input);
 // @returns 0 if succesfull
 int DeleteJsonTable(std::string table);
 
+int OverrideJsonTable(std::string table, std::string input);
+
 // @returns 0 if succesfull
 int ReplaceJsonTable(std::string table, std::string condition, std::string input);
 

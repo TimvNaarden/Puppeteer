@@ -2,10 +2,12 @@
 #include "ImGuiLayer.h"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 
 #define IMGUI_IMPL_API
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
+
 
 #include "Core/Application.h"
 
@@ -80,9 +82,9 @@ namespace Puppeteer
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
 		// Select all of the styles of the docking space
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);				// Rounding of the main docking space
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);				// The border thickness of the main docking space
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));	// 0 Padding of the docking space relative to the window
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);                // Rounding of the main docking space
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);                // The border thickness of the main docking space
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));    // 0 Padding of the docking space relative to the window
 
 		ImGui::Begin("Docking Space", &dockingspace_show, window_flags);
 
@@ -90,14 +92,35 @@ namespace Puppeteer
 		ImGui::PopStyleVar(3);
 
 		// Submit the docking space
-		ImGuiID dockspace_id = ImGui::GetID("DockSpace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+		dockspace_id = ImGui::GetID("DockSpace");
+
+		//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+		if (!ImGui::DockBuilderGetNode(dockspace_id)) {
+			m_Initialized = 1;
+			// Start the dock builder
+			ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+			ImGui::DockBuilderAddNode(dockspace_id); // Add empty node to dockspace
+			ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
+			ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.15f, NULL, &dock_left_id);
+
+			//ImGui::DockBuilderDockWindow("Settings", dock_main_id);
+			//ImGui::DockBuilderDockWindow("Settings1", dock_main_id);
+
+			// Finish building dockspace
+			ImGui::DockBuilderFinish(dockspace_id);
+		}
+		ImGuiDockNode* ndoes = ImGui::DockBuilderGetNode(dockspace_id);
+		ImGuiID id = ImGui::GetWindowDockID();
+		ImGui::DockSpace(dockspace_id);
+		
+	
 	}
 
 	void ImGuiLayer::End()
 	{
 		// End the docking space
 		ImGui::End();
+
 
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
