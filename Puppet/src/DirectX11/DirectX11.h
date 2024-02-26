@@ -7,9 +7,10 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#define DIRECTX11(x) std::cout << "DirectX11: " << x << std::endl;
 
-namespace Puppeteer
-{
+namespace Puppeteer {
+
 	extern D3D11_MAPPED_SUBRESOURCE screenCapSubRes;
 	
 	typedef struct screenCapture {
@@ -19,17 +20,17 @@ namespace Puppeteer
 	} screenCapture;
 	
 	class DirectX11 {
-	public:
-		D3D_FEATURE_LEVEL			m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+		public:
+			DirectX11();
+			~DirectX11();
 
-		DirectX11();
-		~DirectX11();
+			screenCapture getScreen();
 
-		screenCapture getScreen();
-
-	private:
-		ID3D11Texture2D* m_AcquiredDesktopImage;
-		IDXGIResource* m_DesktopResource;
+		private:
+			HRESULT m_HR;
+			ID3D11Texture2D* m_AcquiredDesktopImage;
+			IDXGIResource* m_DesktopResource;
+			D3D_FEATURE_LEVEL m_FeatureLevel;
 	};
 }
 

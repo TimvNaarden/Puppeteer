@@ -1,25 +1,16 @@
 #include "PClientSocket.h"
 
+
 namespace Puppeteer
 {
-    // Global variables for hook handles
     HHOOK g_keyboardHook;
     HHOOK g_mouseHook;
 
-    // Keyboard hook procedure
-    LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
-        // Block keyboard input
-        return 1;
-    }
+    LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) { return 1; }
+    
+    LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) { return 1; }
 
-    // Mouse hook procedure
-    LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
-        // Block mouse input
-        return 1;
-    }
-
-    PClientSocket::PClientSocket()
-    {
+    PClientSocket::PClientSocket() {
         // Init vars
         m_StopListen = 0;
         m_Socket = INVALID_SOCKET;
@@ -31,8 +22,7 @@ namespace Puppeteer
         STARTWSA();
     }
 
-    PClientSocket::~PClientSocket()
-    {
+    PClientSocket::~PClientSocket() {
         m_StopListen = 1;
         closesocket(m_Socket);
         WSACleanup();
@@ -65,15 +55,15 @@ namespace Puppeteer
 
                 int ret = SSL_accept(pssl);
                 if (ret <= 0) {
-                    SERVERCMD("Failed to accept SSL");
-                    SERVERCMD(SSL_get_error(pssl, ret));
+                    PUPPET("Failed to accept SSL");
+                    PUPPET(SSL_get_error(pssl, ret));
                     continue;
                 }
             }
             std::thread t1 = std::thread(&Socket::HandleClient, this, clientSocket, &pssl);
             t1.detach();
         }
-}
+    }
 
     void PClientSocket::HandleClient(SOCKET clientSocket, SSL** pssl) {
         if (!AcceptConnection(clientSocket, pssl)) {
@@ -95,29 +85,41 @@ namespace Puppeteer
             SSL_shutdown(*pssl);
             SSL_free(*pssl);
         }
-     }
+    }
 
     int PClientSocket::AcceptConnection(SOCKET clientsocket, SSL** pssl)
     {
         int ret = 0;
-        SERVERCMD(" Waiting for credentials");
-        char* packet = ReceivePacket(clientsocket,pssl);
-        SERVERCMD(packet);
+        PUPPET(" Waiting for credentials");
+        char* packet = ReceivePacket(clientsocket, pssl);
+        if (packet == "Con Closed") {
+			PUPPET("Client closed");
+			return 0;
+		}
+        
         std::map<std::string, std::string> map = ParseJson<std::map<std::string, std::string>>(packet);
 
         std::string username = map["username"];
         std::string password = map["password"];
         std::string domain = map["domain"];
-       
-        if (authenticateUser(username, password, domain) && userIsAdmin(username)) {
-           ret = 1;
 
-           if (SendPacket("Authenticated", pssl, NULL, clientsocket)) {
-               SERVERCMD("Failed to send authentication");
-           }
+        if (authenticateUser(username, password, domain) && userIsAdmin(username, domain)) {
+            ret = 1;
+
+            if (SendPacket("Authenticated", pssl, NULL, clientsocket)) {
+                PUPPET("Failed to send authentication");
+            } else {
+				PUPPET("Authenticated");
+			}
+		} else {
+            if (SendPacket("Not Authenticated", pssl, NULL, clientsocket)) {
+				PUPPET("Failed to send authentication");
+			} else {
+                PUPPET("Failed to authenticate");
+            }
         }
 
-        //free(packet);
+        delete[] packet;
 
         return ret;
     }
@@ -129,48 +131,53 @@ namespace Puppeteer
         * {ActionType: "Action"         Possible Actions: ReqPCInfo, Screen, Keystrokes, Mouse       , LockInput, Close
         * Action: "Data"                Values:           0        , 0     , Keycodes  , Loc + Button, 0        , 0
         */
+        if(!pssl) { PUPPET("Client Closed") return 1; }
         char* packet = ReceivePacket(clientSocket, pssl);
-        CLIENTCMD (packet);
+        if (packet == "Con Closed") {
+			PUPPET("Client closed");
+			return 1;
+		}
+        PUPPET(packet);
         std::map<std::string, std::string> Action = ParseJson<std::map<std::string, std::string>>(packet);
 
         if (Action["ActionType"] == "ReqPCInfo") {
             m_PCInfo.renew();
             if (SendPacket(WriteJson(m_PCInfo.toMap()).data(), pssl, NULL, clientSocket)) {
-                CLIENTCMD("Failed to send PC Info");
+                PUPPET("Failed to send PC Info");
             }
             else {
-                CLIENTCMD("PC Info sent");
+                PUPPET("PC Info sent");
             }
         }
         else if (Action["ActionType"] == "Screen") {
             //No need to do anything regarding the fps as the master will handle it
             screenCapture screencp = m_Dx11.getScreen();
-            char* data = new char[screencp.size];
-            memcpy(data, Puppeteer::screenCapSubRes.pData, screencp.size);
-            std::map<std::string, std::string> screen = { 
-                {"width", std::to_string(screencp.width)}, 
-                {"height", std::to_string(screencp.height)}, 
-				{"size", std::to_string(screencp.size)}
-               };
+            std::vector<char> compressedResults(LZ4_compressBound(screencp.size));
+            int csize = LZ4_compress_fast((char*)Puppeteer::screenCapSubRes.pData, compressedResults.data(), screencp.size, compressedResults.size(), 1);
+            compressedResults.resize(csize);
+            std::map<std::string, int> screen = {
+                {"width", screencp.width},
+                {"height", screencp.height},
+                {"size", screencp.size},
+                {"csize", csize}
+            };
             if (SendPacket(WriteJson(screen).data(), pssl, NULL, clientSocket)) {
-                CLIENTCMD("Failed to send screen");
+                PUPPET("Failed to send screen");
             }
             else {
-                CLIENTCMD("Screen sent");
+                PUPPET("Screen sent");
             }
-            if (SendPacket(data, pssl, screencp.size, clientSocket)) {
-                CLIENTCMD("Failed to send screen data");
+            if (SendPacket(compressedResults.data(), pssl, csize, clientSocket)) {
+                PUPPET("Failed to send screen data");
             }
             else {
-				CLIENTCMD("Screen data sent");
-			}
-            delete[] data;
+                PUPPET("Screen data sent");
+            }
             //CLIENTCMD(m_Dx11.getScreen());
 
         }
         else if (Action["ActionType"] == "Keystrokes") {
             //Data format from master: [{"Code" :, "Flags":}]
-            //Be aware, each key is pressed and when each key is pressend the get released in reverse order
             std::vector<std::map<std::string, int>> keys = ParseJson<std::vector<std::map<std::string, int>>>(Action["Action"]);
             std::cout << keys.front()["Code"] << std::endl;
             const int keyCount = keys.size();
@@ -181,11 +188,11 @@ namespace Puppeteer
                 keyStrokes[i].ki.wVk = keys[i]["Code"];
                 keyStrokes[i].ki.dwFlags = keys[i]["Flags"];
             }
-            if (SendInput(keyCount , keyStrokes, sizeof(INPUT)) != keyCount) {
-                CLIENTCMD("Failed to send keystrokes");
+            if (SendInput(keyCount, keyStrokes, sizeof(INPUT)) != keyCount) {
+                PUPPET("Failed to send keystrokes");
             }
             else {
-                CLIENTCMD("Keystrokes sent");
+                PUPPET("Keystrokes sent");
             }
         }
         else if (Action["ActionType"] == "Mouse") {
@@ -195,57 +202,62 @@ namespace Puppeteer
             INPUT* mouseAction = new INPUT[mouseCount];
             ZeroMemory(mouseAction, sizeof(mouseAction));
             for (int i = 0; i < mouseCount; i++) {
-				mouseAction[i].type = INPUT_MOUSE;
-				mouseAction[i].mi.dx = mouseData[i]["dx"];
-				mouseAction[i].mi.dy = mouseData[i]["dy"];
-				mouseAction[i].mi.mouseData = mouseData[i]["mouseData"];
-				mouseAction[i].mi.dwFlags = mouseData[i]["dwFlags"];
-			}
+                mouseAction[i].type = INPUT_MOUSE;
+                mouseAction[i].mi.dx = mouseData[i]["dx"];
+                mouseAction[i].mi.dy = mouseData[i]["dy"];
+                mouseAction[i].mi.mouseData = mouseData[i]["mouseData"];
+                mouseAction[i].mi.dwFlags = mouseData[i]["dwFlags"];
+                mouseAction[i].mi.time = 0;
+            }
             if (SendInput(mouseCount, mouseAction, sizeof(INPUT)) != mouseCount) {
-                CLIENTCMD("Failed to send mouse");
+                PUPPET("Failed to send mouse");
             }
             else {
-				CLIENTCMD("Mouse sent");
-			}
+                PUPPET("Mouse sent");
+            }
 
         }
         else if (Action["ActionType"] == "LockInput") {
             m_Block = !m_Block;
             if (m_Block) {
+                BlockInput(TRUE);
                 g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
                 if (!g_keyboardHook) {
                     //UnhookWindowsHookEx(g_keyboardHook);
-                    CLIENTCMD("Couldn't block keyboard input"); 
+                    PUPPET("Couldn't block keyboard input");
                 }
 
                 // Install mouse hook
                 g_mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
                 if (!g_mouseHook) {
                     //UnhookWindowsHookEx(g_mouseHook);
-                    CLIENTCMD("Couldn't block mouse input");
+                    PUPPET("Couldn't block mouse input");
                 }
-                CLIENTCMD("Input " << "blocked");
+                PUPPET("Input " << "blocked");
             }
             else {
-				UnhookWindowsHookEx(g_keyboardHook);
-				UnhookWindowsHookEx(g_mouseHook);
-                CLIENTCMD("Input " << "unblocked");
-			}
-
-        }
-        else if (Action["ActionType"] == "Close") {
-            CLIENTCMD("Client closed");
-            if (m_Block) {
+                BlockInput(FALSE);
                 UnhookWindowsHookEx(g_keyboardHook);
                 UnhookWindowsHookEx(g_mouseHook);
-                CLIENTCMD("Input " << "unblocked")
+                PUPPET("Input " << "unblocked");
             }
+
+        }
+        else if (Action["ActionType"] == "Close" || packet == "Con Closed") {
+            PUPPET("Client closed");
+            if (m_Block) {
+                BlockInput(FALSE);
+                UnhookWindowsHookEx(g_keyboardHook);
+                UnhookWindowsHookEx(g_mouseHook);
+                PUPPET("Input " << "unblocked")
+            }
+            delete[] packet;
             return 1;
 
         }
-
+        delete[] packet;
         // return 1 to break the loop and close the socket
         return 0;
     }
 
- }
+}

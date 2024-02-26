@@ -11,6 +11,7 @@
 #include <combaseapi.h>
 #include <map>
 
+#define PCINFO(x) std::cout << "PCInfo: " << x << std::endl;
 
 namespace Puppeteer
 {
@@ -40,8 +41,9 @@ namespace Puppeteer
 
         std::vector<std::string> m_VideoName;
         std::vector<UINT32> m_Vram;
-
+        
         PCInfo();
+        PCInfo(bool GetLocal);
         PCInfo(std::map<std::string, std::string> map);
         ~PCInfo();
 
@@ -99,6 +101,9 @@ namespace Puppeteer
         std::string BstrToStdString(BSTR bstr);
         std::string getMediaType(int i);
         std::vector<MemoryInformation*> getMemoryInformation();
+        void init();
+
+        HRESULT	m_hr;
 
     };
 }

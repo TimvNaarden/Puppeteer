@@ -18,10 +18,6 @@ workspace "Puppet"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/vendor/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/vendor/ImGui"
-IncludeDir["glm"] = "%{wks.location}/vendor/glm"
 IncludeDir["Networking"] = "%{wks.location}/vendor/Networking"
 IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 

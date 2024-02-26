@@ -309,7 +309,7 @@ char *Socket::Receive(SOCKET source) {
 
   if (stringSize == nullptr) {
     std::cerr << "Failed to allocate memory" << std::endl;
-    return nullptr;
+    return "Con Closed";
   }
 
   result = recv(source, (char *)stringSize, 64, 0);
@@ -319,7 +319,7 @@ char *Socket::Receive(SOCKET source) {
       return "Con Closed";
     }
     std::cerr << "recv size failed: " << WSAGetLastError() << std::endl;
-    return nullptr;
+    return "Con Closed";
   }
   size = atoi(stringSize);
   char *packet = new char[size];
@@ -333,7 +333,7 @@ char *Socket::Receive(SOCKET source) {
 		return "Con Closed";
 	  }
 	  std::cerr << "recv data failed: " << WSAGetLastError() << std::endl;
-	  return nullptr;
+	  return "Con Closed";
 	}
   }
 
@@ -358,7 +358,7 @@ char *Socket::ReceiveSSL(SOCKET source, SSL** pssl) {
             return "Con Closed";
         }
         std::cerr << "recv size failed: " << WSAGetLastError() << std::endl;
-        return nullptr;
+        return "Con Closed";
     }
     if (stringSize == nullptr) {
         std::cerr << "Could not get stringsize" << std::endl;
@@ -376,7 +376,7 @@ char *Socket::ReceiveSSL(SOCKET source, SSL** pssl) {
                 return "Con Closed";
             }
             std::cerr << "recv data failed: " << WSAGetLastError() << std::endl;
-            return nullptr;
+            return "Con Closed";
         }
     }
     // Free memory
@@ -398,7 +398,7 @@ char *Socket::ReceiveUDP(SOCKET source) {
   socklen_t clientSize = sizeof(client);
   if (stringSize == nullptr) {
     std::cerr << "Failed to allocate memory" << std::endl;
-    return nullptr;
+    return "Con Closed";
   }
 
   result = recvfrom(source, (RECVFROM_BUFFER *)stringSize, 64, 0,
@@ -409,7 +409,7 @@ char *Socket::ReceiveUDP(SOCKET source) {
       return "Con Closed";
     }
     std::cerr << "recv size failed: " << WSAGetLastError() << std::endl;
-    return nullptr;
+    return "Con Closed";
   }
   size = atoi(stringSize);
   char *packet = new char[size];
@@ -423,7 +423,7 @@ char *Socket::ReceiveUDP(SOCKET source) {
               return "Con Closed";
           }
           std::cerr << "recv data failed: " << WSAGetLastError() << std::endl;
-          return nullptr;
+          return "Con Closed";
       }
   }
   // Free memory

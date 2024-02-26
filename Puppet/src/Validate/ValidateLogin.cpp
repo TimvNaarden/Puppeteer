@@ -25,10 +25,13 @@ namespace Puppeteer {
         }
     }
 
-    bool userIsAdmin(std::string username)
+    bool userIsAdmin(std::string username, std::string domain)
     {
         std::wstring temp = std::wstring(username.begin(), username.end());
         LPCWSTR wszUserName = temp.c_str();
+
+        std::wstring temp2 = std::wstring(domain.begin(), domain.end());
+        LPCWSTR wszDomainName = temp2.c_str();
 
         LPLOCALGROUP_USERS_INFO_0 pGroupsInfo = NULL;
         DWORD dwEntriesRead = 0;
@@ -37,7 +40,7 @@ namespace Puppeteer {
 
 
         // Retrieve group information for the user
-        dwError = NetUserGetLocalGroups(NULL, wszUserName, 0, LG_INCLUDE_INDIRECT, (LPBYTE*)&pGroupsInfo, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries);
+        dwError = NetUserGetGroups(wszDomainName, wszUserName, 0, (LPBYTE*)&pGroupsInfo, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries);
 
         // Check for errors
         if (dwError != NERR_Success) {
@@ -49,6 +52,9 @@ namespace Puppeteer {
 
         for (DWORD i = 0; i < dwEntriesRead; ++i) {
             if (std::wcscmp(pGroupsInfo[i].lgrui0_name, L"Administrators") == 0) {
+                return true;
+            }
+            if (std::wcscmp(pGroupsInfo[i].lgrui0_name, L"Domain Admin") == 0) {
                 return true;
             }
         }

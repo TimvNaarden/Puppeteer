@@ -72,7 +72,7 @@ namespace Puppeteer
 			std::string ResponseJson = s.ReceivePacket();
 			if (ResponseJson == "Con Closed") { 
 				this->m_UpdatingTexture = false;
-				this->m_Socket->~Socket();
+				//this->m_Socket->~Socket();
 				this->m_Socket = nullptr;
 				this->m_Mutex.unlock();
 				break;
@@ -85,7 +85,7 @@ namespace Puppeteer
 			char* Screen = s.ReceivePacket();
 			if (Screen == "Con Closed") { 
 				this->m_UpdatingTexture = false; 
-				this->m_Socket->~Socket(); 
+				//this->m_Socket->~Socket(); 
 				this->m_Socket = nullptr; 
 				this->m_Mutex.unlock();
 				break;
@@ -110,7 +110,7 @@ namespace Puppeteer
 			}
 		}
 		this->m_Mutex.lock();
-		if (m_Socket) this->m_Socket->~Socket();
+		//if (m_Socket) this->m_Socket->~Socket();
 		this->m_Initialized = 0;
 		this->m_Mutex.unlock();
 	}
