@@ -17,7 +17,7 @@
 namespace Puppeteer
 {
 	PuppetLayer::PuppetLayer(char* Ip, std::string Credentials) 
-		: m_Ip(Ip), m_PCInfo(1), m_Fps(0), m_UpdatingTexture(true), m_Credentials(Credentials),
+		: m_Ip(Ip), m_PCInfo(false), m_Fps(0), m_UpdatingTexture(true), m_Credentials(Credentials),
 		lastWidth(1920), lastHeight(1080), m_Textures(), m_Texture(1), m_TextureID(2), m_Socket(nullptr), m_Initialized(0),
 		m_Input(0), m_UserInput(0), m_Name("")
 	{

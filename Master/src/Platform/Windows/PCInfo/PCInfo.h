@@ -11,6 +11,7 @@
 #include <combaseapi.h>
 #include <map>
 
+#define PCINFO(x) std::cout << "PCInfo: " << x << std::endl;
 
 namespace Puppeteer
 {
@@ -42,9 +43,8 @@ namespace Puppeteer
         std::vector<UINT32> m_Vram;
 
         PCInfo();
+        PCInfo(bool GetLocal);
         PCInfo(std::map<std::string, std::string> map);
-        //Used to create an empty object to be filled with the renew function
-        PCInfo(int placeholder);
         ~PCInfo();
 
 
@@ -54,8 +54,8 @@ namespace Puppeteer
         friend std::ostream& operator<<(std::ostream& os, const PCInfo& pcInfo);
 
     private:
-        #pragma pack(push) 
-        #pragma pack(1)
+#pragma pack(push) 
+#pragma pack(1)
 
         struct RawSMBIOSData
         {
@@ -96,11 +96,14 @@ namespace Puppeteer
             DWORD extendedSize;
         };
 
-        #pragma pack(pop)
+#pragma pack(pop)
         std::string getMemoryType(BYTE b);
         std::string BstrToStdString(BSTR bstr);
         std::string getMediaType(int i);
         std::vector<MemoryInformation*> getMemoryInformation();
+        void init();
+
+        HRESULT	m_hr;
 
     };
 }
