@@ -19,6 +19,7 @@ namespace Puppeteer
 			std::map<std::string, std::string> Credentials = CredentialsVector[0];
 			Username = Credentials["username"];
 			Password = Credentials["password"];
+			Domain = Credentials["domain"];
 			Ip = Credentials["ip"];
 			std::vector<std::map<std::string, std::string>> pcs = ParseJson<std::vector<std::map<std::string, std::string>>>(Credentials["pcs"].data());
 				for (std::map<std::string, std::string> pc: pcs) {

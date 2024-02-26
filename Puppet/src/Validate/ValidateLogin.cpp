@@ -37,10 +37,14 @@ namespace Puppeteer {
         DWORD dwEntriesRead = 0;
         DWORD dwTotalEntries = 0;
         DWORD dwError = 0;
+        if (domain == "") {
+			dwError = NetUserGetLocalGroups(NULL, wszUserName, 0, LG_INCLUDE_INDIRECT,(LPBYTE*)&pGroupsInfo, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries);
+        }
+        else {
+			dwError = NetUserGetGroups(wszDomainName, wszUserName, 0, (LPBYTE*)&pGroupsInfo, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries);
+		}
 
 
-        // Retrieve group information for the user
-        dwError = NetUserGetGroups(wszDomainName, wszUserName, 0, (LPBYTE*)&pGroupsInfo, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries);
 
         // Check for errors
         if (dwError != NERR_Success) {
@@ -54,7 +58,7 @@ namespace Puppeteer {
             if (std::wcscmp(pGroupsInfo[i].lgrui0_name, L"Administrators") == 0) {
                 return true;
             }
-            if (std::wcscmp(pGroupsInfo[i].lgrui0_name, L"Domain Admin") == 0) {
+            if (std::wcscmp(pGroupsInfo[i].lgrui0_name, L"Domain Admins") == 0) {
                 return true;
             }
         }
