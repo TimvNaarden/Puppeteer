@@ -66,7 +66,7 @@ namespace Puppeteer
 			}
 		}
 
-		static GLenum StengineTextureFormatToGL(FramebufferTextureFormat format)
+		static GLenum TextureFormatToGL(FramebufferTextureFormat format)
 		{
 			switch (format)
 			{
@@ -201,6 +201,6 @@ namespace Puppeteer
 		auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
 		spec.TextureFormat;
 
-		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::StengineTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::TextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 	}
 }

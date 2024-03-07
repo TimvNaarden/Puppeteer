@@ -54,8 +54,8 @@ namespace Puppeteer
         friend std::ostream& operator<<(std::ostream& os, const PCInfo& pcInfo);
 
     private:
-#pragma pack(push) 
-#pragma pack(1)
+    #pragma pack(push) 
+    #pragma pack(1)
 
         struct RawSMBIOSData
         {
@@ -96,7 +96,7 @@ namespace Puppeteer
             DWORD extendedSize;
         };
 
-#pragma pack(pop)
+        #pragma pack(pop)
         std::string getMemoryType(BYTE b);
         std::string BstrToStdString(BSTR bstr);
         std::string getMediaType(int i);

@@ -1,12 +1,12 @@
 #include "WS2tcpip.h"
 #include "Network/PClientSocket.h"
 
-
-
+static const std::string version = "V1.0.1";
+static int port = 54000;
 
 namespace Puppeteer
 {
-	static char* GetLocalIp() {
+    static char* GetLocalIp() {
         WSADATA wsaData;                                                             
         if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
             std::cerr << "WSAStartup failed.\n";                                       
@@ -52,20 +52,29 @@ namespace Puppeteer
         }      
         return "";
 	}
+
 	static int RunPuppet() {
         char* ip = GetLocalIp();
         if (ip == "") {
 			std::cerr << "Could not get local ip\n";
 			return 1;
 		}
-		Puppeteer::PClientSocket client;
-		client.Create(IPV4, TCP, SERVER, 54000, ip, true);
-		client.HandleServerSocket();
+        std::cout << "Local IP: " << ip << std::endl;
+		Networking::TCPServer client(Networking::IPV4, port, ip, 1);
+        StartPuppetSocket(&client);
 		return 0;
 	}
 }
 
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc == 2) {
+        if(strcmp("-v", argv[1]) == 0) {
+            std::cout << version;
+            return 0;
+        }
+    }
 	return Puppeteer::RunPuppet();
 }
+
+

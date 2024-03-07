@@ -10,13 +10,12 @@ project "Networking"
 
     files
     {
-        "Socket/**.h",
-        "Socket/**.cpp",		
+        "include/**.h",
+        "include/**.cpp",		
     }
-
-    includedirs
-	{
-        ""
+	
+	includedirs {
+		"include"
 	}
 
     filter "system:windows"
@@ -34,8 +33,10 @@ project "Networking"
         {   
             "PLATFORM_LINUX"
         }
-
-
+        links {
+            "ssl",
+            "crypto"
+        }
 
     filter "configurations:Debug"
         defines "DEBUG"

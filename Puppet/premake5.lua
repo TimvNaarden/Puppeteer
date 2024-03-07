@@ -18,7 +18,7 @@ workspace "Puppet"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["Networking"] = "%{wks.location}/vendor/Networking"
+IncludeDir["Networking"] = "%{wks.location}/vendor/Networking/include"
 IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 
 filter {}

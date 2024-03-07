@@ -129,6 +129,9 @@ template <typename T> std::enable_if_t<is_map<T>::value || is_umap<T>::value, T>
     } else if ((input[i] == ',' && !inString && left == right) || i == (input.length() - 1)) {
       result.emplace(key, ParseJson<typename T::mapped_type>(input.substr(start, i - start)));
       start = i + 1;
+      while (input[start] == ' ') {
+		start++;
+	  }
     }
   }
   return result;

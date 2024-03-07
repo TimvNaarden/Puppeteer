@@ -21,20 +21,44 @@
 
 namespace Puppeteer {
 	extern Application* app;
-
-	extern std::unordered_map<std::string, std::string> screenAction;
-	extern std::unordered_map<std::string, std::string> pcInfoAction;
-	extern std::unordered_map<std::string, std::string> closeAction;
-	extern std::unordered_map<std::string, std::string> lockInputAction;
-	extern char* screenActionJson;
-	extern char* pcInfoActionJson;
-	extern char* closeActionJson;
-	extern char* lockInputActionJson;
-
-	extern std::string Password;
-	extern std::string Username;
-	extern std::string Domain;
+	extern std::vector<PCInfo> PcInfos;
 	extern std::string Ip;
 
-	extern std::vector<PCInfo> PcInfos;
+	enum class ActionType {
+		Screen,
+		ReqPCInfo,
+		Close,
+		LockInput,
+		Credentials,
+		Keystrokes,
+		Mouse,
+	};
+
+
+
+	struct Credentials_T {
+		char Username[256];
+		char Password[256];
+		char Domain[256];
+
+		Credentials_T() {
+			std::memset(Username, 0, sizeof(Username)); // Clear the memory
+			Username[255] = '\0';
+			std::memset(Password, 0, sizeof(Password)); // Clear the memory
+			Password[255] = '\0';
+			std::memset(Domain, 0, sizeof(Domain)); // Clear the memory
+			Domain[255] = '\0';
+		}
+	};
+
+	struct Action_T {
+		ActionType Type;
+		int dx;
+		int dy;
+		int Flags;
+		int Inputdata;
+	};
+
+	extern Credentials_T Credentials;
+	extern Action_T Action;
 }

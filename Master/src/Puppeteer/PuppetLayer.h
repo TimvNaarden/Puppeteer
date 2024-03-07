@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Socket/Socket.h"
+#include "TCP/TCPClient.h"
 #include "Core/Layer.h"
+#include "Core/Application.h"
 #include "Renderer/Framebuffer.h"
 
 #include "Platform/Windows/DirectX11/DirectX11.h"
@@ -10,10 +11,17 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
+#include "imgui_internal.h"
+#include <imgui.h>
+
 #include <future>
 #include <thread>
 #include <queue>	
 #include <mutex>
+
+#include <Windows.h>
+#include <lz4.h>
+#include "Store/StoreJson.h"
 
 namespace Puppeteer
 {
@@ -35,15 +43,15 @@ namespace Puppeteer
 		std::mutex m_Mutex;
 		
 		char* m_Ip;
-		Socket* m_Socket;
-		std::string m_Credentials;
+		Networking::TCPClient* m_Socket;
+		Credentials_T m_Credentials;
 
 		char* m_Name;
 
 		bool m_Initialized;
 
 		PuppetLayer() = delete;
-		PuppetLayer(char* Ip, std::string Credentials);
+		PuppetLayer(char* Ip, Credentials_T Creds);
 		~PuppetLayer() {
 			m_UpdatingTexture = false;
 			if (m_Texture) glDeleteTextures(1, &m_Texture);
@@ -71,6 +79,12 @@ namespace Puppeteer
 
 		float m_Fps;
 
+		bool KeyPressend(KeyPressedEvent& e);
+		bool KeyReleased(KeyReleasedEvent& e);
 
+		bool MouseMoves(MouseMovedEvent& e);
+		bool MouseScrolled(MouseScrolledEvent& e);
+		bool MouseButtonPressed(MouseButtonPressedEvent& e);
+		bool MouseButtonReleased(MouseButtonReleasedEvent& e);
 	};
 }

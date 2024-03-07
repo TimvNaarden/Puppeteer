@@ -1,10 +1,8 @@
 #include "pch.h"
 
-
 #include "Puppeteer/PuppetLayer.h"
 #include "Puppeteer/ConfigLayer.h"
 #include "Puppeteer/InfoLayer.h"
-
 
 int main(int argc, char** argv)  {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Socket/Socket.h"
+#include "TCP/TCPServer.h"
 #include "Platform/Windows/DirectX11/DirectX11.h"
 #include "Platform/Windows/PCInfo/PCInfo.h"
 #include "Json/ParseJson.h"
@@ -16,18 +16,11 @@ namespace Puppeteer {
 	LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam);
 
-	class PClientSocket : public Socket {
-	public:
-		PClientSocket();
-		~PClientSocket();
-		void HandleServerSocket();
-		void HandleClient(SOCKET clientSocket, SSL** pssl);
-		int AcceptConnection(SOCKET clientsocket, SSL** pssl);
-		int Listen(SOCKET clientSocket, SSL** pssl);
+	int StartPuppetSocket(Networking::TCPServer* m_tcpServer);
+	int AcceptConnection(Networking::TCPServer* m_tcpServer, SOCKET clientsocket, SSL* pssl);
+	void Listen(Networking::TCPServer* m_tcpServer, SOCKET clientsocket, SSL* pssl);
 
-		DirectX11 m_Dx11;
-		PCInfo m_PCInfo;
-		bool m_Block;
-	};
-
+	extern DirectX11 m_Dx11;
+	extern PCInfo m_PCInfo;
+	extern bool m_Block;
 }

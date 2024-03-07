@@ -22,7 +22,7 @@ IncludeDir["GLFW"] = "%{wks.location}/vendor/GLFW/include"
 IncludeDir["Glad"] = "%{wks.location}/vendor/Glad/include"
 IncludeDir["ImGui"] = "%{wks.location}/vendor/ImGui"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
-IncludeDir["Networking"] = "%{wks.location}/vendor/Networking"
+IncludeDir["Networking"] = "%{wks.location}/vendor/Networking/include"
 IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 IncludeDir["ZLib"] = "%{wks.location}/vendor/zlib"
 

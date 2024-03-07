@@ -1,23 +1,10 @@
 #include "pch.h"
 #include "PuppetLayer.h"
 
-#include "Core/Application.h"
-#include "imgui_internal.h"
-
-#include <imgui.h>
-#include <glad/glad.h>
-#include <Windows.h>
-#include <lz4.h>
-#include "Store/StoreJson.h"
-#include <d3d11.h>
-#include <dxgi1_2.h>
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "dxgi.lib")
-
 namespace Puppeteer
 {
-	PuppetLayer::PuppetLayer(char* Ip, std::string Credentials) 
-		: m_Ip(Ip), m_PCInfo(false), m_Fps(0), m_UpdatingTexture(true), m_Credentials(Credentials),
+	PuppetLayer::PuppetLayer(char* Ip, Credentials_T Creds) 
+		: m_Ip(Ip), m_PCInfo(false), m_Fps(0), m_UpdatingTexture(true), m_Credentials(Creds),
 		lastWidth(1920), lastHeight(1080), m_Textures(), m_Texture(1), m_TextureID(2), m_Socket(nullptr), m_Initialized(0),
 		m_Input(0), m_UserInput(0), m_Name("")
 	{
@@ -26,27 +13,33 @@ namespace Puppeteer
 	}
 
 	void PuppetLayer::UpdateTexture() {
-		Socket s;
-		if (s.Create(IPV4, TCP, CLIENT, 54000, this->m_Ip, true)) {
+		Networking::TCPClient s(Networking::IPV4, 54000, m_Ip, 1);
+		char* Sends = (char*)&m_Credentials;
+		s.Send(Sends, sizeof(m_Credentials));
+		char* response;
+		int Result = s.Receive(response);
+		if (Result == -1 || response == "Not Authenticated") {
 			this->m_Initialized = 1;
+			this->m_UpdatingTexture = false;
 			return;
 		}
-		s.SendPacket(this->m_Credentials.data());
-		char* response = s.ReceivePacket();
-		if (response == "Con Closed" || response ==  "Not Authenticated") {
+		Action.Type = ActionType::ReqPCInfo;
+		Sends = (char*)&Action;
+		Result = s.Send(Sends, sizeof(Action));
+		if (Result == -1) {
 			this->m_Initialized = 1;
-			this->m_UpdatingTexture = false;  
-			return; 
+			this->m_UpdatingTexture = false;
+			return;
 		}
-		s.SendPacket(pcInfoActionJson);
-		char* responsePCInfo = s.ReceivePacket();
-		if (responsePCInfo == "Con Closed") {
+		delete[] response;
+		Result = s.Receive(response);
+		if (Result == -1) {
 			this->m_Initialized = 1;
 			this->m_UpdatingTexture = false;
 			return;
 		}
 		int inPCSvec = 0;
-		this->m_PCInfo = PCInfo(ParseJson<std::map<std::string, std::string>>(responsePCInfo));
+		this->m_PCInfo = PCInfo(ParseJson<std::map<std::string, std::string>>(response));
 		for (PCInfo pc : PcInfos) {
 			if (pc.m_Systemname == this->m_PCInfo.m_Systemname) {
 				this->m_PCInfo = pc;
@@ -60,32 +53,46 @@ namespace Puppeteer
 			for (PCInfo pc : PcInfos) {
 				pcs.push_back(pc.toMap());
 			}
-			std::map<std::string, std::string> Save = { {"username", Username}, {"ip", Ip}, {"domain", Domain}, {"pcs", WriteJson(pcs)} };
+			std::map<std::string, std::string> Save = { 
+				{"username", m_Credentials.Username},
+				{"ip", m_Ip}, 
+				{"domain", m_Credentials.Domain},
+				{"pcs", WriteJson(pcs)} 
+			};
 			OverrideJsonTable("Puppeteer", WriteJson(Save));
 		}
 		this->m_Name = this->m_PCInfo.m_Systemname.data();
 		this->m_Socket = &s;
 		this->m_Initialized = 1;
+		delete[] response;
 		while (this->m_UpdatingTexture) {
 			this->m_Mutex.lock();
-			s.SendPacket(screenActionJson);
-			std::string ResponseJson = s.ReceivePacket();
-			if (ResponseJson == "Con Closed") { 
+			Action.Type = ActionType::Screen;
+			char* Sends = (char*)&Action;
+			Result = s.Send(Sends, sizeof(Action));
+			if (Result == -1) {
 				this->m_UpdatingTexture = false;
-				//this->m_Socket->~Socket();
+				this->m_Socket = nullptr;
+				this->m_Mutex.unlock();
+				break;
+			}
+			
+			Result = s.Receive(response);
+			if (Result == -1) { 
+				this->m_UpdatingTexture = false;
 				this->m_Socket = nullptr;
 				this->m_Mutex.unlock();
 				break;
 			}
 			this->m_Mutex.unlock();
 			
-			std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(ResponseJson);
+			std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
 			ImageData Image{ResponseMap["width"], ResponseMap["height"] };
 			this->m_Mutex.lock();
-			char* Screen = s.ReceivePacket();
-			if (Screen == "Con Closed") { 
+			delete[] response;
+			Result = s.Receive(response);
+			if (Result == -1) { 
 				this->m_UpdatingTexture = false; 
-				//this->m_Socket->~Socket(); 
 				this->m_Socket = nullptr; 
 				this->m_Mutex.unlock();
 				break;
@@ -94,9 +101,9 @@ namespace Puppeteer
 			if (ResponseMap["size"] <= 1) continue; // When there are no changes, the size is 1 
 
 			Image.Texture = new char[ResponseMap["size"]];
-			int bDecompressed = LZ4_decompress_safe(Screen, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
+			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
 
-			if(Screen) delete[] Screen;
+			delete[] response;
 
 			try {
 				this->m_Mutex.lock();
@@ -110,11 +117,9 @@ namespace Puppeteer
 			}
 		}
 		this->m_Mutex.lock();
-		//if (m_Socket) this->m_Socket->~Socket();
 		this->m_Initialized = 0;
 		this->m_Mutex.unlock();
 	}
-
 
 	void PuppetLayer::OnAttach()
 	{
@@ -196,8 +201,8 @@ namespace Puppeteer
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.Width, Image.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, Image.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			ImGui::Image((ImTextureID)m_Texture, ImVec2{ (float)Image.Width, (float)Image.Height }, ImVec2{ 0, -1 }, ImVec2{ 1, 0 });
-			m_Textures.pop();
 			delete[] Image.Texture;
+			m_Textures.pop();
 		} else if(m_Texture != 0) {
 			ImGui::Image((ImTextureID)m_Texture, ImVec2{ (float)lastWidth, (float)lastHeight }, ImVec2{ 0, -1 }, ImVec2{ 1, 0 });
 			
@@ -220,7 +225,9 @@ namespace Puppeteer
 			else {
 				m_UserInput = !m_UserInput;
 				m_Mutex.lock();
-				if (m_Socket) m_Socket->SendPacket(lockInputActionJson);
+				Action.Type = ActionType::LockInput;
+				char* Sends = (char*)&Action;
+				if (m_Socket) m_Socket->Send(Sends, sizeof(Action));
 				m_Mutex.unlock();
 			}
 		}
@@ -237,7 +244,9 @@ namespace Puppeteer
 			if (ImGui::IsKeyPressed(ImGuiKey_Tab)) ImGui::SetKeyboardFocusHere(0);
 			else {
 				m_Mutex.lock();
-				if (m_Socket) m_Socket->SendPacket(closeActionJson);
+				Action.Type = ActionType::Close;
+				char* Sends = (char*)&Action;
+				if (m_Socket) m_Socket->Send(Sends, sizeof(Action));
 				m_Mutex.unlock();
 				m_UpdatingTexture = false;
 				app->RemoveLayer(this);
@@ -248,60 +257,106 @@ namespace Puppeteer
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
+	bool PuppetLayer::KeyPressend(KeyPressedEvent& e) {
+		m_Mutex.lock();
+		Action.Type = ActionType::Keystrokes;
+		Action.Inputdata = Key::WindowsCodes[e.GetKeyCode()];
+		Action.Flags = 0x0000;
+		if (m_Socket) {
+			char* Sends = (char*)&Action;
+			m_Socket->Send(Sends, sizeof(Action));
+		}
+		m_Mutex.unlock();
 
-	void PuppetLayer::OnEvent(Event& event)
-	{
-		if (!m_Input || !m_Initialized) return;
-		if (event.GetName() == "KeyPressed") {
-			KeyPressedEvent e = (KeyPressedEvent&)event;
-			//Convert keycode to a code SendInput can understand
+		return false;
+	}
 
-			std::vector<std::map<std::string, int>> keycodes = { {{"Code", Key::WindowsCodes[e.GetKeyCode()]}, {"Flags", 0x0000}}, };
-			std::map<std::string, std::string> sendKeyStrokes = { {"ActionType", "Keystrokes"} , {"Action", WriteJson(keycodes)} };
-			m_Mutex.lock();
-			if (m_Socket) m_Socket->SendPacket(WriteJson(sendKeyStrokes).data());
-			m_Mutex.unlock();
+	bool PuppetLayer::KeyReleased(KeyReleasedEvent& e) {
+		m_Mutex.lock();
+		Action.Type = ActionType::Keystrokes;
+		Action.Inputdata = Key::WindowsCodes[e.GetKeyCode()];
+		Action.Flags = 0x0002;
+		if (m_Socket) {
+			char* Sends = (char*)&Action;
+			m_Socket->Send(Sends, sizeof(Action));
 		}
-		else if (event.GetName() == "KeyReleased") {
-			KeyReleasedEvent e = (KeyReleasedEvent&)event;
-			std::vector<std::map<std::string, int>> keycodes = { {{"Code", Key::WindowsCodes[e.GetKeyCode()]}, {"Flags", 0x002}}, };
-			std::map<std::string, std::string> sendKeyStrokes = { {"ActionType", "Keystrokes"} , {"Action", WriteJson(keycodes)} };
-			m_Mutex.lock();
-			if (m_Socket) m_Socket->SendPacket(WriteJson(sendKeyStrokes).data());
-			m_Mutex.unlock();
+		m_Mutex.unlock();
+
+		return false;
+	}
+
+	bool PuppetLayer::MouseMoves(MouseMovedEvent& e) {
+		m_Mutex.lock();
+		Action.Type = ActionType::Mouse;
+		Action.dx = (e.GetX() - m_ViewportOffset.x) * (65536 / lastWidth);
+		Action.dy = (e.GetY() - m_ViewportOffset.y * 2.2) * (65536 / lastHeight);
+		Action.Inputdata = 0;
+		Action.Flags = 0x0001 | 0x8000;
+		if (m_Socket) {
+			char* Sends = (char*)&Action;
+			m_Socket->Send(Sends, sizeof(Action));
 		}
-		else if (event.GetName() == "MouseMoved") {
-			MouseMovedEvent e = (MouseMovedEvent&)event;
-			std::vector<std::map<std::string, int>> mouse = { { {"dx", (e.GetX() - m_ViewportOffset.x)* (65536 / lastWidth) }, {"dy", (e.GetY() - m_ViewportOffset.y * 2.2) * (65536 / lastHeight) }, {"mouseData",0}, {"dwFlags", 0x0001 | 0x8000}} };
-			std::map<std::string, std::string> sendMouse = { {"ActionType", "Mouse"} , {"Action", WriteJson(mouse)} };
-			m_Mutex.lock();
-			if(m_Socket) m_Socket->SendPacket(WriteJson(sendMouse).data());
-			m_Mutex.unlock();
+		m_Mutex.unlock();
+
+		return false;
+	}	
+
+	bool PuppetLayer::MouseScrolled(MouseScrolledEvent& e) {
+		m_Mutex.lock();
+		Action.Type = ActionType::Mouse;
+		Action.dx = 0;
+		Action.dy = 0;
+		Action.Inputdata = e.GetYOffset() * 100;
+		Action.Flags = 0x0800;
+		if (m_Socket) {
+			char* Sends = (char*)&Action;
+			m_Socket->Send(Sends, sizeof(Action));
 		}
-		else if (event.GetName() == "MouseButtonPressed") {
-			MouseButtonPressedEvent e = (MouseButtonPressedEvent&)event;
-			std::vector < std::map<std::string, int>> mouse = { { {"dx", 0}, {"dy", 0}, {"mouseData",0}, {"dwFlags", Mouse::WindowsMouseDown[e.GetMouseButton()]}} };
-			std::map<std::string, std::string> sendMouse = { {"ActionType", "Mouse"} , {"Action", WriteJson(mouse)} };
-			m_Mutex.lock();
-			if (m_Socket) m_Socket->SendPacket(WriteJson(sendMouse).data());
-			m_Mutex.unlock();
+		m_Mutex.unlock();
+
+		return false;
+	}
+
+	bool PuppetLayer::MouseButtonPressed(MouseButtonPressedEvent& e) {
+		m_Mutex.lock();
+		Action.Type = ActionType::Mouse;
+		Action.dx = 0;
+		Action.dy = 0;
+		Action.Inputdata = 0;
+		Action.Flags = Mouse::WindowsMouseDown[e.GetMouseButton()];
+		if (m_Socket) {
+			char* Sends = (char*)&Action;
+			m_Socket->Send(Sends, sizeof(Action));
 		}
-		else if (event.GetName() == "MouseButtonReleased") {
-			MouseButtonReleasedEvent e = (MouseButtonReleasedEvent&)event;
-			std::vector < std::map<std::string, int>> mouse = { { {"dx", 0}, {"dy", 0}, {"mouseData",0}, {"dwFlags", Mouse::WindowsMouseUp[e.GetMouseButton()]} } };
-			std::map<std::string, std::string> sendMouse = { {"ActionType", "Mouse"} , {"Action", WriteJson(mouse)} };
-			m_Mutex.lock();
-			if (m_Socket) m_Socket->SendPacket(WriteJson(sendMouse).data());
-			m_Mutex.unlock();
+		m_Mutex.unlock();
+
+		return false;
+	}
+
+	bool PuppetLayer::MouseButtonReleased(MouseButtonReleasedEvent& e) {
+		m_Mutex.lock();
+		Action.Type = ActionType::Mouse;
+		Action.dx = 0;
+		Action.dy = 0;
+		Action.Inputdata = 0;
+		Action.Flags = Mouse::WindowsMouseUp[e.GetMouseButton()];
+		if (m_Socket) {
+			char* Sends = (char*)&Action;
+			m_Socket->Send(Sends, sizeof(Action));
 		}
-		else if (event.GetName() == "MouseScrolled") {
-			MouseScrolledEvent e = (MouseScrolledEvent&)event;
-			int offset = (e.GetYOffset() != 0) ? e.GetYOffset() : e.GetXOffset();
-			std::vector < std::map<std::string, int>> mouse = { { {"dx", 0}, {"dy", 0}, {"mouseData", offset * 100}, {"dwFlags", 0x0800} } };
-			std::map<std::string, std::string> sendMouse = { {"ActionType", "Mouse"} , {"Action", WriteJson(mouse)} };
-			m_Mutex.lock();
-			if (m_Socket) m_Socket->SendPacket(WriteJson(sendMouse).data());
-			m_Mutex.unlock();
-		}
+		m_Mutex.unlock();
+
+		return false;
+	}
+
+	void PuppetLayer::OnEvent(Event& event) {
+		if(!m_Input || !m_Initialized) return;
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(PuppetLayer::KeyPressend));
+		dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(PuppetLayer::KeyReleased));
+		dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(PuppetLayer::MouseMoves));
+		dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(PuppetLayer::MouseScrolled));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(PuppetLayer::MouseButtonPressed));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(PuppetLayer::MouseButtonReleased));
 	}
 }

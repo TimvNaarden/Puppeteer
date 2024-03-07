@@ -16,12 +16,13 @@ namespace Puppeteer
 			if (CredentialsVector.size() == 0) {
 				return;
 			}
-			std::map<std::string, std::string> Credentials = CredentialsVector[0];
-			Username = Credentials["username"];
-			Password = Credentials["password"];
-			Domain = Credentials["domain"];
-			Ip = Credentials["ip"];
-			std::vector<std::map<std::string, std::string>> pcs = ParseJson<std::vector<std::map<std::string, std::string>>>(Credentials["pcs"].data());
+			std::map<std::string, std::string> ParsedCredentials = CredentialsVector[0];
+			strcpy(Credentials.Username, ParsedCredentials["username"].c_str());
+			strcpy(Credentials.Password, ParsedCredentials["password"].c_str());
+			strcpy(Credentials.Domain, ParsedCredentials["domain"].c_str());
+
+			Ip = ParsedCredentials["ip"];
+			std::vector<std::map<std::string, std::string>> pcs = ParseJson<std::vector<std::map<std::string, std::string>>>(ParsedCredentials["pcs"].data());
 				for (std::map<std::string, std::string> pc: pcs) {
 				PcInfos.push_back(PCInfo(pc));
 			}
@@ -91,18 +92,21 @@ namespace Puppeteer
 			ImGui::SetKeyboardFocusHere(0);
 			m_First = false;
 		}
+		std::string UserString =  Credentials.Username;
+		std::string PassString =  Credentials.Password;
+		std::string DomainString =  Credentials.Domain;
 
 		ImGui::PushItemWidth(150);
 		ImGui::LabelText("##username_label", "Username: ");
-		if (ImGui::InputText("##username_input", &Username, ImGuiInputTextFlags_EnterReturnsTrue)) {
+		if (ImGui::InputText("##username_input", &UserString, ImGuiInputTextFlags_EnterReturnsTrue)) {
 			ImGui::SetKeyboardFocusHere(0);
 		}
 		ImGui::LabelText("##password_label", "Password: ");
-		if (ImGui::InputText("##password_input", &Password, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue)) {
+		if (ImGui::InputText("##password_input", &PassString, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue)) {
 			ImGui::SetKeyboardFocusHere(0);
 		}
 		ImGui::LabelText("##domain_label", "Domain: ");
-		if (ImGui::InputText("##domain_input", &Domain, ImGuiInputTextFlags_EnterReturnsTrue)) {
+		if (ImGui::InputText("##domain_input", &DomainString, ImGuiInputTextFlags_EnterReturnsTrue)) {
 			ImGui::SetKeyboardFocusHere(0);
 		}
 		ImGui::LabelText("##ip_label", "Ip: ");
@@ -110,17 +114,14 @@ namespace Puppeteer
 			ImGui::SetKeyboardFocusHere(0);
 		}
 
-		
+		std::copy(UserString.begin(), UserString.end(), Credentials.Username);
+		Credentials.Username[UserString.size()] = '\0';
+		std::copy(PassString.begin(), PassString.end(), Credentials.Password);\
+		Credentials.Password[PassString.size()] = '\0';
+		std::copy(DomainString.begin(), DomainString.end(), Credentials.Domain);
+		Credentials.Domain[DomainString.size()] = '\0';
 		if (ImGui::Button("Connect") || (ImGui::IsItemFocused() && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeyPadEnter)))) {
-			std::map<std::string, char*> Credentials = { {"username", Username.data()}, {"password", Password.data()}, {"domain", Domain.data()}};
-			std::string sCredentials = WriteJson(Credentials);
-			std::vector<std::map<std::string, std::string>> pcs;
-			for (PCInfo pc : PcInfos) {
-				pcs.push_back(pc.toMap());
-			}
-			std::map<std::string, std::string> Save = { {"username", Username}, {"ip", Ip}, {"domain", Domain}, {"pcs", WriteJson(pcs)} };
-			OverrideJsonTable("Puppeteer", WriteJson(Save));
-			app->PushLayer(new PuppetLayer(Ip.data(), sCredentials));
+			app->PushLayer(new PuppetLayer(Ip.data(), Credentials));
 		}
 		ImGui::PopItemWidth();
 		ImGui::End();

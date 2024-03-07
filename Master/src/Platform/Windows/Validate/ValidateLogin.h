@@ -6,7 +6,7 @@
 
 namespace Puppeteer {
 	bool authenticateUser(std::string username, std::string password, std::string domain = "");
-	bool userIsAdmin(std::string username);
+	bool userIsAdmin(std::string username, std::string domain);
 }
 
 
