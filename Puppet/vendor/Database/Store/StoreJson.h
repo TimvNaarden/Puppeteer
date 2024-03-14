@@ -10,6 +10,7 @@
 #endif // PLATFORM_LINUX
 
 #ifdef PLATFORM_WINDOWS
+#include <windows.h>
 #include <direct.h>
 #endif // PLATFORM_WINDOWS
 

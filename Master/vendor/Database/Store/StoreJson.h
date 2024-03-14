@@ -1,6 +1,8 @@
 #pragma once
 #include "../Json/ParseJson.h"
 #include "../Json/WriteJson.h"
+
+
 #include <fstream>
 #include <string>
 #include <vector>
@@ -11,6 +13,7 @@
 
 #ifdef PLATFORM_WINDOWS
 #include <direct.h>
+#include "windows.h"
 #endif // PLATFORM_WINDOWS
 
 // @returns 0 if file exists

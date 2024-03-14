@@ -20,6 +20,8 @@
 #include <Platform/Windows/PCInfo/PCInfo.h>
 
 namespace Puppeteer {
+	extern std::string Error;
+	extern bool modalOpen;
 	extern Application* app;
 	extern std::vector<PCInfo> PcInfos;
 	extern std::string Ip;
@@ -33,8 +35,6 @@ namespace Puppeteer {
 		Keystrokes,
 		Mouse,
 	};
-
-
 
 	struct Credentials_T {
 		char Username[256];
@@ -50,6 +50,7 @@ namespace Puppeteer {
 			Domain[255] = '\0';
 		}
 	};
+	extern Credentials_T Credentials;
 
 	struct Action_T {
 		ActionType Type;
@@ -58,7 +59,8 @@ namespace Puppeteer {
 		int Flags;
 		int Inputdata;
 	};
-
-	extern Credentials_T Credentials;
 	extern Action_T Action;
+
+	extern int LayerCount;
+	extern int ActiveLayerIndex;
 }

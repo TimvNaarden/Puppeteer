@@ -1,5 +1,6 @@
 #include "WS2tcpip.h"
 #include "Network/PClientSocket.h"
+#include "fstream"
 
 static const std::string version = "V1.0.1";
 static int port = 54000;
@@ -41,7 +42,7 @@ namespace Puppeteer
 
         closesocket(sock);
         
-        char buf[INET_ADDRSTRLEN];
+        char* buf = new char[INET_ADDRSTRLEN];
         if (inet_ntop(AF_INET, &loopback.sin_addr, buf, INET_ADDRSTRLEN) == 0x0) {
             std::cerr << "Could not inet_ntop\n";
             return "";
@@ -54,13 +55,18 @@ namespace Puppeteer
 	}
 
 	static int RunPuppet() {
-        char* ip = GetLocalIp();
-        if (ip == "") {
-			std::cerr << "Could not get local ip\n";
-			return 1;
-		}
-        std::cout << "Local IP: " << ip << std::endl;
-		Networking::TCPServer client(Networking::IPV4, port, ip, 1);
+        std::fstream logFile{"log.txt", std::ios::app};
+        logFile << "Puppeteer started" << std::endl;
+        //char* ip = GetLocalIp();
+        // if (ip == "") {
+		//	std::cerr << "Could not get local ip\n";
+		//	return 1;
+		//}
+        //std::cout << "Local IP: " << std::string(ip) << std::endl;
+        Networking::TCPServer client(Networking::IPV4, port, "0.0.0.0", 1);
+        logFile << "Socket Created" << std::endl;
+        logFile.close();
+        //delete[] ip;
         StartPuppetSocket(&client);
 		return 0;
 	}

@@ -23,7 +23,7 @@ namespace Puppeteer {
 		public:
 			DirectX11();
 			~DirectX11();
-
+			void Renew();
 			screenCapture getScreen();
 
 		private:

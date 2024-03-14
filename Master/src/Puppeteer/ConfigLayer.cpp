@@ -8,14 +8,20 @@ namespace Puppeteer
 {
 
 	ConfigLayer::ConfigLayer()	{
+		m_Fps = 0;
+		m_Texture = 0;
+		m_TextureID = 0;
+
+		m_LayerNumber = LayerCount;
+		LayerCount++;
+
 		if (CheckJsonTable("Puppeteer")) {
 			CreateJsonTable("Puppeteer");
 		}
 		else {
 			std::vector<std::map<std::string, std::string >> CredentialsVector = ExtractJsonTable<std::map<std::string, std::string>>("Puppeteer");
-			if (CredentialsVector.size() == 0) {
-				return;
-			}
+			if (CredentialsVector.size() == 0) return;
+			
 			std::map<std::string, std::string> ParsedCredentials = CredentialsVector[0];
 			strcpy(Credentials.Username, ParsedCredentials["username"].c_str());
 			strcpy(Credentials.Password, ParsedCredentials["password"].c_str());
@@ -23,14 +29,10 @@ namespace Puppeteer
 
 			Ip = ParsedCredentials["ip"];
 			std::vector<std::map<std::string, std::string>> pcs = ParseJson<std::vector<std::map<std::string, std::string>>>(ParsedCredentials["pcs"].data());
-				for (std::map<std::string, std::string> pc: pcs) {
-				PcInfos.push_back(PCInfo(pc));
-			}
-
+			for (std::map<std::string, std::string> pc: pcs) { PcInfos.push_back(PCInfo(pc)); }
 		}
 	}
-	void ConfigLayer::OnAttach()
-	{
+	void ConfigLayer::OnAttach() {
 		m_Texture = 0;
 		FramebufferSpecification spec;
 		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
@@ -45,13 +47,11 @@ namespace Puppeteer
 
 	}
 
-	void ConfigLayer::OnDetach()
-	{
+	void ConfigLayer::OnDetach() {
 		glDeleteTextures(1, &m_TextureID);
 	}
 
-	void ConfigLayer::OnUpdate(float dt)
-	{
+	void ConfigLayer::OnUpdate(float dt) {
 		m_Fps = 1.0f / dt;
 
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
@@ -74,11 +74,27 @@ namespace Puppeteer
 	}
 	void ConfigLayer::OnImGuiRender()
 	{
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowSize(ImVec2(400, 100), ImGuiCond_Appearing);
+		if (modalOpen) {
+			ImGui::OpenPopup("Error");
+			modalOpen = false;
+		}
+		if (ImGui::BeginPopupModal("Error")) {
+			ImGui::Text(Error.data());
+			if (ImGui::Button("OK")) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
 		// Viewport
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 
 		ImGui::SetNextWindowDockID(2, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Settings");
+
+		if (m_ViewportFocused) ActiveLayerIndex = m_LayerNumber;
 
 		ImVec2 main = ImGui::GetMainViewport()->Pos;
 		ImVec2 pos = ImGui::GetWindowPos();
@@ -88,6 +104,7 @@ namespace Puppeteer
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
+
 		if (m_First) {
 			ImGui::SetKeyboardFocusHere(0);
 			m_First = false;
@@ -116,17 +133,19 @@ namespace Puppeteer
 
 		std::copy(UserString.begin(), UserString.end(), Credentials.Username);
 		Credentials.Username[UserString.size()] = '\0';
-		std::copy(PassString.begin(), PassString.end(), Credentials.Password);\
+		std::copy(PassString.begin(), PassString.end(), Credentials.Password);
 		Credentials.Password[PassString.size()] = '\0';
 		std::copy(DomainString.begin(), DomainString.end(), Credentials.Domain);
 		Credentials.Domain[DomainString.size()] = '\0';
+
 		if (ImGui::Button("Connect") || (ImGui::IsItemFocused() && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeyPadEnter)))) {
 			app->PushLayer(new PuppetLayer(Ip.data(), Credentials));
 		}
+		if (m_ViewportFocused) ActiveLayerIndex = m_LayerNumber;
+		
 		ImGui::PopItemWidth();
 		ImGui::End();
-		ImGui::PopStyleVar();
-				
+		ImGui::PopStyleVar();	
 	}
 
 	void ConfigLayer::OnEvent(Event& event)

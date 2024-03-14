@@ -1,4 +1,5 @@
 #include "PClientSocket.h"
+#include "fstream"
 
 namespace Puppeteer {
 	enum class ActionType {
@@ -33,15 +34,21 @@ namespace Puppeteer {
 	HHOOK g_keyboardHook;
 	HHOOK g_mouseHook;
 
-	LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) { return 1; }
+	LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
+		return 1;
+	}
 
-	LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) { return 1; }
+	LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
+		return 1;
+	}
 
 	DirectX11 m_Dx11;
 	PCInfo m_PCInfo;
 	bool m_Block;
 
 	int StartPuppetSocket(Networking::TCPServer* m_tcpServer) {
+		std::fstream logFile{ "log.txt", std::ios::app };
+		logFile << "Started listening"<< std::endl;
 		m_tcpServer->StartListening(Listen);
 		return 0;
 	}
@@ -91,6 +98,12 @@ namespace Puppeteer {
 			char* packet;
 			if (m_tcpServer->Receive(clientsocket, packet, pssl)) {
 				PUPPET("Client closed");
+				BlockInput(false);
+				if (g_keyboardHook != 0 && g_mouseHook != 0) {
+					UnhookWindowsHookEx(g_keyboardHook);
+					UnhookWindowsHookEx(g_mouseHook);
+					PUPPET("Input unblocked")
+				}
 				return;
 			}
 			PUPPET(packet);
@@ -122,8 +135,9 @@ namespace Puppeteer {
 					{"size", screencp.size},
 					{"csize", csize}
 				};
-				char* screendata = WriteJson(screen).data();
-				if (m_tcpServer->Send(clientsocket, screendata, 0, pssl)) {
+				std::string screendata = WriteJson(screen);
+				char* screendatas = screendata.data();
+				if (m_tcpServer->Send(clientsocket, screendatas, 0, pssl)) {
 					PUPPET("Failed to send screen");
 				}
 				else {
@@ -175,37 +189,42 @@ namespace Puppeteer {
 			else if (Action.Type == ActionType::LockInput) {
 				m_Block = !m_Block;
 				if (m_Block) {
-					BlockInput(TRUE);
+					BlockInput(true);
 					g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
 					if (!g_keyboardHook) {
-						//UnhookWindowsHookEx(g_keyboardHook);
 						PUPPET("Couldn't block keyboard input");
 					}
 
-					// Install mouse hook
 					g_mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
 					if (!g_mouseHook) {
-						//UnhookWindowsHookEx(g_mouseHook);
 						PUPPET("Couldn't block mouse input");
 					}
-					PUPPET("Input " << "blocked");
+					PUPPET("Input blocked");
+					
+					
 				}
 				else {
-					BlockInput(FALSE);
-					UnhookWindowsHookEx(g_keyboardHook);
-					UnhookWindowsHookEx(g_mouseHook);
-					PUPPET("Input " << "unblocked");
+					BlockInput(false);
+					
+					if (g_keyboardHook != 0 && g_mouseHook != 0) {
+						UnhookWindowsHookEx(g_keyboardHook);
+						UnhookWindowsHookEx(g_mouseHook);
+					}
+					PUPPET("Input unblocked");
+					
 				}
 				continue;
 			}
 			else if (Action.Type == ActionType::Close) {
 				PUPPET("Client closed");
-				if (m_Block) {
-					BlockInput(FALSE);
+				BlockInput(false);
+				
+				if (m_Block && g_keyboardHook != 0 && g_mouseHook != 0) {
 					UnhookWindowsHookEx(g_keyboardHook);
 					UnhookWindowsHookEx(g_mouseHook);
-					PUPPET("Input " << "unblocked")
+					PUPPET("Input unblocked")
 				}
+				
 				delete[] packet;
 				return;
 

@@ -21,7 +21,8 @@ static void GetPuppetVersion() {
     FILE* file;
     file = _popen("Puppet.exe -v", "r");
     if (file == NULL) {
-		throw std::runtime_error("Failed to open Puppet.exe");
+		std::cerr << "Failed to open Puppet.exe"<< std::endl;
+        return;
 	}
     char buffer[128];
 	std::string result = "";
@@ -69,37 +70,6 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::stri
     return total_size;
 }
 
-
-static void startup(LPCTSTR lpApplicationName)
-{
-    // additional information
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-
-    // set the size of the structures
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    ZeroMemory(&pi, sizeof(pi));
-
-    // start the program up
-    CreateProcessW(lpApplicationName,   // the path
-        GetCommandLineW(),        // Command line
-        NULL,           // Process handle not inheritable
-        NULL,           // Thread handle not inheritable
-        FALSE,          // Set handle inheritance to FALSE
-        0,              // No creation flags
-        NULL,           // Use parent's environment block
-        NULL,           // Use parent's starting directory 
-        &si,            // Pointer to STARTUPINFO structure
-        &pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
-    );
-    std::cout << "Waiting for process to finish" << std::endl;
-    WaitForSingleObject(pi.hProcess, INFINITE);
-    // Close process and thread handles. 
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
-}
-
 static void UpdatePuppet() {
     CURL* curl;
     CURLcode res;
@@ -114,38 +84,58 @@ static void UpdatePuppet() {
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            throw std::runtime_error("Failed to fetch config file: ");
+            std::cerr << "Failed to fetch config file: " << std::endl;
+            return;
         }
         curl_easy_cleanup(curl);
     }
     else {
-        throw std::runtime_error("Failed to initialize cURL.");
+        std::cerr << "Failed to initialize cURL." << std::endl;
     }
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
 
+    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
+        if (ExecutablePath[i] == '\\') {
+            ExecutablePath[i + 1] = '\0';
+            break;
+        }
+    }
+    if(!ExecutablePath) return;
+    if(_wchdir(ExecutablePath) != 0) return;
     std::map<std::string, std::string> config = ParseJson<std::map<std::string, std::string>>(config_data);
-    config["url"] = "https://github.com/TimvNaarden/Puppeteer/releases/download/Testing/Puppet.zip";
-    //config["version"] = "1.1.0";
     if (CompareVersions(config["version"], version.substr(1, version.size() -1))) {
         std::cout << "New version Found" << std::endl;
-        LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
-        GetModuleFileName(NULL, ExecutablePath, 260);
-
-        for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
-            if (ExecutablePath[i] == '\\') {
-                ExecutablePath[i + 1] = '\0';
-                break;
-            }
-        }
         StringCchCatW(ExecutablePath, MAX_PATH, L"temp.zip");
         LPWSTR URL = new WCHAR[strlen(config["url"].c_str()) + 1];
         MultiByteToWideChar(CP_ACP, 0, config["url"].c_str(), -1, URL, strlen(config["url"].c_str()) + 1);
         HRESULT result = URLDownloadToFileW(NULL, URL, ExecutablePath, 0, NULL);
         system("tar -xf temp.zip && del temp.zip");
     }
-    startup(L"Puppet.exe");
+    system("Puppet.exe");
+}
+
+static void RunOnStartup() {
+    HKEY hKey;
+	LONG lResult;
+	lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey);
+    if (lResult != ERROR_SUCCESS) {
+		std::cerr << "Failed to open registry key" << std::endl;
+		return;
+	}
+	LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+	GetModuleFileName(NULL, ExecutablePath, 260);
+	lResult = RegSetValueExW(hKey, L"Puppeteer", 0, REG_SZ, (LPBYTE)ExecutablePath, wcslen(ExecutablePath) * 2);
+    if (lResult != ERROR_SUCCESS) {
+		std::cerr << "Failed to set registry key" << std::endl;
+		return;
+	}
+	RegCloseKey(hKey);
 }
 
 int main(int argc, char* argv[]) {
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
+    //RunOnStartup();
     GetPuppetVersion();
     UpdatePuppet();
 }

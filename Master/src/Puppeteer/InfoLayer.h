@@ -30,8 +30,7 @@ namespace Puppeteer
 			glm::vec2 m_ViewportOffset = { 0.0f, 0.0f };
 
 			int m_ActiveIndex;
-
-
+			int m_LayerNumber;
 	};
 }
 

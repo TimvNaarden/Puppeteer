@@ -23,7 +23,7 @@ namespace Networking {
 		// Create a socket
 		m_Socket = socket(iProt, SOCK_STREAM, IPPROTO_TCP);
 		if (m_Socket == 0) {
-			throw std::runtime_error("Failed to create socket");
+			std::cerr << "Failed to create socket" << std::endl;
 			return;
 		}
 
@@ -34,13 +34,13 @@ namespace Networking {
 
 		// Bind the socket to the IP and port
 		if (bind(m_Socket, (sockaddr*)&ServerAddress, sizeof(ServerAddress)) == -1) {
-			throw std::runtime_error("Failed to bind socket");
+			std::cerr << "Failed to bind socket" << std::endl;
 			return;
 		}
 
 		// Start Listening
 		if (listen(m_Socket, 1) == -1) {
-			throw std::runtime_error("Failed to listen on socket");
+			std::cerr << "Failed to listen" << std::endl;
 			return;
 		}
 		g_TCPServerCount++;
@@ -71,14 +71,14 @@ namespace Networking {
 		if (m_SSL) {
 			int ResultSize = SSL_write(c_SSL, SizePacket.c_str(), SizePacket.size());
 			if (ResultSize <= 0) {
-				throw std::runtime_error("Failed to send size to server");
+				std::cerr << "Failed to send size to server" << std::endl;
 				return -1;
 			}
 			int TotalSent = 0;
 			while (TotalSent < size) {
 				int ResultData = SSL_write(c_SSL, data + TotalSent, size - TotalSent);
 				if (ResultData <= 0) {
-					throw std::runtime_error("Failed to send data to server");
+					std::cerr << "Failed to send data to server" << std::endl;
 					return -1;
 				}
 				TotalSent += ResultData;
@@ -87,14 +87,14 @@ namespace Networking {
 		else {
 			int ResultSize = send(client, SizePacket.c_str(), SizePacket.size(), 0);
 			if (ResultSize == -1) {
-				throw std::runtime_error("Failed to send size to server");
+				std::cerr << "Failed to send size to server" << std::endl;
 				return -1;
 			}
 			int TotalSent = 0;
 			while (TotalSent < size) {
 				int ResultData = send(client, data + TotalSent, size - TotalSent, 0);
 				if (ResultData == -1) {
-					throw std::runtime_error("Failed to send data to server");
+					std::cerr << "Failed to send data to server" << std::endl;
 					return -1;
 				}
 				TotalSent += ResultData;
@@ -108,7 +108,7 @@ namespace Networking {
 		if (c_SSL) {
 			int ResultSize = SSL_read(c_SSL, SizePacket, 19);
 			if (ResultSize <= 0) {
-				throw std::runtime_error("Failed to receive size from client");
+				std::cerr << "Failed to receive size from client" << std::endl;
 				return -1;
 			}
 			SizePacket[ResultSize] = '\0';
@@ -118,7 +118,7 @@ namespace Networking {
 			while (TotalReceived < std::stoi(SizePacket)) {
 				int ResultData = SSL_read(c_SSL, data + TotalReceived, std::stoi(SizePacket));
 				if (ResultData <= 0) {
-					throw std::runtime_error("Failed to receive data from client");
+					std::cerr << "Failed to receive data from client" << std::endl;
 					return -1;
 				}
 				TotalReceived += ResultData;
@@ -128,7 +128,7 @@ namespace Networking {
 		else {
 			int ResultSize = recv(client, SizePacket, 19, 0);
 			if (ResultSize == -1) {
-				throw std::runtime_error("1Failed to receive size from client");
+				std::cerr << "Failed to receive size from client" << std::endl;
 				return -1;
 			}
 			SizePacket[ResultSize] = '\0';
@@ -137,7 +137,7 @@ namespace Networking {
 			while (TotalReceived < std::stoi(SizePacket)) {
 				int ResultData = recv(client, data + TotalReceived, std::stoi(SizePacket), 0);
 				if (ResultData == -1) {
-					throw std::runtime_error("Failed to receive data from client");
+					std::cerr << "Failed to receive data from client" << std::endl;
 					return -1;
 				}
 				TotalReceived += ResultData;
@@ -147,34 +147,74 @@ namespace Networking {
 
 		return 0;
 	}
+	static bool Encrypt(SSL_CTX* ctx) {
+		EVP_PKEY* pkey;
+		pkey = EVP_PKEY_new();
+
+		RSA* rsa;
+		rsa = RSA_generate_key(2048, RSA_F4, nullptr, nullptr);
+
+		EVP_PKEY_assign_RSA(pkey, rsa);
+
+		// Generate X509 certificate
+		X509* x509;
+		x509 = X509_new();
+		ASN1_INTEGER_set(X509_get_serialNumber(x509), 1);
+		X509_gmtime_adj(X509_get_notBefore(x509), 0);
+		X509_gmtime_adj(X509_get_notAfter(x509), 31536000L);
+		X509_set_pubkey(x509, pkey);
+
+		X509_NAME* name;
+		name = X509_get_subject_name(x509);
+		X509_NAME_add_entry_by_txt(name, "C", MBSTRING_ASC, (unsigned char*)"NL", -1, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "O", MBSTRING_ASC, (unsigned char*)"CPP_Networking", -1, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, (unsigned char*)"www.github.com/timvnaarden/CPP_NETWORK_WRAPPER", -1, -1, 0);
+
+		X509_set_issuer_name(x509, name);
+		X509_sign(x509, pkey, EVP_sha1());
+
+		// Set private key and certificate in SSL_CTX
+		if (SSL_CTX_use_certificate(ctx, x509) != 1 || SSL_CTX_use_PrivateKey(ctx, pkey) != 1) {
+			X509_free(x509);
+			EVP_PKEY_free(pkey);
+			SSL_CTX_free(ctx);
+			return false;
+		}
+
+		// Optional: Verify private key matches the certificate
+		if (SSL_CTX_check_private_key(ctx) != 1) {
+			X509_free(x509);
+			EVP_PKEY_free(pkey);
+			SSL_CTX_free(ctx);
+			return false;
+		}
+
+		// Clean up
+		EVP_PKEY_free(pkey);
+		X509_free(x509);
+
+		return true;
+	}
 
 	void TCPServer::StartListening(void (*callback)(TCPServer*, SOCKET, SSL*)) {
 		while (true) {
 			sockaddr_in ClientAddress;
 			socklen_t ClientAddressSize = sizeof(ClientAddress);
-			SOCKET ClientSocket =
-				accept(m_Socket, (sockaddr*)&ClientAddress, &ClientAddressSize);
+			SOCKET ClientSocket = accept(m_Socket, (sockaddr*)&ClientAddress, &ClientAddressSize);
 			if (ClientSocket <= 0) {
-				throw std::runtime_error("Failed to accept client");
+				//throw std::runtime_error("Failed to accept client");
 				continue;
 			}
 			if (m_SSL) {
 				SSL_CTX* ctx = SSL_CTX_new(SSLv23_server_method());
-				if (SSL_CTX_use_certificate_file(ctx, "Keys/server.crt",
-					SSL_FILETYPE_PEM) <= 0) {
-					throw std::runtime_error("Could not load cert");
-					return;
-				}
-
-				if (SSL_CTX_use_PrivateKey_file(ctx, "Keys/server.key",
-					SSL_FILETYPE_PEM) <= 0) {
-					throw std::runtime_error("Could not load key");
-					return;
+				if (Encrypt(ctx) != true) {
+					std::cerr << "Failed to encrypt" << std::endl;
+					continue;
 				}
 				SSL* ssl = SSL_new(ctx);
 				SSL_set_fd(ssl, ClientSocket);
 				if (SSL_accept(ssl) != 1) {
-					throw std::runtime_error("Failed to accept SSL connection");
+					std::cerr << "Failed to accept SSL connection" << std::endl;
 					continue;
 				}
 				callback(this, ClientSocket, ssl);
@@ -184,4 +224,4 @@ namespace Networking {
 			}
 		}
 	}
-} // namespace Networking
+}

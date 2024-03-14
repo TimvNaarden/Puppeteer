@@ -39,12 +39,14 @@ namespace Puppeteer
 		inline ImGuiLayer* GetImGuiLayer() const { return m_ImGuiLayer; }
 
 		inline static Application& Get() { return *s_Instance; }	
+
+		LayerStack m_LayerStack;
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		Scope<Window> m_Window;
-		LayerStack m_LayerStack;
+		
 		std::queue<Layer*> m_LayersToRemove;
 		std::queue<Layer*> m_LayersToPush;
 		ImGuiLayer* m_ImGuiLayer;

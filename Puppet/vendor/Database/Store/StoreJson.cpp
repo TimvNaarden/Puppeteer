@@ -5,6 +5,7 @@ struct stat buffer;
 int CheckJsonTable(std::string table) { return !(stat(("Data/Json/" + table).c_str(), &buffer) == 0); }
 
 int CreateJsonTable(std::string table) {
+    CreateDirectoryA("Data/Json", NULL);
   if (!CheckJsonTable(table)) {
     return 1;
   }

@@ -71,7 +71,7 @@ namespace Networking {
 		 * @param length Length of the data (default 0)
 		 * @return int 0 if successful, -1 if failed
 		 */
-		int Send(char*& data, int length = 0);
+		int Send(const char* data, int length = 0);
 
 		/**
 		 * @brief Receive data from the server

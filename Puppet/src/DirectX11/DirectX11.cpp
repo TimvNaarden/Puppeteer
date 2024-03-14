@@ -89,6 +89,60 @@ namespace Puppeteer
 		if (m_DeviceContext) m_DeviceContext->Release();
 		if (m_Device) m_Device->Release();
 	}
+
+	void DirectX11::Renew() {
+		if (DirectX11Counter != 0) return;
+		if (m_DeskDupl) m_DeskDupl->Release();
+		if (m_Output1) m_Output1->Release();
+		if (m_Output) m_Output->Release();
+		if (m_Adapter) m_Adapter->Release();
+		if (m_Factory1) m_Factory1->Release();
+		if (m_DeviceContext) m_DeviceContext->Release();
+		if (m_Device) m_Device->Release();
+		
+		m_HR = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)(&m_Factory1));
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to create DXGI Factory");
+			return;
+		}
+
+
+		m_HR = m_Factory1->EnumAdapters(0, &m_Adapter);
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to create adapter");
+			return;
+		}
+
+		m_HR = m_Adapter->EnumOutputs(0, &m_Output);
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to create output");
+			return;
+		}
+
+		m_HR = m_Output->QueryInterface(__uuidof(m_Output1), (void**)(&m_Output1));
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to create output1");
+			return;
+		}
+
+		m_HR = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, &m_DeviceContext);
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to create D3D11 device");
+			return;
+		}
+
+		m_HR = m_Output1->DuplicateOutput(m_Device, &m_DeskDupl);
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to create output1");
+			return;
+		}
+
+		m_HR = m_Output->GetDesc(&m_OutputDesc);
+		if (FAILED(m_HR)) {
+			DIRECTX11("Failed to get output description");
+			return;
+		}
+	}
 	screenCapture DirectX11::getScreen() {
 
 		screenCapture screenCap = {};
@@ -111,6 +165,7 @@ namespace Puppeteer
 		m_HR = m_DeskDupl->AcquireNextFrame(500, &m_FrameInfo, &m_DesktopResource);
 		if (FAILED(m_HR)) {
 			DIRECTX11("Failed to acquire next frame");
+			Renew();
 			return screenCap;
 		}
 

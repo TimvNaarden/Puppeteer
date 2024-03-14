@@ -7,7 +7,7 @@ namespace Networking {
 		STARTWSA();
 		m_Socket = socket(iProt, SOCK_DGRAM, IPPROTO_UDP);
 		if (m_Socket == INVALID_SOCKET) {
-			throw std::runtime_error("Failed to create socket");
+			std::cerr << "Failed to create socket" << std::endl;
 			return;
 		}
 		g_UDPClientCount++;
@@ -26,14 +26,14 @@ namespace Networking {
 
 		int ResultSize = sendto(m_Socket, SizePacket.c_str(), SizePacket.size(), 0, (sockaddr*)&ServerAddress, sizeof(ServerAddress));
 		if (ResultSize == -1) {
-			throw std::runtime_error("Failed to send size packet");
+			std::cerr <<"Failed to send size packet" << std::endl;
 			return 1;
 		}
 		int TotalSent = 0;
 		while (TotalSent < size) {
 			int Sent = sendto(m_Socket, data + TotalSent, size - TotalSent, 0, (sockaddr*)&ServerAddress, sizeof(ServerAddress));
 			if (Sent == -1) {
-				throw std::runtime_error("Failed to send message");
+				std::cerr <<"Failed to send message" << std::endl;
 				return 1;
 			}
 			TotalSent += Sent;
@@ -48,7 +48,7 @@ namespace Networking {
 		char SizePacket[20]; // 64-bit integer can be at most 20 characters long
 		int ResultSize = recvfrom(m_Socket, (RECVFORM_BUFFER)SizePacket, 19, 0, (sockaddr*)ServerAddress, &ServerAddressLength);
 		if (ResultSize == -1) {
-			throw std::runtime_error("Failed to receive data");
+			std::cerr << "Failed to receive data" << std::endl;
 			return 1;
 		}
 		SizePacket[ResultSize] = '\0';
@@ -58,7 +58,7 @@ namespace Networking {
 		while (TotalReceived < std::stoi(SizePacket)) {
 			int Received = recvfrom(m_Socket, (RECVFORM_BUFFER)data + TotalReceived, std::stoi(SizePacket) - TotalReceived, 0, (sockaddr*)&ServerAddress, &ServerAddressLength);
 			if (Received == -1) {
-				throw std::runtime_error("Failed to receive data");
+				std::cerr << "Failed to receive data" << std::endl;
 				return 1;
 			}
 			TotalReceived += Received;
