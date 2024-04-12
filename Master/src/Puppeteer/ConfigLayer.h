@@ -8,13 +8,10 @@
 
 #include "Puppeteer/PuppetLayer.h"
 
-
 #include <glm/glm.hpp>
 #include <glad/glad.h>
-namespace Puppeteer
-{
-	class ConfigLayer : public Layer
-	{
+namespace Puppeteer {
+	class ConfigLayer : public Layer {
 	public:
 		DirectX11 dx11;
 		GLuint m_Texture;

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PuppetLayer.h"
+#include "ConfigLayer.h"
 
 #define RECEIVE(response) {												\
 	if(response) delete[] response;										\
@@ -16,7 +17,7 @@
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		this->m_Socket = nullptr;										\
-		this->m_Mutex.unlock();											\
+		this->m_MutexPtr->unlock();										\
 		return;															\
 	}																	\
 }
@@ -25,19 +26,18 @@
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		return;															\
-}
+	}
 #define SENDS(action)													\
 	if(this->m_Socket->Send((char*)&action, sizeof(action)) == -1) {	\
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		this->m_Socket = nullptr;										\
-		this->m_Mutex.unlock();											\
+		this->m_MutexPtr->unlock();										\
 		return;															\
-}
+	}
 
 
-namespace Puppeteer
-{
+namespace Puppeteer {
 	PuppetLayer::PuppetLayer(char* Ip, Credentials_T Creds) : m_PCInfo(false) {
 		m_Ip = Ip;
 		m_Credentials = Creds;
@@ -66,17 +66,51 @@ namespace Puppeteer
 		glGenTextures(1, &m_Texture);
 	}
 
-	void PuppetLayer::UpdateTexture() {
-		Networking::TCPClient s(Networking::IPV4, 54000, m_Ip, 1);
-		char* response = 0;
+	PuppetLayer::PuppetLayer(Networking::TCPClient s, char* ip, Credentials_T Creds, std::mutex* mut) : m_PCInfo(false) {
+	    m_Ip = ip;
+		m_Credentials = Creds;
 
+		m_Socket = nullptr;
+		m_UpdatingTexture = true;
+
+		m_Name = "";
+
+		m_Fps = 0;
+		m_Input = 0;
+		m_UserInput = 0;
+		m_ImageRatio = 1;
+		m_Initialized = 0;
+		m_keepSocketAlive = 1;
+
+		m_ImageSize = ImVec2(0, 0);
+
+		m_Texture = 0;
+		m_TextureID = 0;
+		m_Textures = std::queue<ImageData>();
+
+		m_LayerNumber = LayerCount;
+		LayerCount++;
+
+		m_MutexPtr = mut;
+
+		std::thread(&PuppetLayer::UpdateTextureS, this, s).detach();
+		
+		glGenTextures(1, &m_Texture);
+	}
+	
+	void PuppetLayer::UpdateTexture() {
+		char* response = 0;
+		Networking::TCPClient s(Networking::IPV4, 54000, m_Ip, 1);
 		SEND(m_Credentials, s);
-		RECEIVE(response);
+		RECEIVE(response, s);
 		if (strcmp(response, "Not Authenticated") == 0) {
 			Error = "Wrong Login Credentials";
 			modalOpen = true;
-			return;
+			s.m_Connected = false;
 		}
+
+
+		if (!s.m_Connected) return;
 
 		Action.Type = ActionType::ReqPCInfo;
 		SEND(Action, s);
@@ -90,38 +124,28 @@ namespace Puppeteer
 				break;
 			}
 		}
-		if(!inPCSvec) PcInfos.push_back(this->m_PCInfo);
-		std::vector<std::map<std::string, std::string>> pcs;
-		for (PCInfo pc : PcInfos) {
-			pcs.push_back(pc.toMap());
-		}
-		std::map<std::string, std::string> Save = {
-			{"username", m_Credentials.Username},
-			{"ip", m_Ip},
-			{"domain", m_Credentials.Domain},
-			{"pcs", WriteJson(pcs)}
-		};
-		OverrideJsonTable("Puppeteer", WriteJson(Save));
-		
+		if (!inPCSvec) PcInfos.push_back(this->m_PCInfo);
+		SAVE();
 
 		this->m_Name = this->m_PCInfo.m_Systemname.data();
 		this->m_Socket = &s;
 		this->m_Initialized = 1;
 
 		while (this->m_UpdatingTexture) {
-			this->m_Mutex.lock();
+			this->m_MutexPtr->lock();
 			Action.Type = ActionType::Screen;
-			if(m_UpdatingTexture) SENDS(Action);
+			if (m_UpdatingTexture) SENDS(Action);
 
 			if (m_UpdatingTexture) RECEIVES(response);
-
+			if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) return;
+			
 
 			std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
 			ImageData Image{ ResponseMap["width"], ResponseMap["height"] };
 
 
 			if (m_UpdatingTexture) RECEIVES(response);
-			this->m_Mutex.unlock();
+			this->m_MutexPtr->unlock();
 
 			if (ResponseMap["size"] <= 1) continue; // When there are no changes, the size is 1 
 
@@ -129,10 +153,10 @@ namespace Puppeteer
 			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
 
 			try {
-				this->m_Mutex.lock();
+				this->m_MutexPtr->lock();
 				if (this->m_UpdatingTexture) this->m_Textures.push(Image);
 				else delete[] Image.Texture;
-				this->m_Mutex.unlock();
+				this->m_MutexPtr->unlock();
 			}
 			catch (std::exception e) {
 				delete[] Image.Texture;
@@ -140,31 +164,66 @@ namespace Puppeteer
 		}
 	}
 
-	void PuppetLayer::UpdateInfo() {
-		m_Mutex.lock();
-		Action.Type = ActionType::ReqPCInfo;
-		SENDS(Action);
+	void PuppetLayer::UpdateTextureS(Networking::TCPClient s) {
+		m_MutexPtr->lock();
 		char* response = 0;
-		RECEIVES(response);
-		std::vector<std::map<std::string, std::string>> pcs;
-		for (PCInfo info : PcInfos) {
-			if (info.m_Systemname == m_PCInfo.m_Systemname) {
-				info = PCInfo(ParseJson<std::map<std::string, std::string>>(response));
-				pcs.push_back(info.toMap());
+
+		Action.Type = ActionType::ReqPCInfo;
+		SEND(Action, s);
+		RECEIVE(response);
+		if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
+			m_MutexPtr->unlock();
+			return;
+		}
+		int inPCSvec = 0;
+		this->m_PCInfo = PCInfo(ParseJson<std::map<std::string, std::string>>(response));
+		for (PCInfo pc : PcInfos) {
+			if (pc.m_Systemname == this->m_PCInfo.m_Systemname) {
+				inPCSvec = 1;
 				break;
 			}
-			pcs.push_back(info.toMap());
 		}
-		std::map<std::string, std::string> Save = {
-			{"username", m_Credentials.Username},
-			{"ip", m_Ip},
-			{"domain", m_Credentials.Domain},
-			{"pcs", WriteJson(pcs)}
-		};
-		OverrideJsonTable("Puppeteer", WriteJson(Save));
-		m_Mutex.unlock();
+		if(!inPCSvec) PcInfos.push_back(this->m_PCInfo);
+		SAVE();
+		
 
+		this->m_Name = this->m_PCInfo.m_Systemname.data();
+		this->m_Socket = &s;
+		this->m_Initialized = 1;
+		m_MutexPtr->unlock();
+		while (this->m_UpdatingTexture) {
+			this->m_MutexPtr->lock();
+			Action.Type = ActionType::Screen;
+			if(m_UpdatingTexture) SENDS(Action);
+
+			RECEIVES(response);
+			if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
+				m_Mutex.unlock();
+				return;
+			}
+
+			std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
+			ImageData Image{ ResponseMap["width"], ResponseMap["height"] };
+
+
+			RECEIVES(response);
+			this->m_MutexPtr->unlock();
+
+			if (ResponseMap["size"] <= 1) continue; // When there are no changes, the size is 1 
+
+			Image.Texture = new char[ResponseMap["size"]];
+			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
+
+			if(m_MutexPtr == reinterpret_cast<void*>(0xdddddddddddddddd) || m_MutexPtr == nullptr) {
+				delete[] Image.Texture;
+				return;
+			}
+			this->m_MutexPtr->lock();
+			if(m_UpdatingTexture) this->m_Textures.push(Image);
+			this->m_MutexPtr->unlock();
+		}
 	}
+
 	void PuppetLayer::CalculateImageSize(ImVec2 screenSize, ImVec2 imageSize) {
 		if (screenSize.x >= imageSize.x && screenSize.y >= imageSize.y) return;
 		else if (screenSize.x < imageSize.x && screenSize.y >= imageSize.y) {
@@ -325,10 +384,10 @@ namespace Puppeteer
 			if (ImGui::IsKeyPressed(ImGuiKey_Tab)) ImGui::SetKeyboardFocusHere(0);
 			else {
 				m_UserInput = !m_UserInput;
-				m_Mutex.lock();
+				m_MutexPtr->lock();
 				Action.Type = ActionType::LockInput;
 				SENDS(Action);
-				m_Mutex.unlock();
+				m_MutexPtr->unlock();
 			}
 		}
 		char* toggleInput = (!m_Input) ? "Enable Input" : "Disable Input";
@@ -349,52 +408,55 @@ namespace Puppeteer
 				)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_Tab)) ImGui::SetKeyboardFocusHere(0);
 			else {
-				m_Mutex.lock();
-				Action.Type = ActionType::Close;
-				SENDS(Action);
+				m_MutexPtr->lock();
 				m_UpdatingTexture = false;
+				if(m_keepSocketAlive != 1) {
+					Action.Type = ActionType::Close;
+					SENDS(Action);
+				}
 				app->RemoveLayer(this);
-				m_Mutex.unlock();
+				m_MutexPtr->unlock();
 			}
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
+
 	void PuppetLayer::KeyPressed(int key) {
-		m_Mutex.lock();
+		m_MutexPtr->lock();
 		Action.Type = ActionType::Keystrokes;
 		Action.Inputdata = key;
 		Action.Flags = 0x0000;
 		if (m_Socket) {
 			SENDS(Action);
 		}
-		m_Mutex.unlock();
+		m_MutexPtr->unlock();
 	}
 
 	void PuppetLayer::KeyReleased(int key) {
-		m_Mutex.lock();
+		m_MutexPtr->lock();
 		Action.Type = ActionType::Keystrokes;
 		Action.Inputdata = key;
 		Action.Flags = 0x0002;
 		if (m_Socket) {
 			SENDS(Action);
 		}
-		m_Mutex.unlock();
+		m_MutexPtr->unlock();
 	}
 
 	void PuppetLayer::MouseButton(int Flags) {
-		m_Mutex.lock();
+		m_MutexPtr->lock();
 		Action.Type = ActionType::Mouse;
 		Action.Inputdata = 0;
 		Action.Flags = Flags;
 		if (m_Socket) {
 			SENDS(Action);
 		}
-		m_Mutex.unlock();
+		m_MutexPtr->unlock();
 	}
 
 	void PuppetLayer::MouseMoves(int x, int y) {
-		m_Mutex.lock();
+		m_MutexPtr->lock();
 		Action.Type = ActionType::Mouse;
 		Action.dx = x * (65536 / m_ImageSize.x);
 		Action.dy = y * (65536 / m_ImageSize.y);
@@ -403,11 +465,11 @@ namespace Puppeteer
 		if (m_Socket) {
 			SENDS(Action);
 		}
-		m_Mutex.unlock();
+		m_MutexPtr->unlock();
 	}
 
 	void PuppetLayer::MouseScrolled(int offset) {
-		m_Mutex.lock();
+		m_MutexPtr->lock();
 		Action.Type = ActionType::Mouse;
 		Action.dx = 0;
 		Action.dy = 0;
@@ -416,11 +478,8 @@ namespace Puppeteer
 		if (m_Socket) {
 			SENDS(Action);
 		}
-		m_Mutex.unlock();
+		m_MutexPtr->unlock();
 	}
 
-	void PuppetLayer::OnEvent(Event& event) {
-
-	}
-
+	void PuppetLayer::OnEvent(Event& event) {}
 }

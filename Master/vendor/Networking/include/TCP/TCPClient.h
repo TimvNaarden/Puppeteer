@@ -61,7 +61,13 @@ namespace Networking {
 		 * @param ip IP to connect to
 		 * @param SSL Enable SSL (default 0)
 		 */
+		TCPClient() {
+			if (g_TCPClientCount == 0) { STARTWSA(); }
+			g_TCPClientCount++;
+		}
 		TCPClient(iProtocol iProt, UINT16 port, char* ip, int SSL = 0);
+		TCPClient(const TCPClient& other);
+		TCPClient(TCPClient&& other) noexcept;
 		~TCPClient();
 
 		/**
@@ -80,7 +86,8 @@ namespace Networking {
 		 * @return int 0 if successful, -1 if failed
 		 */
 		int Receive(char*& data);
-
+		int m_Connected = 0;
+		int moved = 0;
 	private:
 		SOCKET m_Socket = 0;
 		SSL* m_SSL = nullptr;

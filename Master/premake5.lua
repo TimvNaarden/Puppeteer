@@ -25,6 +25,8 @@ IncludeDir["glm"] = "%{wks.location}/vendor/glm"
 IncludeDir["Networking"] = "%{wks.location}/vendor/Networking/include"
 IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 IncludeDir["ZLib"] = "%{wks.location}/vendor/zlib"
+IncludeDir["NativeFileDialogExtended"] = "%{wks.location}/vendor/NativeFileDialogExtended/include"
+IncludeDir["OpenXLSX"] = "%{wks.location}/vendor/OpenXLSX"
 
 filter {}
 -- Create a solution folder inside visual studio
@@ -70,11 +72,13 @@ project "Master"
         "%{IncludeDir.Networking}",
         "%{IncludeDir.Database}",
 		"%{IncludeDir.ZLib}",
+		"%{IncludeDir.NativeFileDialogExtended}",
+		"%{IncludeDir.OpenXLSX}",
     }
 
     libdirs
     {
-        "libs"
+        "libs",
     }
     links
     {
@@ -83,6 +87,9 @@ project "Master"
         "ImGui",
         "Networking",
         "Database",
+		"nfd.lib",
+		"OpenXLSX.lib"
+
     }
 
     filter "system:windows"

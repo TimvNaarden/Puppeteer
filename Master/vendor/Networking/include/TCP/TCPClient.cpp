@@ -57,13 +57,14 @@ namespace Networking {
 	TCPClient::TCPClient(iProtocol iProt, UINT16 port, char* ip, int SSL) {
 		// Intialize Winsock (Windows only)
 		if (g_TCPClientCount == 0) { STARTWSA(); }
-
+		g_TCPClientCount++;
 		// Initialize SSL (If needed)
 		if (SSL && g_TCPSSLClientCount == 0) {
 			SSL_library_init();
 			OpenSSL_add_all_algorithms();
 			SSL_load_error_strings();
 		}
+		g_TCPSSLClientCount++;
 
 		// Create a socket
 		m_Socket = socket(iProt, SOCK_STREAM, IPPROTO_TCP);
@@ -100,26 +101,40 @@ namespace Networking {
 				closesocket(m_Socket);
 				return;
 			}
-			g_TCPSSLClientCount++;
 		}
-		g_TCPClientCount++;
+		m_Connected = 1;
+	}
+	TCPClient::TCPClient(const TCPClient& other) {
+		m_Connected = other.m_Connected;
+
+		if (other.m_Socket != 0) m_Socket = other.m_Socket;
+		
+		if (other.m_SSL != nullptr) m_SSL = other.m_SSL;
+		
+	}
+
+	// Move Constructor
+	TCPClient::TCPClient(TCPClient&& other) noexcept {
+		m_Connected = other.m_Connected;
+
+		m_Socket = other.m_Socket;
+		other.m_Socket = 0;
+
+		m_SSL = other.m_SSL;
+		other.m_SSL = nullptr; 
+
+		other.moved = 1;
 	}
 
 	TCPClient::~TCPClient() {
+		if (!moved) return;
 		// Clean up SSL (If needed)
-		if (m_SSL == nullptr) {
-			SSL_shutdown(m_SSL);
-			SSL_free(m_SSL);
+		if (m_SSL && g_TCPSSLClientCount == 1) {
+			ERR_free_strings();
+			EVP_cleanup();
+			CRYPTO_cleanup_all_ex_data();
 			g_TCPSSLClientCount--;
-
-			if (g_TCPClientCount == 0) {
-				if(m_SSL) SSL_CTX_free(SSL_get_SSL_CTX(m_SSL));
-				ERR_free_strings();
-				EVP_cleanup();
-				CRYPTO_cleanup_all_ex_data();
-			}
 		}
-
 		g_TCPClientCount--;
 
 		// Clean up Winsock (Windows only)

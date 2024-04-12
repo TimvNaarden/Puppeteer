@@ -23,21 +23,14 @@
 #include <lz4.h>
 #include "Store/StoreJson.h"
 
-namespace Puppeteer
-{
-	typedef struct ImageData
-	{
-		int Width, Height;
-		char* Texture;
-	};
-
-	class PuppetLayer : public Layer
-	{
+namespace Puppeteer {
+	class PuppetLayer : public Layer {
 	public:
 		PCInfo m_PCInfo;	
 		GLuint m_Texture;	
 		std::queue<ImageData> m_Textures;
 		std::mutex m_Mutex;
+		std::mutex* m_MutexPtr = &m_Mutex;
 		
 		char* m_Ip;
 		Networking::TCPClient* m_Socket;
@@ -46,17 +39,18 @@ namespace Puppeteer
 		char* m_Name;
 		bool m_Initialized;
 
+		int m_keepSocketAlive = 0;
+
 		PuppetLayer() = delete;
 		PuppetLayer(char* Ip, Credentials_T Creds);
+		PuppetLayer(Networking::TCPClient s, char* ip, Credentials_T Creds, std::mutex* mut);
 		~PuppetLayer() {
-			m_Mutex.lock();
+			m_MutexPtr->lock();
 			m_UpdatingTexture = false;
 			if (m_Texture) glDeleteTextures(1, &m_Texture);
 			if(m_TextureID) glDeleteTextures(1, &m_TextureID);
-			m_Mutex.unlock();
+			m_MutexPtr->unlock();
 		}
-
-		void UpdateInfo();
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate(float dt) override;
@@ -64,6 +58,7 @@ namespace Puppeteer
 		virtual void OnEvent(Event& event) override;
 	private:
 		void UpdateTexture();
+		void UpdateTextureS(Networking::TCPClient s);
 		bool m_UpdatingTexture;
 		bool m_Input;
 		bool m_UserInput;

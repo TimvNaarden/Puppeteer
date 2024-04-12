@@ -47,8 +47,7 @@ namespace Networking {
 	}
 
 	TCPServer::~TCPServer() {
-		if (m_SSL)
-			g_TCPSSLServerCount--;
+		if (m_SSL) g_TCPSSLServerCount--;
 		// Clean up SSL (If needed)
 		if (m_SSL && g_TCPSSLServerCount == 0) {
 			ERR_free_strings();
@@ -196,7 +195,7 @@ namespace Networking {
 		return true;
 	}
 
-	void TCPServer::StartListening(void (*callback)(TCPServer*, SOCKET, SSL*)) {
+ 	void TCPServer::StartListening(void (*callback)(TCPServer*, SOCKET, SSL*)) {
 		std::fstream logFile{ "log.txt", std::ios::app };
 		while (true) {
 			logFile << "Waiting for client" << std::endl;
@@ -217,7 +216,7 @@ namespace Networking {
 				SSL_set_fd(ssl, ClientSocket);
 				if (SSL_accept(ssl) != 1) {
 					std::cerr << "Failed to accept SSL connection" << std::endl;
-					continue;
+							continue;
 				}
 				callback(this, ClientSocket, ssl);
 			}

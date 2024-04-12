@@ -10,7 +10,7 @@ namespace Puppeteer
 	{
 	public:
 		virtual ~Layer() = default;
-
+		char* m_Name;
 		virtual void OnAttach() {};
 		virtual void OnDetach() {};
 		virtual void OnUpdate(float dt) {};

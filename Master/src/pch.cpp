@@ -5,6 +5,8 @@ namespace Puppeteer {
 
 	std::vector<PCInfo> PcInfos = {};
 	std::string Ip = "";
+	
+	std::vector<GridClient_T> GridClients = {};
 
 	std::string Error = "";	
 	bool modalOpen = false;
