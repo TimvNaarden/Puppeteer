@@ -46,6 +46,7 @@ namespace Puppeteer {
 
 		std::queue<std::vector<GridImage>> m_Images;
 		std::vector<GridImage> m_CurrentImages;
+		GLuint* textures;
 
 		ImTextureID blackImage;
 	};

@@ -142,6 +142,11 @@ namespace Puppeteer {
 			return;
 		}
 		if (!m_Images.empty()) {
+			for (GridImage image : m_CurrentImages) {
+				delete[] image.data.Texture;
+				delete[] image.name;
+				delete[] image.ip;
+			}
 			m_CurrentImages.clear();
 			m_CurrentImages = m_Images.front();
 			m_Images.pop();
@@ -163,36 +168,46 @@ namespace Puppeteer {
 				}
 			}
 		}
+		if (textures) {
+			glDeleteTextures(m_CurrentImages.size(), textures);
+			delete[] textures;
+		}
+		textures = new GLuint[m_CurrentImages.size()];
+		glGenTextures(m_CurrentImages.size(), textures);
+		int index = 0;
 		for (GridImage image : m_CurrentImages) {
 			if (m_Clients.count(image.name) == 0) {
 				ImGui::End();
 				ImGui::PopStyleVar();
-				return;
+				continue;
 			}
 			ImGui::BeginGroup();
-			GLuint Texture = 0;
-			glBindTexture(GL_TEXTURE_2D, Texture);
+			
+			glBindTexture(GL_TEXTURE_2D, textures[index]);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.data.Width, image.data.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, image.data.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
-			ImGui::Image((ImTextureID)Texture, CalculateImageSize({(float)image.data.Width, (float)image.data.Height}, { 300, 300 }));
+			
+			ImGui::Image((ImTextureID)textures[index], CalculateImageSize({(float)image.data.Width, (float)image.data.Height}, { 300, 300 }));
 			if (ImGui::IsItemHovered()) {
 				if (ImGui::IsMouseDoubleClicked(0)) {
 					app->PushLayer(new PuppetLayer(m_Clients[image.name], image.ip, Credentials, &m_Mutex));
 				}
 			}
-			glDeleteTextures(1, &Texture);
+			
 			float textx = ImGui::CalcTextSize(image.name).x;
 			ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 			ImGui::TextWrapped(image.name);
 			ImGui::EndGroup();
-
 			WindowWidth -= 310;
 			if (WindowWidth > 320) ImGui::SameLine(0, 10);
 			else {
 				WindowWidth = ImGui::GetWindowWidth();
 				ImGui::SetCursorPosX(10);
 			}
+			index++;
+			
 		}
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
@@ -200,7 +215,7 @@ namespace Puppeteer {
 	void GridLayer::GetImages() {
 		std::vector<GridImage> ForQue = {};
 		for (GridClient_T client :GridClients) {
-			GridImage ForVec = { {}, new char[255], new char[255]};
+			GridImage ForVec = { {0,0, "", 0}, new char[255], new char[255]};
 			if (m_Clients.count(client.Name) == 0) {
 				m_Mutex.lock();
 				Networking::TCPClient s(Networking::IPV4, 54000, client.Ip, 1);

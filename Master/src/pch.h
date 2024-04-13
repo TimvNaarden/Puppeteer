@@ -18,6 +18,7 @@
 
 #include <Core/Application.h>
 #include <Platform/Windows/PCInfo/PCInfo.h>
+#include "glad/glad.h"
 
 namespace Puppeteer {
 	extern std::string Error;
@@ -93,6 +94,7 @@ namespace Puppeteer {
 	typedef struct ImageData {
 		int Width, Height;
 		char* Texture;
+		GLuint TextureID;
 	};
 
 

@@ -102,7 +102,8 @@ namespace Puppeteer {
 
 		if (ImGui::Button("Delete PC Info")) {
 			PcInfos.erase(PcInfos.begin() + m_ActiveIndex);
-			m_ActiveIndex = 0;
+			m_ActiveIndex--;
+			SAVE();
 		}
 		ImGui::SameLine(0, 10);
 
