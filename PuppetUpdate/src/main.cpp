@@ -136,6 +136,17 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
     return ERROR_SUCCESS;
 }
 static void GetPuppetVersion() {
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
+
+    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
+        if (ExecutablePath[i] == '\\') {
+            ExecutablePath[i + 1] = '\0';
+            break;
+        }
+    }
+    if (!ExecutablePath) return;
+    if (_wchdir(ExecutablePath) != 0) return;
     FILE* file;
     file = _popen("Puppet.exe -v", "r");
     if (file == NULL) {
@@ -270,44 +281,48 @@ BOOL ServiceExists(const TCHAR* serviceName) {
 }
 
 int main(int argc, char* argv[]) {
-    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
-    GetModuleFileName(NULL, ExecutablePath, 260);
-    if (!ServiceExists(SERVICE_NAME)) {
-        SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CREATE_SERVICE);
-        if (!scm) {
-            std::cerr << "Failed to open Service Control Manager" << std::endl;
-            return 1;
-        }
 
-        SC_HANDLE service = CreateService(
-            scm,
-            SERVICE_NAME,              // Service name
-            SERVICE_NAME,              // Display name
-            SERVICE_ALL_ACCESS,        // Desired access
-            SERVICE_WIN32_OWN_PROCESS, // Service type
-            SERVICE_AUTO_START,        // Start type
-            SERVICE_ERROR_NORMAL,      // Error control type
-            ExecutablePath,            // Path to service binary
-            NULL,                      // Load order group
-            NULL,                      // Tag identifier
-            NULL,                      // Dependencies
-            NULL,                      // Service start name
-            NULL                       // Password
-        );
+    if (argc > 1 && strcmp(argv[1], "service") == 0) {
+        LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+        GetModuleFileName(NULL, ExecutablePath, 260);
+        if (!ServiceExists(SERVICE_NAME)) {
+            SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CREATE_SERVICE);
+            if (!scm) {
+                std::cerr << "Failed to open Service Control Manager" << std::endl;
+                return 1;
+            }
 
-        if (!service) {
-            std::cerr << "Failed to create service: " << GetLastError() << std::endl;
+            SC_HANDLE service = CreateService(
+                scm,
+                SERVICE_NAME,              // Service name
+                SERVICE_NAME,              // Display name
+                SERVICE_ALL_ACCESS,        // Desired access
+                SERVICE_WIN32_OWN_PROCESS, // Service type
+                SERVICE_AUTO_START,        // Start type
+                SERVICE_ERROR_NORMAL,      // Error control type
+                ExecutablePath,            // Path to service binary
+                NULL,                      // Load order group
+                NULL,                      // Tag identifier
+                NULL,                      // Dependencies
+                NULL,                      // Service start name
+                NULL                       // Password
+            );
+
+            if (!service) {
+                std::cerr << "Failed to create service: " << GetLastError() << std::endl;
+                CloseServiceHandle(scm);
+                return 1;
+            }
+
+            std::cout << "Service installed successfully!" << std::endl;
+
+            CloseServiceHandle(service);
             CloseServiceHandle(scm);
-            return 1;
         }
-
-        std::cout << "Service installed successfully!" << std::endl;
-
-        CloseServiceHandle(service);
-        CloseServiceHandle(scm);
+        else std::cout << "Service already exists!" << std::endl;
+        return 0;
     }
-    else std::cout << "Service already exists!" << std::endl;
-   
+
     SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
     if (scmHandle == NULL) return 1;
 

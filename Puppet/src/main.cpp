@@ -2,7 +2,7 @@
 #include "Network/PClientSocket.h"
 #include "fstream"
 
-static const std::string version = "V1.0.1";
+static const std::string version = "V1.0.0";
 static int port = 54000;
 
 namespace Puppeteer
@@ -82,5 +82,6 @@ int main(int argc, char* argv[]) {
     }
 	return Puppeteer::RunPuppet();
 }
+
 
 

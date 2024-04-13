@@ -56,6 +56,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -95,6 +103,21 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_C51660585BB34AFF8E573C9839203898"
+            {
+            "Name" = "8:Primary Output from PuppetUpdate (Release x64)"
+            "Condition" = "8:"
+            "Object" = "8:_EA075C3027874F1F838C6B088AD50444"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:service"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_1C5437B3_6D4F_4068_8980_FA6305502160"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            "Run64Bit" = "11:TRUE"
+            }
         }
         "DefaultFeature"
         {
@@ -227,7 +250,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Puppeteer Client"
         "ProductCode" = "8:{505144A5-EDA9-48D9-A4A6-95F87E19B7F7}"
-        "PackageCode" = "8:{6BB5164F-F5F3-45B8-A936-7D41EC4A6422}"
+        "PackageCode" = "8:{15651F86-F9C2-4108-85FC-0CB0F6F25DE1}"
         "UpgradeCode" = "8:{5548FA9B-B83F-4B6B-8502-A8EA1F63E0A0}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"

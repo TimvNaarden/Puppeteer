@@ -179,7 +179,7 @@ namespace Puppeteer {
 					VariantClear(&vtProp);
 				}
 				else {
-					m_CPUName = BstrToStdString(vtProp.bstrVal);
+				m_CPUName = BstrToStdString(vtProp.bstrVal);
 					VariantClear(&vtProp);
 				}
 

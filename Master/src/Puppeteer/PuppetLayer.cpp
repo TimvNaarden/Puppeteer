@@ -102,7 +102,7 @@ namespace Puppeteer {
 		char* response = 0;
 		Networking::TCPClient s(Networking::IPV4, 54000, m_Ip, 1);
 		if (!s.m_Connected) {
-			Error = "Target machine has reached max connections";
+			Error = "Cannot reach target machine";
 			modalOpen = true;
 			return;
 		}
