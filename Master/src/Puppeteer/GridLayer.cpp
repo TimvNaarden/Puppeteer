@@ -154,7 +154,7 @@ namespace Puppeteer {
 		for (GridClient_T client : GridClients) {
 			if (m_Clients.count(client.Name) == 0) {
 				ImGui::BeginGroup();
-				ImGui::Image(blackImage, ImVec2(300, 170));
+				ImGui::Image((ImTextureID)CreateBlackTexture(300, 170), ImVec2(300, 170));
 				float textx = ImGui::CalcTextSize(client.Name).x;
 				ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 				ImGui::TextWrapped(client.Name);
