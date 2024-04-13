@@ -1,5 +1,6 @@
 #include "TCPServer.h"
 #include "fstream"
+#include <thread>
 namespace Networking {
 	int g_TCPServerCount = 0;
 	int g_TCPSSLServerCount = 0;
@@ -218,10 +219,10 @@ namespace Networking {
 					std::cerr << "Failed to accept SSL connection" << std::endl;
 							continue;
 				}
-				callback(this, ClientSocket, ssl);
+				std::thread(callback, this, ClientSocket, ssl).detach();
 			}
 			else {
-				callback(this, ClientSocket, NULL);
+				std::thread(callback, this, ClientSocket, nullptr).detach();
 			}
 		}
 	}

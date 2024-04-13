@@ -24,6 +24,8 @@ IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 filter {}
 -- Create a solution folder inside visual studio
 group "Dependencies"
+    include "vendor/Networking"
+    include "vendor/Database"
 group "" -- End the solution folder here
 
 

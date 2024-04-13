@@ -126,7 +126,7 @@ namespace Puppeteer {
 				ImGui::BeginGroup();
 				ImGui::Image(blackImage, ImVec2(300, 170));
 				float textx = ImGui::CalcTextSize(client.Name).x;
-				ImGui::SetCursorPosX((300 - textx) / 2);
+				ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 				ImGui::TextWrapped(client.Name);
 				ImGui::EndGroup();
 				
@@ -151,7 +151,7 @@ namespace Puppeteer {
 				ImGui::BeginGroup();
 				ImGui::Image(blackImage, ImVec2(300, 170));
 				float textx = ImGui::CalcTextSize(client.Name).x;
-				ImGui::SetCursorPosX((300 - textx) / 2);
+				ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 				ImGui::TextWrapped(client.Name);
 				ImGui::EndGroup();
 
@@ -174,7 +174,7 @@ namespace Puppeteer {
 			glBindTexture(GL_TEXTURE_2D, Texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.data.Width, image.data.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, image.data.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
-			ImGui::Image((ImTextureID)Texture, CalculateImageSize({(float)image.data.Width, (float)image.data.Height}, { 300, 300 }), ImVec2{ 0, -1 }, ImVec2{ 1, 0 });
+			ImGui::Image((ImTextureID)Texture, CalculateImageSize({(float)image.data.Width, (float)image.data.Height}, { 300, 300 }));
 			if (ImGui::IsItemHovered()) {
 				if (ImGui::IsMouseDoubleClicked(0)) {
 					app->PushLayer(new PuppetLayer(m_Clients[image.name], image.ip, Credentials, &m_Mutex));
@@ -182,7 +182,7 @@ namespace Puppeteer {
 			}
 			glDeleteTextures(1, &Texture);
 			float textx = ImGui::CalcTextSize(image.name).x;
-			ImGui::SetCursorPosX((300 - textx) / 2);
+			ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 			ImGui::TextWrapped(image.name);
 			ImGui::EndGroup();
 
@@ -199,7 +199,7 @@ namespace Puppeteer {
 
 	void GridLayer::GetImages() {
 		std::vector<GridImage> ForQue = {};
-		for (GridClient_T client : GridClients) {
+		for (GridClient_T client :GridClients) {
 			GridImage ForVec = { {}, new char[255], new char[255]};
 			if (m_Clients.count(client.Name) == 0) {
 				m_Mutex.lock();
@@ -207,38 +207,38 @@ namespace Puppeteer {
 				if (s.m_Connected == 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (s.Send((char*)&Credentials, sizeof(Credentials)) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				char* response = 0;
 				if (s.Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (strcmp(response, "Not Authenticated") == 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				GridAction.Type = ActionType::ReqPCInfo;
 				if (s.Send((char*)&GridAction, sizeof(GridAction)) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (s.Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				int inPCSvec = 0;
 				PCInfo info = PCInfo(ParseJson<std::map<std::string, std::string>>(response));
@@ -255,12 +255,12 @@ namespace Puppeteer {
 				if (s.Send((char*)&GridAction, sizeof(GridAction)) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}	
 				if (s.Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 
 				std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
@@ -269,7 +269,7 @@ namespace Puppeteer {
 				if (s.Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				m_Mutex.unlock();
 				LZ4_decompress_safe(response, ForVec.data.Texture, ResponseMap["csize"], ResponseMap["size"]);
@@ -283,19 +283,20 @@ namespace Puppeteer {
 				char* response = 0;
 				Networking::TCPClient *s = &m_Clients[client.Name];
 				GridAction.Type = ActionType::ReqPCInfo;
+				m_Mutex.lock();
 				if (s->Send((char*)&GridAction, sizeof(GridAction)) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (s->Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				int inPCSvec = 0;
 				PCInfo info = PCInfo(ParseJson<std::map<std::string, std::string>>(response));
@@ -309,21 +310,20 @@ namespace Puppeteer {
 				SAVE();
 
 				GridAction.Type = ActionType::Screen;
-				m_Mutex.lock();
 				if (s->Send((char*)&GridAction, sizeof(GridAction)) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (s->Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
 				ForVec.data = { ResponseMap["width"], ResponseMap["height"], new char[ResponseMap["size"]] };
@@ -331,7 +331,7 @@ namespace Puppeteer {
 				if (s->Receive(response) != 0) {
 					m_Clients.erase(client.Name);
 					m_Mutex.unlock();
-					return;
+					continue;
 				}
 				m_Mutex.unlock();
 				LZ4_decompress_safe(response, ForVec.data.Texture, ResponseMap["csize"], ResponseMap["size"]);

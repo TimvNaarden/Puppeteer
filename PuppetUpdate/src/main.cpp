@@ -17,6 +17,124 @@ struct Version {
 
 static std::string version = "V0.0.0";
 
+SERVICE_STATUS        g_ServiceStatus = { 0 };
+SERVICE_STATUS_HANDLE g_StatusHandle = NULL;
+HANDLE                g_ServiceStopEvent = INVALID_HANDLE_VALUE;
+
+VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv);
+VOID WINAPI ServiceCtrlHandler(DWORD);
+DWORD WINAPI ServiceWorkerThread(LPVOID lpParam);
+
+#define SERVICE_NAME  L"Puppet Service"
+
+
+void UpdatePuppet();
+void GetPuppetVersion();
+static Version ParseVersion(std::string version);
+
+VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
+    DWORD Status = E_FAIL;
+
+    g_StatusHandle = RegisterServiceCtrlHandler(SERVICE_NAME, ServiceCtrlHandler);
+
+    if (g_StatusHandle == NULL) return;
+
+    ZeroMemory(&g_ServiceStatus, sizeof(g_ServiceStatus));
+    g_ServiceStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+    g_ServiceStatus.dwControlsAccepted = 0;
+    g_ServiceStatus.dwCurrentState = SERVICE_START_PENDING;
+    g_ServiceStatus.dwWin32ExitCode = 0;
+    g_ServiceStatus.dwServiceSpecificExitCode = 0;
+    g_ServiceStatus.dwCheckPoint = 0;
+
+    if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE) OutputDebugString(L"Puppet Service: ServiceMain: SetServiceStatus returned error");
+    
+     // Create a service stop event to wait on later
+    g_ServiceStopEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (g_ServiceStopEvent == NULL)
+    {
+        // Error creating event
+        // Tell service controller we are stopped and exit
+        g_ServiceStatus.dwControlsAccepted = 0;
+        g_ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+        g_ServiceStatus.dwWin32ExitCode = GetLastError();
+        g_ServiceStatus.dwCheckPoint = 1;
+
+        if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE) OutputDebugString(L"Puppet Service: ServiceMain: SetServiceStatus returned error");
+
+        return;
+    }
+
+    // Tell the service controller we are started
+    g_ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+    g_ServiceStatus.dwCurrentState = SERVICE_RUNNING;
+    g_ServiceStatus.dwWin32ExitCode = 0;
+    g_ServiceStatus.dwCheckPoint = 0;
+
+    if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE)  OutputDebugString(L"Puppet Service: ServiceMain: SetServiceStatus returned error");
+
+    HANDLE hThread = CreateThread(NULL, 0, ServiceWorkerThread, NULL, 0, NULL);
+
+    if (hThread == NULL) {
+		// Error creating worker thread
+		// Tell service controller we are stopped and exit
+		g_ServiceStatus.dwControlsAccepted = 0;
+		g_ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+		g_ServiceStatus.dwWin32ExitCode = GetLastError();
+		g_ServiceStatus.dwCheckPoint = 1;
+
+		if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE) OutputDebugString(L"Puppet Service: ServiceMain: SetServiceStatus returned error");
+
+		return;
+	}
+    WaitForSingleObject(hThread, INFINITE);
+
+    CloseHandle(g_ServiceStopEvent);
+
+    // Tell the service controller we are stopped
+    g_ServiceStatus.dwControlsAccepted = 0;
+    g_ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+    g_ServiceStatus.dwWin32ExitCode = 0;
+    g_ServiceStatus.dwCheckPoint = 3;
+
+    if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE) OutputDebugString(L"Puppet Service: ServiceMain: SetServiceStatus returned error");
+  
+    return;
+}
+
+// ServiceControlHandler function
+VOID WINAPI ServiceCtrlHandler(DWORD CtrlCode) {
+    switch (CtrlCode) {
+    case SERVICE_CONTROL_STOP:
+
+        if (g_ServiceStatus.dwCurrentState != SERVICE_RUNNING) break;
+
+        g_ServiceStatus.dwControlsAccepted = 0;
+        g_ServiceStatus.dwCurrentState = SERVICE_STOP_PENDING;
+        g_ServiceStatus.dwWin32ExitCode = 0;
+        g_ServiceStatus.dwCheckPoint = 4;
+
+        if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE)
+        {
+            OutputDebugString(L"Puppet Service: ServiceCtrlHandler: SetServiceStatus returned error");
+        }
+        // This will signal the worker thread to start shutting down
+        SetEvent(g_ServiceStopEvent);
+        break;
+    default:
+        break;
+    }
+}
+
+DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
+    while (WaitForSingleObject(g_ServiceStopEvent, 0) != WAIT_OBJECT_0)  {
+        ShowWindow(GetConsoleWindow(), SW_HIDE);
+        GetPuppetVersion();
+        UpdatePuppet();
+    }
+
+    return ERROR_SUCCESS;
+}
 static void GetPuppetVersion() {
     FILE* file;
     file = _popen("Puppet.exe -v", "r");
@@ -91,6 +209,7 @@ static void UpdatePuppet() {
     }
     else {
         std::cerr << "Failed to initialize cURL." << std::endl;
+        return;
     }
     LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
     GetModuleFileName(NULL, ExecutablePath, 260);
@@ -115,7 +234,7 @@ static void UpdatePuppet() {
     system("Puppet.exe");
 }
 
-static void RunOnStartup() {
+/* static void RunOnStartup() {
     HKEY hKey;
 	LONG lResult;
 	lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey);
@@ -131,11 +250,80 @@ static void RunOnStartup() {
 		return;
 	}
 	RegCloseKey(hKey);
+} */
+BOOL ServiceExists(const TCHAR* serviceName) {
+    SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
+    if (!scm) {
+        std::cerr << "Failed to open Service Control Manager" << std::endl;
+        return FALSE;
+    }
+
+    SC_HANDLE service = OpenService(scm, serviceName, SERVICE_QUERY_CONFIG);
+    if (!service) {
+        CloseServiceHandle(scm);
+        return FALSE;
+    }
+
+    CloseServiceHandle(service);
+    CloseServiceHandle(scm);
+    return TRUE;
 }
 
 int main(int argc, char* argv[]) {
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
+    if (!ServiceExists(SERVICE_NAME)) {
+        SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CREATE_SERVICE);
+        if (!scm) {
+            std::cerr << "Failed to open Service Control Manager" << std::endl;
+            return 1;
+        }
+
+        SC_HANDLE service = CreateService(
+            scm,
+            SERVICE_NAME,              // Service name
+            SERVICE_NAME,              // Display name
+            SERVICE_ALL_ACCESS,        // Desired access
+            SERVICE_WIN32_OWN_PROCESS, // Service type
+            SERVICE_AUTO_START,        // Start type
+            SERVICE_ERROR_NORMAL,      // Error control type
+            ExecutablePath,            // Path to service binary
+            NULL,                      // Load order group
+            NULL,                      // Tag identifier
+            NULL,                      // Dependencies
+            NULL,                      // Service start name
+            NULL                       // Password
+        );
+
+        if (!service) {
+            std::cerr << "Failed to create service: " << GetLastError() << std::endl;
+            CloseServiceHandle(scm);
+            return 1;
+        }
+
+        std::cout << "Service installed successfully!" << std::endl;
+
+        CloseServiceHandle(service);
+        CloseServiceHandle(scm);
+    }
+    else std::cout << "Service already exists!" << std::endl;
+   
+    SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
+    if (scmHandle == NULL) return 1;
+
+    SERVICE_TABLE_ENTRY serviceTable[] = {
+        { SERVICE_NAME, ServiceMain },
+        { NULL, NULL }
+    };
+
+    if (!StartServiceCtrlDispatcher(serviceTable))  std::cout << GetLastError() << std::endl;;
+    CloseServiceHandle(scmHandle);
+    
+    
     ShowWindow(GetConsoleWindow(), SW_HIDE);
-    //RunOnStartup();
     GetPuppetVersion();
-    UpdatePuppet();
+    UpdatePuppet();   
+    return 0;
 }
+ //sc create PuppetService binPath= "D:\OneDrive\Coding\C++\Puppeteer\PuppetUpdate\bin\Debug-windows-x86_64\PuppetUpdate\PuppetUpdate.exe" 
+

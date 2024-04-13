@@ -101,6 +101,11 @@ namespace Puppeteer {
 	void PuppetLayer::UpdateTexture() {
 		char* response = 0;
 		Networking::TCPClient s(Networking::IPV4, 54000, m_Ip, 1);
+		if (!s.m_Connected) {
+			Error = "Target machine has reached max connections";
+			modalOpen = true;
+			return;
+		}
 		SEND(m_Credentials, s);
 		RECEIVE(response, s);
 		if (strcmp(response, "Not Authenticated") == 0) {
@@ -152,15 +157,13 @@ namespace Puppeteer {
 			Image.Texture = new char[ResponseMap["size"]];
 			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
 
-			try {
-				this->m_MutexPtr->lock();
-				if (this->m_UpdatingTexture) this->m_Textures.push(Image);
-				else delete[] Image.Texture;
-				this->m_MutexPtr->unlock();
-			}
-			catch (std::exception e) {
+			if (m_MutexPtr == reinterpret_cast<void*>(0xdddddddddddddddd) || m_MutexPtr == nullptr) {
 				delete[] Image.Texture;
+				return;
 			}
+			this->m_MutexPtr->lock();
+			if (m_UpdatingTexture) this->m_Textures.push(Image);
+			this->m_MutexPtr->unlock();
 		}
 	}
 
@@ -198,7 +201,7 @@ namespace Puppeteer {
 
 			RECEIVES(response);
 			if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
-				m_Mutex.unlock();
+				this->m_MutexPtr->unlock();
 				return;
 			}
 
@@ -281,11 +284,12 @@ namespace Puppeteer {
 	void PuppetLayer::OnImGuiRender() {
 		if (!m_Initialized) return;
 		if (!m_Socket) { app->RemoveLayer(this); return; }
-
+		if (m_Name == "") return;
 
 		// Viewport
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 		ImGui::SetNextWindowDockID(2, ImGuiCond_FirstUseEver);
+
 		ImGui::Begin(m_Name);
 
 		m_ViewportFocused = ImGui::IsWindowFocused();
@@ -316,7 +320,7 @@ namespace Puppeteer {
 			glBindTexture(GL_TEXTURE_2D, m_Texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.Width, Image.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, Image.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
-			ImGui::Image((ImTextureID)m_Texture, m_ImageSize, ImVec2{ 0, -1 }, ImVec2{ 1, 0 });
+			ImGui::Image((ImTextureID)m_Texture, m_ImageSize);
 			if (ImGui::IsItemHovered() && m_Input) {
 				ImVec2 mousePositionAbsolute = ImGui::GetMousePos();
 				ImVec2 screenPositionAbsolute = ImGui::GetItemRectMin();
@@ -341,7 +345,7 @@ namespace Puppeteer {
 			m_Textures.pop();
 		}
 		else if (m_Texture != 0) {
-			ImGui::Image((ImTextureID)m_Texture, m_ImageSize, ImVec2{ 0, -1 }, ImVec2{ 1, 0 });
+			ImGui::Image((ImTextureID)m_Texture, m_ImageSize);
 			if (ImGui::IsItemHovered() && m_Input) {
 				ImVec2 mousePositionAbsolute = ImGui::GetMousePos();
 				ImVec2 screenPositionAbsolute = ImGui::GetItemRectMin();
@@ -461,7 +465,7 @@ namespace Puppeteer {
 		Action.dx = x * (65536 / m_ImageSize.x);
 		Action.dy = y * (65536 / m_ImageSize.y);
 		Action.Inputdata = 0;
-		Action.Flags = 0x0001 | 0x8000;
+		Action.Flags = 0x0001 | 0x4000 | 0x8000;
 		if (m_Socket) {
 			SENDS(Action);
 		}

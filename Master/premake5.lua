@@ -24,7 +24,6 @@ IncludeDir["ImGui"] = "%{wks.location}/vendor/ImGui"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
 IncludeDir["Networking"] = "%{wks.location}/vendor/Networking/include"
 IncludeDir["Database"] = "%{wks.location}/vendor/Database"
-IncludeDir["ZLib"] = "%{wks.location}/vendor/zlib"
 IncludeDir["NativeFileDialogExtended"] = "%{wks.location}/vendor/NativeFileDialogExtended/include"
 IncludeDir["OpenXLSX"] = "%{wks.location}/vendor/OpenXLSX"
 
@@ -71,7 +70,6 @@ project "Master"
         "%{IncludeDir.glm}",
         "%{IncludeDir.Networking}",
         "%{IncludeDir.Database}",
-		"%{IncludeDir.ZLib}",
 		"%{IncludeDir.NativeFileDialogExtended}",
 		"%{IncludeDir.OpenXLSX}",
     }
