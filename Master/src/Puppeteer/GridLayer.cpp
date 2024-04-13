@@ -215,7 +215,7 @@ namespace Puppeteer {
 	void GridLayer::GetImages() {
 		std::vector<GridImage> ForQue = {};
 		for (GridClient_T client :GridClients) {
-			GridImage ForVec = { {0,0, "", 0}, new char[255], new char[255]};
+			GridImage ForVec = { {0,0, ""}, new char[255], new char[255]};
 			if (m_Clients.count(client.Name) == 0) {
 				m_Mutex.lock();
 				Networking::TCPClient s(Networking::IPV4, 54000, client.Ip, 1);

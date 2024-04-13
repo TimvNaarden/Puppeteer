@@ -94,7 +94,6 @@ namespace Puppeteer {
 	typedef struct ImageData {
 		int Width, Height;
 		char* Texture;
-		GLuint TextureID;
 	};
 
 
