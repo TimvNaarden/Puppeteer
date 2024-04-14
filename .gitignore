@@ -19,6 +19,10 @@ Debug/*
 */*.log
 **/*.log
 
+*.txt
+*/*.txt
+**/*.txt
+
 *.json
 */*.json
 **/*.json
