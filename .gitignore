@@ -7,6 +7,22 @@ bin-int/*
 **/bin/*
 **/bin-int/*
 
+Release/*
+*/Release/*
+**/Release/*
+
+Debug/*
+*/Debug/*
+**/Debug/*
+
+*.log
+*/*.log
+**/*.log
+
+*.json
+*/*.json
+**/*.json
+
 .vs/*
 */.vs/*
 **/.vs/*
