@@ -1824,9 +1824,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:MasterInstall"
+        "ProductName" = "8:Puppeteer Master"
         "ProductCode" = "8:{FC50B174-6597-4B08-9270-E676AC304FBC}"
-        "PackageCode" = "8:{C110AE79-6FF8-4001-8851-843D5C851E43}"
+        "PackageCode" = "8:{AE160A58-B6A3-4D59-BC00-46F161B019CD}"
         "UpgradeCode" = "8:{1FD16C0B-D3BE-4857-9E2D-0AB64B1952C9}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"

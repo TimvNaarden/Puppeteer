@@ -40,6 +40,8 @@ namespace Puppeteer {
 		m_Lastrun = std::time(0);
 
 		m_BlackTexture = CreateBlackTexture(300, 170);
+
+		textures = nullptr;
 	}
 
 	void GridLayer::OnAttach() {
@@ -152,8 +154,10 @@ namespace Puppeteer {
 				delete[] image.ip;
 			}
 			m_CurrentImages.clear();
+			m_Mutex.lock();
 			m_CurrentImages = m_Images.front();
 			m_Images.pop();
+			m_Mutex.unlock();
 		}
 		for (GridClient_T client : GridClients) {
 			if (m_Clients.count(client.Name) == 0) {
@@ -182,9 +186,11 @@ namespace Puppeteer {
 			return;
 		}
 		if (textures) {
+			m_Mutex.lock();
 			glDeleteTextures(m_CurrentImages.size(), textures);
 			delete[] textures;
 			textures = nullptr;
+			m_Mutex.unlock();
 		}
 		textures = new GLuint[m_CurrentImages.size()];
 		glGenTextures(m_CurrentImages.size(), textures);
@@ -368,6 +374,8 @@ namespace Puppeteer {
 				ForQue.emplace_back(ForVec);
 			}
 		} 
+		m_Mutex.lock();
 		m_Images.emplace(ForQue);
+		m_Mutex.unlock();
 	}
 }

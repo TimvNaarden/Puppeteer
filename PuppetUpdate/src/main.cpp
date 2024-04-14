@@ -1,13 +1,13 @@
-#include <iostream>
-#include <string>
-#include <map>
 #include <curl/curl.h>
+#include <iostream>
 #include <Json/ParseJson.h>
+#include <map>
+#include <string>
 
-#include <Windows.h>
-#include <urlmon.h>
-#include <strsafe.h>
 #include <fstream>
+#include <strsafe.h>
+#include <urlmon.h>
+#include <Windows.h>
 #pragma comment(lib, "urlmon.lib")
 
 #include <WtsApi32.h>
@@ -80,6 +80,7 @@ VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
 
     GetPuppetVersion();
     UpdatePuppet();
+    while (WTSGetActiveConsoleSessionId() == 0 || WTSGetActiveConsoleSessionId() == 0xFFFFFFFF) continue;
     HANDLE hThread = CreateThread(NULL, 0, ServiceWorkerThread, NULL, 0, NULL);
 
     if (hThread == NULL) {
@@ -137,12 +138,14 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
     // Get the current session ID
     DWORD currentSessionId = WTSGetActiveConsoleSessionId();
     logFile << "Session ID " << currentSessionId << std::endl;
+    int first = 1;
 
     while (true) {
         // Wait for a session change notification
         DWORD newSessionId = WTSGetActiveConsoleSessionId();
 
-        if (newSessionId != currentSessionId && newSessionId != 0xFFFFFFFF) {
+        if ((newSessionId != currentSessionId && newSessionId != 0xFFFFFFFF) || first) {
+            first = 0;
             logFile << "Session ID " << newSessionId << " changed." << std::endl;
             currentSessionId = newSessionId;
             // Start an exe in the new session
@@ -152,14 +155,16 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
                 logFile << GetLastError() << std::endl;
                 logFile << "Failed to get user token." << std::endl;
                 logFile.close();
-                return 1;
+                currentSessionId = 0;
+                continue;
             }
             HANDLE primaryToken;
             if (!DuplicateTokenEx(userToken, TOKEN_ALL_ACCESS, NULL, SecurityImpersonation, TokenPrimary, &primaryToken)) {
                 CloseHandle(userToken);
                 logFile << "Failed to duplicate token." << std::endl;
                 logFile.close();
-                return 1;
+                currentSessionId = 0;
+                continue;
             }
 
             CloseHandle(userToken);
@@ -170,7 +175,8 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
                 CloseHandle(primaryToken);
                 logFile << "Failed to get token elevation type." << std::endl;
                 logFile.close();
-                return 1;
+                currentSessionId = 0;
+                continue;
             }
             if (elevationType == TokenElevationTypeLimited) {
                 // Token is limited, need to elevate
@@ -179,7 +185,8 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
                     CloseHandle(primaryToken);
                     logFile << "Failed to get linked token." << std::endl;
                     logFile.close();
-                    return 1;
+                    currentSessionId = 0;
+                    continue;
                 }
 
                 CloseHandle(primaryToken);
@@ -197,7 +204,7 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
                 NULL,       // Process attributes
                 NULL,       // Thread attributes
                 FALSE,      // Inherit handles
-                NULL ,      // Creation flags
+                CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_PROCESS_GROUP | CREATE_BREAKAWAY_FROM_JOB,      // Creation flags
                 NULL,       // Environment
                 NULL,       // Current directory
                 &si,        // Startup info

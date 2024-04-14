@@ -2,6 +2,8 @@
 #include "Network/PClientSocket.h"
 #include "fstream"
 #include <thread>
+#include <Windows.h>
+#include <iostream>
 
 static const std::string version = "V1.0.0";
 static int port = 54000;
@@ -46,14 +48,11 @@ namespace Puppeteer {
 } 
 
 
-int main(int argc, char* argv[]) {
-    if (argc == 2) {
-        if(strcmp("-v", argv[1]) == 0) {
-            std::cout << version;
-            return 0;
-        }
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    if(std::string(GetCommandLineA()).find("-v") != std::string::npos) {
+        std::cout << version;
+        return 0;
     }
-    ShowWindow(GetConsoleWindow(), SW_HIDE);
 	return Puppeteer::RunPuppet();
 }
 
