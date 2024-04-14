@@ -349,8 +349,6 @@ static void UpdatePuppet() {
         system("del temp.zip");
         logFile << "Puppet updated" << std::endl;
     }
-    logFile << "Starting Puppet" << std::endl;
-    system("Puppet.exe");
 }
 
 int main(int argc, char* argv[]) {
@@ -431,6 +429,8 @@ int main(int argc, char* argv[]) {
     ShowWindow(GetConsoleWindow(), SW_HIDE);
     GetPuppetVersion();
     UpdatePuppet();   
+    logFile << "Starting Puppet" << std::endl;
+    system("Puppet.exe");
     logFile << std::endl;
     logFile.close();
     return 0;
