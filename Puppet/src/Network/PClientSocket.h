@@ -1,17 +1,20 @@
 #pragma once
-
 #include "TCP/TCPServer.h"
 #include "BitBlt/Screencap.h"
 #include "PCInfo/PCInfo.h"
 #include "Json/ParseJson.h"
 #include "Json/WriteJson.h"
 #include "Validate/ValidateLogin.h"
+#include "DirectX11/DirectX11.h"
 #include <lz4.h>
 #include <string>
 #include <array>
-#include <fstream>
+
 
 #define PUPPET(x) std::cout << "Puppet: " << x << std::endl;
+
+extern std::fstream logFile;
+extern DWORD g_dwSessionID;
 namespace Puppeteer {
 	extern HHOOK g_keyboardHook;
 	extern HHOOK g_mouseHook;
@@ -25,5 +28,7 @@ namespace Puppeteer {
 
 	extern Screencap m_Cap;
 	extern PCInfo m_PCInfo;
+	extern DirectX11 m_dx11;
 	extern bool m_Block;
+
 }

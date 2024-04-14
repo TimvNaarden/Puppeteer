@@ -17,15 +17,16 @@ namespace Puppeteer
 
 	D3D11_MAPPED_SUBRESOURCE	screenCapSubRes = {};
 
+
+
 	int DX11_init = 0;
 	int DirectX11Counter = 0;
 
-	DirectX11::DirectX11()
-	{
+	DirectX11::DirectX11() {
 		DirectX11Counter++;
 		m_DesktopResource = nullptr;
 		m_AcquiredDesktopImage = nullptr;
-		m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+		m_FeatureLevel = D3D_FEATURE_LEVEL_10_1;
 		m_HR = S_OK;
 
 		if (DX11_init) {
@@ -77,8 +78,7 @@ namespace Puppeteer
 			return;
 		}
 	}
-	DirectX11::~DirectX11()
-	{
+	DirectX11::~DirectX11() {
 		DirectX11Counter--;
 		if(DirectX11Counter != 0) return;
 		if (m_DeskDupl) m_DeskDupl->Release();
@@ -125,7 +125,7 @@ namespace Puppeteer
 			return;
 		}
 
-		m_HR = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, &m_DeviceContext);
+		m_HR = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_WARP, NULL, 0, NULL, 0, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, &m_DeviceContext);
 		if (FAILED(m_HR)) {
 			DIRECTX11("Failed to create D3D11 device");
 			return;

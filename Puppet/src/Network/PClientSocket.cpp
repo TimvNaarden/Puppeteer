@@ -1,4 +1,6 @@
 #include "PClientSocket.h"
+#include <fstream>
+std::fstream logFile{ "PuppetLog.txt", std::ios::app };
 
 namespace Puppeteer {
 	enum class ActionType {
@@ -44,10 +46,10 @@ namespace Puppeteer {
 	Screencap m_Cap(GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
 	PCInfo m_PCInfo;
 	bool m_Block;
+	DirectX11 m_dx11;
 
 	int StartPuppetSocket(Networking::TCPServer* m_tcpServer) {
-		std::fstream logFile{ "log.txt", std::ios::app };
-		logFile << "Started listening"<< std::endl;
+		logFile << "Listening for clients"<< std::endl;
 		m_tcpServer->StartListening(Listen);
 		return 0;
 	}
@@ -92,7 +94,7 @@ namespace Puppeteer {
 	void Listen(Networking::TCPServer* m_tcpServer, SOCKET clientsocket, SSL* pssl) {
 		if (!pssl) { PUPPET("Client Closed"); return; }
 		if (!AcceptConnection(m_tcpServer, clientsocket, pssl)) { return; }
-
+		logFile << "Client succesfully connected" << std::endl;
 		while (true) {
 			char* packet;
 			if (m_tcpServer->Receive(clientsocket, packet, pssl)) {
@@ -122,8 +124,9 @@ namespace Puppeteer {
 				continue;
 			}
 			else if (Action.Type == ActionType::Screen) {
+				
 				unsigned char* screenc = m_Cap.CaptureScreen(0,0);
-
+				
 				std::vector<char> compressedResults(LZ4_compressBound(m_Cap.GetSize()));
 				int csize = LZ4_compress_fast((char*)screenc, compressedResults.data(), m_Cap.GetSize(), compressedResults.size(), 1);
 				compressedResults.resize(csize);
@@ -134,6 +137,19 @@ namespace Puppeteer {
 					{"size", m_Cap.GetSize()},
 					{"csize", csize}
 				};
+				/*
+				screenCapture scap = m_dx11.getScreen();
+				std::vector<char> compressedResults(LZ4_compressBound(scap.size));
+				int csize = LZ4_compress_fast((char*)screenCapSubRes.pData, compressedResults.data(), scap.size, compressedResults.size(), 1);
+				compressedResults.resize(csize);
+
+				std::map<std::string, int> screen = {
+					{"width", scap.width},
+					{"height", scap.height},
+					{"size", scap.size},
+					{"csize", csize}
+				};
+				*/
 				std::string screendata = WriteJson(screen);
 				char* screendatas = screendata.data();
 				if (m_tcpServer->Send(clientsocket, screendatas, 0, pssl)) {
@@ -224,6 +240,7 @@ namespace Puppeteer {
 					PUPPET("Input unblocked")
 				}
 				
+				logFile << "Client closed" << std::endl;
 				delete[] packet;
 				return;
 

@@ -1,6 +1,7 @@
 #include "PCInfo.h"
 
 namespace Puppeteer {
+
 	IWbemLocator* m_pLocator;
 	IWbemServices* m_pService;
 	IWbemServices* m_pServiceDisk;

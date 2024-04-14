@@ -1,6 +1,7 @@
 #include "TCPServer.h"
 #include "fstream"
 #include <thread>
+static DWORD g_dwSessionID = WTSGetActiveConsoleSessionId();
 namespace Networking {
 	int g_TCPServerCount = 0;
 	int g_TCPSSLServerCount = 0;
@@ -45,6 +46,7 @@ namespace Networking {
 			return;
 		}
 		g_TCPServerCount++;
+		m_Connected = 1;
 	}
 
 	TCPServer::~TCPServer() {
@@ -197,9 +199,7 @@ namespace Networking {
 	}
 
  	void TCPServer::StartListening(void (*callback)(TCPServer*, SOCKET, SSL*)) {
-		std::fstream logFile{ "log.txt", std::ios::app };
 		while (true) {
-			logFile << "Waiting for client" << std::endl;
 			sockaddr_in ClientAddress;
 			socklen_t ClientAddressSize = sizeof(ClientAddress);
 			SOCKET ClientSocket = accept(m_Socket, (sockaddr*)&ClientAddress, &ClientAddressSize);
@@ -217,7 +217,7 @@ namespace Networking {
 				SSL_set_fd(ssl, ClientSocket);
 				if (SSL_accept(ssl) != 1) {
 					std::cerr << "Failed to accept SSL connection" << std::endl;
-							continue;
+					continue;
 				}
 				std::thread(callback, this, ClientSocket, ssl).detach();
 			}

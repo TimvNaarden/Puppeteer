@@ -7,7 +7,12 @@
 #include <Windows.h>
 #include <urlmon.h>
 #include <strsafe.h>
+#include <fstream>
 #pragma comment(lib, "urlmon.lib")
+
+#include <WtsApi32.h>
+#pragma comment(lib, "Wtsapi32.lib")
+#define SERVICE_NAME  L"Puppet Service"
 
 struct Version {
     int Major;
@@ -16,6 +21,7 @@ struct Version {
 };
 
 static std::string version = "V0.0.0";
+std::fstream logFile{ "PuppetUpdateLog.txt", std::ios::app };
 
 SERVICE_STATUS        g_ServiceStatus = { 0 };
 SERVICE_STATUS_HANDLE g_StatusHandle = NULL;
@@ -24,13 +30,12 @@ HANDLE                g_ServiceStopEvent = INVALID_HANDLE_VALUE;
 VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv);
 VOID WINAPI ServiceCtrlHandler(DWORD);
 DWORD WINAPI ServiceWorkerThread(LPVOID lpParam);
-
-#define SERVICE_NAME  L"Puppet Service"
-
+BOOL ServiceExists(const TCHAR* serviceName);
 
 void UpdatePuppet();
 void GetPuppetVersion();
 static Version ParseVersion(std::string version);
+static bool CompareVersions(std::string version1, std::string version2);
 
 VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
     DWORD Status = E_FAIL;
@@ -73,6 +78,8 @@ VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
 
     if (SetServiceStatus(g_StatusHandle, &g_ServiceStatus) == FALSE)  OutputDebugString(L"Puppet Service: ServiceMain: SetServiceStatus returned error");
 
+    GetPuppetVersion();
+    UpdatePuppet();
     HANDLE hThread = CreateThread(NULL, 0, ServiceWorkerThread, NULL, 0, NULL);
 
     if (hThread == NULL) {
@@ -102,7 +109,6 @@ VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
     return;
 }
 
-// ServiceControlHandler function
 VOID WINAPI ServiceCtrlHandler(DWORD CtrlCode) {
     switch (CtrlCode) {
     case SERVICE_CONTROL_STOP:
@@ -127,6 +133,89 @@ VOID WINAPI ServiceCtrlHandler(DWORD CtrlCode) {
 }
 
 DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
+
+    // Get the current session ID
+    DWORD currentSessionId = WTSGetActiveConsoleSessionId();
+    logFile << "Session ID " << currentSessionId << std::endl;
+
+    while (true) {
+        // Wait for a session change notification
+        DWORD newSessionId = WTSGetActiveConsoleSessionId();
+
+        if (newSessionId != currentSessionId && newSessionId != 0xFFFFFFFF) {
+            logFile << "Session ID " << newSessionId << " changed." << std::endl;
+            currentSessionId = newSessionId;
+            // Start an exe in the new session
+            const wchar_t* exePath = L"Puppet.exe";
+            HANDLE userToken;
+            if (WTSQueryUserToken(WTSGetActiveConsoleSessionId(), &userToken) == 0) {
+                logFile << GetLastError() << std::endl;
+                logFile << "Failed to get user token." << std::endl;
+                logFile.close();
+                return 1;
+            }
+            HANDLE primaryToken;
+            if (!DuplicateTokenEx(userToken, TOKEN_ALL_ACCESS, NULL, SecurityImpersonation, TokenPrimary, &primaryToken)) {
+                CloseHandle(userToken);
+                logFile << "Failed to duplicate token." << std::endl;
+                logFile.close();
+                return 1;
+            }
+
+            CloseHandle(userToken);
+
+            TOKEN_ELEVATION_TYPE elevationType;
+            DWORD infoLength;
+            if (!GetTokenInformation(primaryToken, TokenElevationType, &elevationType, sizeof(elevationType), &infoLength)) {
+                CloseHandle(primaryToken);
+                logFile << "Failed to get token elevation type." << std::endl;
+                logFile.close();
+                return 1;
+            }
+            if (elevationType == TokenElevationTypeLimited) {
+                // Token is limited, need to elevate
+                TOKEN_LINKED_TOKEN linkedToken;
+                if (!GetTokenInformation(primaryToken, TokenLinkedToken, &linkedToken, sizeof(linkedToken), &infoLength)) {
+                    CloseHandle(primaryToken);
+                    logFile << "Failed to get linked token." << std::endl;
+                    logFile.close();
+                    return 1;
+                }
+
+                CloseHandle(primaryToken);
+                primaryToken = linkedToken.LinkedToken;
+            }
+
+            // Start the process in the user's session with elevated privileges
+            STARTUPINFO si = { sizeof(si) };
+            si.lpDesktop = L"winsta0\\default"; // Ensure it runs on the interactive desktop
+            PROCESS_INFORMATION pi;
+            if (!CreateProcessAsUser(
+                userToken,  // User token
+                exePath,    // Path to the executable
+                NULL,       // Command line
+                NULL,       // Process attributes
+                NULL,       // Thread attributes
+                FALSE,      // Inherit handles
+                CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_PROCESS_GROUP | CREATE_BREAKAWAY_FROM_JOB | CREATE_NO_WINDOW, // Creation flags
+                NULL,       // Environment
+                NULL,       // Current directory
+                &si,        // Startup info
+                &pi         // Process information
+            )) {
+                logFile << "Failed to create process: " << GetLastError() << std::endl;
+                CloseHandle(userToken);
+            }
+            else {
+                logFile << "Process created." << std::endl;
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+                CloseHandle(userToken);
+            }
+        }
+    }
+
+    logFile.close();
     while (WaitForSingleObject(g_ServiceStopEvent, 0) != WAIT_OBJECT_0)  {
         ShowWindow(GetConsoleWindow(), SW_HIDE);
         GetPuppetVersion();
@@ -135,18 +224,26 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
 
     return ERROR_SUCCESS;
 }
-static void GetPuppetVersion() {
-    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
-    GetModuleFileName(NULL, ExecutablePath, 260);
 
-    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
-        if (ExecutablePath[i] == '\\') {
-            ExecutablePath[i + 1] = '\0';
-            break;
-        }
+BOOL ServiceExists(const TCHAR* serviceName) {
+    SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
+    if (!scm) {
+        std::cerr << "Failed to open Service Control Manager" << std::endl;
+        return FALSE;
     }
-    if (!ExecutablePath) return;
-    if (_wchdir(ExecutablePath) != 0) return;
+
+    SC_HANDLE service = OpenService(scm, serviceName, SERVICE_QUERY_CONFIG);
+    if (!service) {
+        CloseServiceHandle(scm);
+        return FALSE;
+    }
+
+    CloseServiceHandle(service);
+    CloseServiceHandle(scm);
+    return TRUE;
+}
+
+static void GetPuppetVersion() {
     FILE* file;
     file = _popen("Puppet.exe -v", "r");
     if (file == NULL) {
@@ -213,13 +310,13 @@ static void UpdatePuppet() {
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            std::cerr << "Failed to fetch config file: " << std::endl;
+            logFile << "Failed to fetch config file: " << std::endl;
             return;
         }
         curl_easy_cleanup(curl);
     }
     else {
-        std::cerr << "Failed to initialize cURL." << std::endl;
+        logFile << "Failed to initialize cURL." << std::endl;
         return;
     }
     LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
@@ -233,56 +330,32 @@ static void UpdatePuppet() {
     }
     if(!ExecutablePath) return;
     if(_wchdir(ExecutablePath) != 0) return;
+    char* workdir = new char[MAX_PATH];
+    WideCharToMultiByte(CP_ACP, 0, ExecutablePath, -1, workdir, 256, NULL, NULL);
+    logFile << "Working directory: " << workdir << std::endl;
+
     std::map<std::string, std::string> config = ParseJson<std::map<std::string, std::string>>(config_data);
+    logFile << "Current version: " << version << std::endl;
+    logFile << "New version: " << config["version"] << std::endl;
+
     if (CompareVersions(config["version"], version.substr(1, version.size() -1))) {
+        logFile << "New version Found" << std::endl;
         std::cout << "New version Found" << std::endl;
         StringCchCatW(ExecutablePath, MAX_PATH, L"temp.zip");
         LPWSTR URL = new WCHAR[strlen(config["url"].c_str()) + 1];
         MultiByteToWideChar(CP_ACP, 0, config["url"].c_str(), -1, URL, strlen(config["url"].c_str()) + 1);
         HRESULT result = URLDownloadToFileW(NULL, URL, ExecutablePath, 0, NULL);
-        system("tar -xf temp.zip && del temp.zip");
+        system("tar -xf temp.zip");
+        system("del temp.zip");
+        logFile << "Puppet updated" << std::endl;
     }
+    logFile << "Starting Puppet" << std::endl;
     system("Puppet.exe");
 }
 
-/* static void RunOnStartup() {
-    HKEY hKey;
-	LONG lResult;
-	lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey);
-    if (lResult != ERROR_SUCCESS) {
-		std::cerr << "Failed to open registry key" << std::endl;
-		return;
-	}
-	LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
-	GetModuleFileName(NULL, ExecutablePath, 260);
-	lResult = RegSetValueExW(hKey, L"Puppeteer", 0, REG_SZ, (LPBYTE)ExecutablePath, wcslen(ExecutablePath) * 2);
-    if (lResult != ERROR_SUCCESS) {
-		std::cerr << "Failed to set registry key" << std::endl;
-		return;
-	}
-	RegCloseKey(hKey);
-} */
-BOOL ServiceExists(const TCHAR* serviceName) {
-    SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
-    if (!scm) {
-        std::cerr << "Failed to open Service Control Manager" << std::endl;
-        return FALSE;
-    }
-
-    SC_HANDLE service = OpenService(scm, serviceName, SERVICE_QUERY_CONFIG);
-    if (!service) {
-        CloseServiceHandle(scm);
-        return FALSE;
-    }
-
-    CloseServiceHandle(service);
-    CloseServiceHandle(scm);
-    return TRUE;
-}
-
 int main(int argc, char* argv[]) {
-
     if (argc > 1 && strcmp(argv[1], "service") == 0) {
+        logFile << "Creating service" << std::endl;
         LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
         GetModuleFileName(NULL, ExecutablePath, 260);
         if (!ServiceExists(SERVICE_NAME)) {
@@ -297,7 +370,7 @@ int main(int argc, char* argv[]) {
                 SERVICE_NAME,              // Service name
                 SERVICE_NAME,              // Display name
                 SERVICE_ALL_ACCESS,        // Desired access
-                SERVICE_WIN32_OWN_PROCESS, // Service type
+                SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS, // Service type
                 SERVICE_AUTO_START,        // Start type
                 SERVICE_ERROR_NORMAL,      // Error control type
                 ExecutablePath,            // Path to service binary
@@ -313,15 +386,35 @@ int main(int argc, char* argv[]) {
                 CloseServiceHandle(scm);
                 return 1;
             }
+            SERVICE_DESCRIPTION serviceDesc;
+            serviceDesc.lpDescription = (LPWSTR)L"Client Side Service For Puppeteer, https://github.com/timvnaarden/puppeteer";
+            ChangeServiceConfig2(service, SERVICE_CONFIG_DESCRIPTION, &serviceDesc);
 
             std::cout << "Service installed successfully!" << std::endl;
 
             CloseServiceHandle(service);
             CloseServiceHandle(scm);
+            logFile << "Service created" << std::endl;
         }
-        else std::cout << "Service already exists!" << std::endl;
+        else {
+            std::cout << "Service already exists!" << std::endl;
+            logFile << "Service already exists" << std::endl;
+        }
+
         return 0;
     }
+
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
+
+    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
+        if (ExecutablePath[i] == '\\') {
+            ExecutablePath[i + 1] = '\0';
+            break;
+        }
+    }
+    if (!ExecutablePath) return 1;
+    if (_wchdir(ExecutablePath) != 0) return 1;
 
     SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
     if (scmHandle == NULL) return 1;
@@ -331,14 +424,18 @@ int main(int argc, char* argv[]) {
         { NULL, NULL }
     };
 
-    if (!StartServiceCtrlDispatcher(serviceTable))  std::cout << GetLastError() << std::endl;;
+    if (!StartServiceCtrlDispatcher(serviceTable))  logFile << "Could not start service error: " << GetLastError() << std::endl;;
     CloseServiceHandle(scmHandle);
     
-    
+    logFile << "Starting PuppetUpdate - Manual Exe" << std::endl;
     ShowWindow(GetConsoleWindow(), SW_HIDE);
     GetPuppetVersion();
     UpdatePuppet();   
+    logFile << std::endl;
+    logFile.close();
     return 0;
 }
- //sc create PuppetService binPath= "D:\OneDrive\Coding\C++\Puppeteer\PuppetUpdate\bin\Debug-windows-x86_64\PuppetUpdate\PuppetUpdate.exe" 
+ 
+
+//sc create PuppetService binPath= "D:\OneDrive\Coding\C++\Puppeteer\PuppetUpdate\bin\Debug-windows-x86_64\PuppetUpdate\PuppetUpdate.exe" 
 

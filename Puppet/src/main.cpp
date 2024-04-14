@@ -1,76 +1,49 @@
 #include "WS2tcpip.h"
 #include "Network/PClientSocket.h"
 #include "fstream"
+#include <thread>
 
 static const std::string version = "V1.0.0";
 static int port = 54000;
 
-namespace Puppeteer
-{
-    static char* GetLocalIp() {
-        WSADATA wsaData;                                                             
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            std::cerr << "WSAStartup failed.\n";                                       
-            return "";
-        }
 
-        int sock = socket(PF_INET, SOCK_DGRAM, 0);
-        sockaddr_in loopback;
+namespace Puppeteer {
 
-        if (sock == -1) {
-            std::cerr << "Could not create socket\n";
-            return "";
-        }
+    static void CheckSession() {
+        static DWORD g_dwSessionID = WTSGetActiveConsoleSessionId();
+        while (true) {
+            if (WTSGetActiveConsoleSessionId() != 0xFFFFFFFF && g_dwSessionID != WTSGetActiveConsoleSessionId()) {
+				logFile << "Session Changed Terminating" << std::endl;
+                logFile << std::endl;
+                logFile.close();
+                exit(0);
+			}
+		}
+    }
 
-        std::memset(&loopback, 0, sizeof(loopback));
-        loopback.sin_family = AF_INET;
-        loopback.sin_addr.s_addr = 1337;   // can be any IP address
-        loopback.sin_port = htons(9);      // using debug port
-
-        if (connect(sock, reinterpret_cast<sockaddr*>(&loopback), sizeof(loopback)) == -1) {
-            closesocket(sock);
-            std::cerr << "Could not connect\n";
-            return "";
-        }
-
-        socklen_t addrlen = sizeof(loopback);
-        if (getsockname(sock, reinterpret_cast<sockaddr*>(&loopback), &addrlen) == -1) {
-            closesocket(sock);
-            std::cerr << "Could not getsockname\n";
-            return "";
-        }
-
-        closesocket(sock);
-        
-        char* buf = new char[INET_ADDRSTRLEN];
-        if (inet_ntop(AF_INET, &loopback.sin_addr, buf, INET_ADDRSTRLEN) == 0x0) {
-            std::cerr << "Could not inet_ntop\n";
-            return "";
-        }
-        else {
-            return buf;
-            
-        }      
-        return "";
-	}
 
 	static int RunPuppet() {
-        std::fstream logFile{"log.txt", std::ios::app};
         logFile << "Puppeteer started" << std::endl;
-        //char* ip = GetLocalIp();
-        // if (ip == "") {
-		//	std::cerr << "Could not get local ip\n";
-		//	return 1;
-		//}
-        //std::cout << "Local IP: " << std::string(ip) << std::endl;
+        logFile << "Version: " << version << std::endl;
+        logFile << "Port: " << port << std::endl;
+
         Networking::TCPServer client(Networking::IPV4, port, "0.0.0.0", 1);
-        logFile << "Socket Created" << std::endl;
-        logFile.close();
-        //delete[] ip;
+        if (!client.m_Connected) {
+            logFile << "Failed to create socket" << std::endl;
+            logFile << std::endl;
+            logFile.close();
+        }
+        logFile << "Socket created" << std::endl;
+
+        std::thread(&CheckSession).detach();
+        logFile << "Session Check Enbaled" << std::endl;
         StartPuppetSocket(&client);
+
+        logFile << std::endl;
+        logFile.close();
 		return 0;
 	}
-}
+} 
 
 
 int main(int argc, char* argv[]) {

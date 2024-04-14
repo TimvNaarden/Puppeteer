@@ -94,10 +94,12 @@ namespace Networking {
 		 */
 		void StartListening(void (*callback)(TCPServer*, SOCKET, SSL*));
 
+		int m_Connected = 0;
 	private:
 		SOCKET m_Socket = 0;
 
 		int m_SSL = 0;
+
 	};
 
 } // namespace Networking
