@@ -48,5 +48,7 @@ namespace Puppeteer {
 		std::vector<GridImage> m_CurrentImages;
 		GLuint* textures;
 
+		GLuint m_BlackTexture;
+
 	};
 }

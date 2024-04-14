@@ -191,13 +191,13 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
             si.lpDesktop = L"winsta0\\default"; // Ensure it runs on the interactive desktop
             PROCESS_INFORMATION pi;
             if (!CreateProcessAsUser(
-                userToken,  // User token
+                userToken,  // User token   
                 exePath,    // Path to the executable
                 NULL,       // Command line
                 NULL,       // Process attributes
                 NULL,       // Thread attributes
                 FALSE,      // Inherit handles
-                CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_PROCESS_GROUP | CREATE_BREAKAWAY_FROM_JOB | CREATE_NO_WINDOW, // Creation flags
+                NULL ,      // Creation flags
                 NULL,       // Environment
                 NULL,       // Current directory
                 &si,        // Startup info

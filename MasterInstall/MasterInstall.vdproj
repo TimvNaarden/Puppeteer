@@ -15,164 +15,386 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_03B8721287CA6061585F48A81F53C4AC"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0C3019FBCD4843A6800AD5216D61F79C"
+        "MsmKey" = "8:_01FD620FF2E24ACD94FF0EB60C58835B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_140CE228B6324179A3AC8589ECF35867"
+        "MsmKey" = "8:_03B8721287CA6061585F48A81F53C4AC"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_03D22B66B4F7441FA339476C510DA55D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_084DED3E448648C5BC5B7FC966E79928"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0DC2A1047BC74102B1A691A73AD0D49C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_166BFAD26B0BF2908D48486E3AFD6F83"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_17E03753EC69C37408339BBAEE1102C7"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3006452E0E4357AA6DE4EF172F8E0416"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_36D774B32077432C8073158546F4E1B1"
+        "MsmKey" = "8:_17B7385916C04735B71B0F4780C2FAB1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_395A4846922846C2978439171C4642EC"
+        "MsmKey" = "8:_17E03753EC69C37408339BBAEE1102C7"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1B3C28FD78954EE3A870AE82F07798FF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1F0F654BA5C44F518DCE8A045F159A65"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_25E4CE116D3148B286D0E53A3184F91D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3006452E0E4357AA6DE4EF172F8E0416"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_301478720FB8450BB65FD2C65675D9C4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_390F95FCAE0146CDBCFEE4C21EF9890F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3922CC7DB50744D4A802363AA67FBE51"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_39778B18F2ED496FC77A41D6C5012EFC"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4152533D3D2DAFA820868322AB8364ED"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "MsmKey" = "8:_4732F9C4214646A99E53CB5D33870709"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_49126661F6444A929A81B80C7DC4835A"
+        "MsmKey" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_49E21DD9F55E4EC6BA59A004F84F9929"
+        "MsmKey" = "8:_4C8E60AA4C5046F3B3D06AD945953EEA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4DF4DD84C7880FAEBE2E104EF9E470A5"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4F03362280BF4F9B80CB5B2C4418A6C4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_54344028073B4CE891A9910FB449A6F4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5861454C25CC46C7B43FFA05779A202F"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_5EB9DFD79814C242D00329BDD238AC1B"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5EE040BB93234082A9850921D1CD97AC"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_658CEF9E69B56E5F552ECCB3B973D7ED"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_69907ECFFBA945DEA5FAFB320063A4F7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6CAC80A8409446C890F9F6813EB8258E"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_6F24DFEAB624CCFE6B8733390F04CC3A"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_71099E33B51445B086E9960246243723"
+        "MsmKey" = "8:_708C561F858D427F936090A8B3B0077B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_74FFD81DCF924D9E99D2AE1DA26FEAB6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_76E39AB9DE71435DBEE254385224EC35"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_833EA5B2136CA792B305B98879E12607"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8525ED9358114A898268884D8092E551"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9099C199E1E0429A8612EC4E1E948D48"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_966DBED4F6A84D3A81CA722E22B80598"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_9C09C930B28AA17B9857DAF8D1143179"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B4A60A4BDBE34959AB5FD13C79B87F61"
+        "MsmKey" = "8:_9F3B7AA1E053427FB71C76E56A7E2BA0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A3B465633316408FB1778194CF0C7741"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A73CEBB0CEDE40AEB064997D0BC3D485"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A7F058C031304429AF2869566B051314"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AD5011218B4A420A97DF5E56010C8784"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_ADDE8B20ED6A479D992879625353C03E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AE5A262F3C8C41E0B4E9F110819E5B64"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B3BCB9B108A942D3B24E1D29437F424E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B5EB54B15E7B45358743D709C9F740C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BA0F60F6CE0F4BC7BA3387E8A7E6CCD3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BA4156FC3277415F892733F4E32A2B10"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BC4ACC480568480DB6D41296240DD221"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C106D5FC8B994871A7E7B7E937DA74E1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C229C4BAC5474E509A9725618549AFAF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_C2EBA9EFC5E1496E3B3C9907B80BBCC7"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D0BE194DEB044EE1B732582CF8BE398B"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_D30723C8E8E99BFF0FDF5DCC221B0043"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D88627845C9447B0909E3AD77D7201FF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EE544F097B224AA7AB9604B5EFEA8B50"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EFE97914E57248D4AA6398A8266667BE"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_F1E9AE467443F8742F7D480B1848D776"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_F36C14166D262FBDFE57204FB0A5489A"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_F64DF54B1C82F4F0BE5694ECCCFF3145"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FD044D7B99B345D3B9EBEFFEF5ABEA30"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_FF5B1ADFAE3DC7A02BC152FB6E56E44C"
-        "OwnerKey" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -254,6 +476,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_01FD620FF2E24ACD94FF0EB60C58835B"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-ExtraBoldItalic.ttf"
+            "TargetName" = "8:OpenSans-ExtraBoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_03B8721287CA6061585F48A81F53C4AC"
             {
             "SourcePath" = "8:libcrypto-3-x64.dll"
@@ -274,10 +516,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C3019FBCD4843A6800AD5216D61F79C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_03D22B66B4F7441FA339476C510DA55D"
             {
-            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\lz4.dll"
-            "TargetName" = "8:lz4.dll"
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-ExtraBoldItalic.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-ExtraBoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_084DED3E448648C5BC5B7FC966E79928"
+            {
+            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\libssl-3-x64.dll"
+            "TargetName" = "8:libssl-3-x64.dll"
             "Tag" = "8:"
             "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
@@ -294,10 +556,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_140CE228B6324179A3AC8589ECF35867"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0DC2A1047BC74102B1A691A73AD0D49C"
             {
-            "SourcePath" = "8:..\\Master\\libs\\libcrypto.lib"
-            "TargetName" = "8:libcrypto.lib"
+            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\libcrypto-3-x64.dll"
+            "TargetName" = "8:libcrypto-3-x64.dll"
             "Tag" = "8:"
             "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
@@ -334,6 +596,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_17B7385916C04735B71B0F4780C2FAB1"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-SemiBoldItalic.ttf"
+            "TargetName" = "8:OpenSans-SemiBoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_17E03753EC69C37408339BBAEE1102C7"
             {
             "SourcePath" = "8:d3d11.dll"
@@ -352,6 +634,66 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1B3C28FD78954EE3A870AE82F07798FF"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-BoldItalic.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-BoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1F0F654BA5C44F518DCE8A045F159A65"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-ExtraBoldItalic.ttf"
+            "TargetName" = "8:OpenSans_Condensed-ExtraBoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_25E4CE116D3148B286D0E53A3184F91D"
+            {
+            "SourcePath" = "8:..\\Master\\libs\\libcrypto.lib"
+            "TargetName" = "8:libcrypto.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3006452E0E4357AA6DE4EF172F8E0416"
@@ -374,12 +716,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_36D774B32077432C8073158546F4E1B1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_301478720FB8450BB65FD2C65675D9C4"
             {
-            "SourcePath" = "8:..\\Master\\libs\\OpenXLSX.lib"
-            "TargetName" = "8:OpenXLSX.lib"
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-LightItalic.ttf"
+            "TargetName" = "8:OpenSans-LightItalic.ttf"
             "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -394,12 +736,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_395A4846922846C2978439171C4642EC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_390F95FCAE0146CDBCFEE4C21EF9890F"
             {
-            "SourcePath" = "8:..\\Logo.ico"
-            "TargetName" = "8:Logo.ico"
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-SemiBold.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-SemiBold.ttf"
             "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3922CC7DB50744D4A802363AA67FBE51"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-LightItalic.ttf"
+            "TargetName" = "8:OpenSans_Condensed-LightItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -454,10 +816,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49126661F6444A929A81B80C7DC4835A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4732F9C4214646A99E53CB5D33870709"
             {
-            "SourcePath" = "8:..\\Master\\libs\\libcrypto-3-x64.dll"
-            "TargetName" = "8:libcrypto-3-x64.dll"
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-SemiBoldItalic.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-SemiBoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B6FC43EBDC24A9AB9133A95F06A4832"
+            {
+            "SourcePath" = "8:..\\Logo.ico"
+            "TargetName" = "8:Logo.ico"
             "Tag" = "8:"
             "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
@@ -474,12 +856,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49E21DD9F55E4EC6BA59A004F84F9929"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C8E60AA4C5046F3B3D06AD945953EEA"
             {
-            "SourcePath" = "8:..\\Master\\libs\\libssl-3-x64.dll"
-            "TargetName" = "8:libssl-3-x64.dll"
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-SemiBold.ttf"
+            "TargetName" = "8:OpenSans-SemiBold.ttf"
             "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -514,6 +896,66 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4F03362280BF4F9B80CB5B2C4418A6C4"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-ExtraBold.ttf"
+            "TargetName" = "8:OpenSans-ExtraBold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_54344028073B4CE891A9910FB449A6F4"
+            {
+            "SourcePath" = "8:..\\Master\\libs\\nfd.lib"
+            "TargetName" = "8:nfd.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5861454C25CC46C7B43FFA05779A202F"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-ExtraBold.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-ExtraBold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5EB9DFD79814C242D00329BDD238AC1B"
             {
             "SourcePath" = "8:api-ms-win-crt-runtime-l1-1-0.dll"
@@ -532,6 +974,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5EE040BB93234082A9850921D1CD97AC"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-Regular.ttf"
+            "TargetName" = "8:OpenSans_Condensed-Regular.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_658CEF9E69B56E5F552ECCB3B973D7ED"
@@ -554,6 +1016,46 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_69907ECFFBA945DEA5FAFB320063A4F7"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-Italic.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-Italic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6CAC80A8409446C890F9F6813EB8258E"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-Bold.ttf"
+            "TargetName" = "8:OpenSans-Bold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F24DFEAB624CCFE6B8733390F04CC3A"
             {
             "SourcePath" = "8:IMM32.dll"
@@ -574,10 +1076,50 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_71099E33B51445B086E9960246243723"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_708C561F858D427F936090A8B3B0077B"
             {
-            "SourcePath" = "8:..\\Master\\libs\\nfd.lib"
-            "TargetName" = "8:nfd.lib"
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-Medium.ttf"
+            "TargetName" = "8:OpenSans-Medium.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74FFD81DCF924D9E99D2AE1DA26FEAB6"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-Bold.ttf"
+            "TargetName" = "8:OpenSans_Condensed-Bold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_76E39AB9DE71435DBEE254385224EC35"
+            {
+            "SourcePath" = "8:..\\Master\\libs\\OpenXLSX.lib"
+            "TargetName" = "8:OpenXLSX.lib"
             "Tag" = "8:"
             "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
@@ -614,6 +1156,66 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8525ED9358114A898268884D8092E551"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OFL.txt"
+            "TargetName" = "8:OFL.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9099C199E1E0429A8612EC4E1E948D48"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-Medium.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-Medium.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_966DBED4F6A84D3A81CA722E22B80598"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-Light.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-Light.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C09C930B28AA17B9857DAF8D1143179"
             {
             "SourcePath" = "8:VCRUNTIME140_1.dll"
@@ -634,12 +1236,272 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B4A60A4BDBE34959AB5FD13C79B87F61"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9F3B7AA1E053427FB71C76E56A7E2BA0"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-Light.ttf"
+            "TargetName" = "8:OpenSans_Condensed-Light.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3B465633316408FB1778194CF0C7741"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-Italic.ttf"
+            "TargetName" = "8:OpenSans-Italic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A73CEBB0CEDE40AEB064997D0BC3D485"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-MediumItalic.ttf"
+            "TargetName" = "8:OpenSans_Condensed-MediumItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7F058C031304429AF2869566B051314"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-MediumItalic.ttf"
+            "TargetName" = "8:OpenSans-MediumItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AD5011218B4A420A97DF5E56010C8784"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-MediumItalic.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-MediumItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ADDE8B20ED6A479D992879625353C03E"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-Medium.ttf"
+            "TargetName" = "8:OpenSans_Condensed-Medium.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE5A262F3C8C41E0B4E9F110819E5B64"
             {
             "SourcePath" = "8:..\\Master\\libs\\libssl.lib"
             "TargetName" = "8:libssl.lib"
             "Tag" = "8:"
             "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B3BCB9B108A942D3B24E1D29437F424E"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-Regular.ttf"
+            "TargetName" = "8:OpenSans-Regular.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B5EB54B15E7B45358743D709C9F740C2"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-Bold.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-Bold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BA0F60F6CE0F4BC7BA3387E8A7E6CCD3"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-Italic.ttf"
+            "TargetName" = "8:OpenSans_Condensed-Italic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BA4156FC3277415F892733F4E32A2B10"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-BoldItalic.ttf"
+            "TargetName" = "8:OpenSans-BoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BC4ACC480568480DB6D41296240DD221"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-LightItalic.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-LightItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C106D5FC8B994871A7E7B7E937DA74E1"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-SemiBold.ttf"
+            "TargetName" = "8:OpenSans_Condensed-SemiBold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C229C4BAC5474E509A9725618549AFAF"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-SemiBoldItalic.ttf"
+            "TargetName" = "8:OpenSans_Condensed-SemiBoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -674,6 +1536,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D0BE194DEB044EE1B732582CF8BE398B"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-BoldItalic.ttf"
+            "TargetName" = "8:OpenSans_Condensed-BoldItalic.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D30723C8E8E99BFF0FDF5DCC221B0043"
             {
             "SourcePath" = "8:api-ms-win-crt-string-l1-1-0.dll"
@@ -692,6 +1574,66 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D88627845C9447B0909E3AD77D7201FF"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_SemiCondensed-Regular.ttf"
+            "TargetName" = "8:OpenSans_SemiCondensed-Regular.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE544F097B224AA7AB9604B5EFEA8B50"
+            {
+            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\lz4.dll"
+            "TargetName" = "8:lz4.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EFE97914E57248D4AA6398A8266667BE"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-Light.ttf"
+            "TargetName" = "8:OpenSans-Light.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1E9AE467443F8742F7D480B1848D776"
@@ -754,6 +1696,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FD044D7B99B345D3B9EBEFFEF5ABEA30"
+            {
+            "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans_Condensed-ExtraBold.ttf"
+            "TargetName" = "8:OpenSans_Condensed-ExtraBold.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FF5B1ADFAE3DC7A02BC152FB6E56E44C"
             {
             "SourcePath" = "8:api-ms-win-crt-filesystem-l1-1-0.dll"
@@ -812,6 +1774,39 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_1B8B4D26D48B4126858956EE6FE9A0A1"
+                    {
+                    "Name" = "8:assets"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_2629E572BE304E809C6070D615A2CEFB"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_C725FB238DC7443B88C1D0A37C107FC4"
+                            {
+                            "Name" = "8:fonts"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_9AFC96940B7546338B1681632A7B6437"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_7981A7DD253A4FD69604E4F8988983D9"
+                                    {
+                                    "Name" = "8:OpenSans"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_3010CF9BC3DF413C98FA1F8479FACF95"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -831,7 +1826,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MasterInstall"
         "ProductCode" = "8:{FC50B174-6597-4B08-9270-E676AC304FBC}"
-        "PackageCode" = "8:{55450A4A-A56F-4E95-B4F2-2CDE923EDDDD}"
+        "PackageCode" = "8:{C110AE79-6FF8-4001-8851-843D5C851E43}"
         "UpgradeCode" = "8:{1FD16C0B-D3BE-4857-9E2D-0AB64B1952C9}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -959,10 +1954,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+            "Target" = "8:_54AA41D1BB0D432287C861660A9CC43B"
             "Folder" = "8:_C140E7957B34461AA0A0CC48CCA5DDC7"
             "WorkingFolder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Icon" = "8:_395A4846922846C2978439171C4642EC"
+            "Icon" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7DF5B96FCDB24B70835D47FD383236CC"
@@ -973,10 +1968,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_463F8BFA8B6042C280217CA1A20FE081"
+            "Target" = "8:_54AA41D1BB0D432287C861660A9CC43B"
             "Folder" = "8:_4BC2ACE467D94225B440EAF2149DE4A5"
             "WorkingFolder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Icon" = "8:_395A4846922846C2978439171C4642EC"
+            "Icon" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
             "Feature" = "8:"
             }
         }
@@ -1378,7 +2373,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_463F8BFA8B6042C280217CA1A20FE081"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_54AA41D1BB0D432287C861660A9CC43B"
             {
             "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\Master.exe"
             "TargetName" = "8:"
@@ -1398,7 +2393,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|x64"
+            "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{919098C2-7D32-C398-66ED-D6EC522E4AE9}"
             "ShowKeyOutput" = "11:TRUE"

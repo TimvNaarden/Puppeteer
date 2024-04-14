@@ -53,6 +53,7 @@ int main(int argc, char* argv[]) {
             return 0;
         }
     }
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
 	return Puppeteer::RunPuppet();
 }
 

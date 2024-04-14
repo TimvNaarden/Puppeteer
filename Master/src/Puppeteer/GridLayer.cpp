@@ -38,6 +38,8 @@ namespace Puppeteer {
 		LayerCount++;
 
 		m_Lastrun = std::time(0);
+
+		m_BlackTexture = CreateBlackTexture(300, 170);
 	}
 
 	void GridLayer::OnAttach() {
@@ -122,7 +124,11 @@ namespace Puppeteer {
 		if (m_CurrentImages.size() == 0 && m_Images.empty()) {
 			for (GridClient_T client : GridClients) {
 				ImGui::BeginGroup();
-				ImGui::Image((ImTextureID)CreateBlackTexture(300, 170), ImVec2(300, 170));
+				
+				glDeleteTextures(1, &m_BlackTexture);
+				m_BlackTexture = CreateBlackTexture(300, 170);
+				
+				ImGui::Image((ImTextureID)m_BlackTexture, ImVec2(300, 170));
 				float textx = ImGui::CalcTextSize(client.Name).x;
 				ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 				ImGui::TextWrapped(client.Name);
@@ -152,7 +158,11 @@ namespace Puppeteer {
 		for (GridClient_T client : GridClients) {
 			if (m_Clients.count(client.Name) == 0) {
 				ImGui::BeginGroup();
-				ImGui::Image((ImTextureID)CreateBlackTexture(300, 170), ImVec2(300, 170));
+			
+				glDeleteTextures(1, &m_BlackTexture);
+				m_BlackTexture = CreateBlackTexture(300, 170);
+				
+				ImGui::Image((ImTextureID)m_BlackTexture, ImVec2(300, 170));
 				float textx = ImGui::CalcTextSize(client.Name).x;
 				ImGui::SetCursorPosX(((300 - textx) / 2) + (ImGui::GetWindowWidth() - WindowWidth));
 				ImGui::TextWrapped(client.Name);
@@ -166,17 +176,21 @@ namespace Puppeteer {
 				}
 			}
 		}
+		if (m_CurrentImages.size() == 0) {
+			ImGui::End();
+			ImGui::PopStyleVar();
+			return;
+		}
 		if (textures) {
 			glDeleteTextures(m_CurrentImages.size(), textures);
 			delete[] textures;
+			textures = nullptr;
 		}
 		textures = new GLuint[m_CurrentImages.size()];
 		glGenTextures(m_CurrentImages.size(), textures);
 		int index = 0;
 		for (GridImage image : m_CurrentImages) {
 			if (m_Clients.count(image.name) == 0) {
-				ImGui::End();
-				ImGui::PopStyleVar();
 				continue;
 			}
 			ImGui::BeginGroup();

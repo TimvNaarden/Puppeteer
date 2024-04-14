@@ -30,7 +30,7 @@ namespace Puppeteer {
 			for (std::string Client : GridClientsS) { GridClients.push_back(GridClient_T(Client)); }
 			Ip = ParsedCredentials["ip"];
 			std::vector<std::map<std::string, std::string>> pcs = ParseJson<std::vector<std::map<std::string, std::string>>>(ParsedCredentials["pcs"].data());
-			for (std::map<std::string, std::string> pc: pcs) { PcInfos.push_back(PCInfo(pc)); }
+			if(pcs[0].size() > 0) for (std::map<std::string, std::string> pc: pcs) { PcInfos.push_back(PCInfo(pc)); }
 		}
 	}
 	void ConfigLayer::OnAttach() {
@@ -267,7 +267,7 @@ namespace Puppeteer {
 				PCConfig << WriteJson(GClients);
 				PCConfig.close();
 
-				Error = "PC List Imported to " + std::string(outPath);
+				Error = "PC List Exported to " + std::string(outPath);
 				NFD_FreePath(outPath);
 				modalOpen = true;
 			} else if (result == NFD_ERROR) {
