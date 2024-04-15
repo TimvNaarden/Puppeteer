@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "ConfigLayer.h"
-#include "imgui_internal.h"
-#include "Store/StoreJson.h"
-#include "misc/cpp/imgui_stdlib.cpp"
-#include <nfd.h>
 
+// ImGui is a little bit weird with .h and .cpp files
+// So we need to include the .cpp file here
+#include <misc/cpp/imgui_stdlib.cpp>
 namespace Puppeteer {
 	ConfigLayer::ConfigLayer()	{
 		m_Fps = 0;

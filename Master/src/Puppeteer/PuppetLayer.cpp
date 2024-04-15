@@ -1,19 +1,18 @@
 #include "pch.h"
 #include "PuppetLayer.h"
-#include "ConfigLayer.h"
 
-#define RECEIVE(response) {												\
+#define RECEIVE(response , sock) {										\
 	if(response) delete[] response;										\
-	if (s.Receive(response) == -1) {									\
+	if (sock.Receive(response) == -1) {									\
 		if(response) delete[] response;									\
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		return;															\
 	}																	\
 }
-#define RECEIVES(response) {											\
+#define RECEIVES(response, sock) {										\
 	if(response) delete[] response;										\
-	if (this->m_Socket->Receive(response) == -1) {						\
+	if (sock->Receive(response) == -1) {						        \
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		this->m_Socket = nullptr;										\
@@ -21,14 +20,14 @@
 		return;															\
 	}																	\
 }
-#define SEND(action, sockets)											\
-	if(sockets.Send((char*)&action, sizeof(action)) == -1) {			\
+#define SEND(action, sock)											    \
+	if(sock.Send((char*)&action, sizeof(action)) == -1) {			    \
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		return;															\
-	}
-#define SENDS(action)													\
-	if(this->m_Socket->Send((char*)&action, sizeof(action)) == -1) {	\
+	}	
+#define SENDS(action, sock)												\
+	if(sock->Send((char*)&action, sizeof(action)) == -1) {	            \
 		Error = "Client Disconnected";									\
 		modalOpen = true;												\
 		this->m_Socket = nullptr;										\
@@ -38,7 +37,7 @@
 
 
 namespace Puppeteer {
-	PuppetLayer::PuppetLayer(char* Ip, Credentials_T Creds) : m_PCInfo(false) {
+	PuppetLayer::PuppetLayer(char* Ip, Credentials_T Creds) : m_PCInfo(false), m_SocketNormal(Networking::IPV4, 54000, Ip, 1){
 		m_Ip = Ip;
 		m_Credentials = Creds;
 
@@ -62,8 +61,24 @@ namespace Puppeteer {
 		m_LayerNumber = LayerCount;
 		LayerCount++;
 
-		std::thread(&PuppetLayer::UpdateTexture, this).detach();
-		glGenTextures(1, &m_Texture);
+		char* response = 0;
+		if (!m_SocketNormal.m_Connected) {
+			Error = "Cannot reach target machine";
+			modalOpen = true;
+			delete[] response;
+			return;
+		}
+		SEND(m_Credentials, m_SocketNormal);
+		RECEIVE(response, m_SocketNormal);
+		if (strcmp(response, "Not Authenticated") == 0) {
+			Error = "Wrong Login Credentials";
+			modalOpen = true;
+			delete[] response;
+			return;
+		}
+
+		delete[] response;
+		std::thread(&PuppetLayer::UpdateTexture, this, m_SocketNormal).detach();
 	}
 
 	PuppetLayer::PuppetLayer(Networking::TCPClient s, char* ip, Credentials_T Creds, std::mutex* mut) : m_PCInfo(false) {
@@ -93,89 +108,21 @@ namespace Puppeteer {
 
 		m_MutexPtr = mut;
 
-		std::thread(&PuppetLayer::UpdateTextureS, this, s).detach();
+		std::thread(&PuppetLayer::UpdateTexture, this, s).detach();
 		
 		glGenTextures(1, &m_Texture);
 	}
 	
-	void PuppetLayer::UpdateTexture() {
-		char* response = 0;
-		Networking::TCPClient s(Networking::IPV4, 54000, m_Ip, 1);
-		if (!s.m_Connected) {
-			Error = "Cannot reach target machine";
-			modalOpen = true;
-			return;
-		}
-		SEND(m_Credentials, s);
-		RECEIVE(response, s);
-		if (strcmp(response, "Not Authenticated") == 0) {
-			Error = "Wrong Login Credentials";
-			modalOpen = true;
-			s.m_Connected = false;
-		}
-
-
-		if (!s.m_Connected) return;
-
-		Action.Type = ActionType::ReqPCInfo;
-		SEND(Action, s);
-		RECEIVE(response);
-
-		int inPCSvec = 0;
-		this->m_PCInfo = PCInfo(ParseJson<std::map<std::string, std::string>>(response));
-		for (PCInfo pc : PcInfos) {
-			if (pc.m_Systemname == this->m_PCInfo.m_Systemname) {
-				inPCSvec = 1;
-				break;
-			}
-		}
-		if (!inPCSvec) PcInfos.push_back(this->m_PCInfo);
-		SAVE();
-
-		this->m_Name = this->m_PCInfo.m_Systemname.data();
-		this->m_Socket = &s;
-		this->m_Initialized = 1;
-
-		while (this->m_UpdatingTexture) {
-			this->m_MutexPtr->lock();
-			Action.Type = ActionType::Screen;
-			if (m_UpdatingTexture) SENDS(Action);
-
-			if (m_UpdatingTexture) RECEIVES(response);
-			if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) return;
-			
-
-			std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
-			ImageData Image{ ResponseMap["width"], ResponseMap["height"] };
-
-
-			if (m_UpdatingTexture) RECEIVES(response);
-			this->m_MutexPtr->unlock();
-
-			if (ResponseMap["size"] <= 1) continue; // When there are no changes, the size is 1 
-
-			Image.Texture = new char[ResponseMap["size"]];
-			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
-
-			if (m_MutexPtr == reinterpret_cast<void*>(0xdddddddddddddddd) || m_MutexPtr == nullptr) {
-				delete[] Image.Texture;
-				return;
-			}
-			this->m_MutexPtr->lock();
-			if (m_UpdatingTexture) this->m_Textures.push(Image);
-			this->m_MutexPtr->unlock();
-		}
-	}
-
-	void PuppetLayer::UpdateTextureS(Networking::TCPClient s) {
-		m_MutexPtr->lock();
+	void PuppetLayer::UpdateTexture(Networking::TCPClient s) {
+		this->m_MutexPtr->lock();
 		char* response = 0;
 
 		Action.Type = ActionType::ReqPCInfo;
-		SEND(Action, s);
-		RECEIVE(response);
+		SENDS(Action,  (&s));
+		RECEIVES(response, (&s));
 		if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
 			m_MutexPtr->unlock();
+			delete[] response;
 			return;
 		}
 		int inPCSvec = 0;
@@ -193,13 +140,13 @@ namespace Puppeteer {
 		this->m_Name = this->m_PCInfo.m_Systemname.data();
 		this->m_Socket = &s;
 		this->m_Initialized = 1;
-		m_MutexPtr->unlock();
+		this->m_MutexPtr->unlock();
 		while (this->m_UpdatingTexture) {
 			this->m_MutexPtr->lock();
 			Action.Type = ActionType::Screen;
-			if(m_UpdatingTexture) SENDS(Action);
+			if(m_UpdatingTexture) SENDS(Action, this->m_Socket);
 
-			RECEIVES(response);
+			RECEIVES(response, this->m_Socket);
 			if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
 				this->m_MutexPtr->unlock();
 				return;
@@ -208,16 +155,15 @@ namespace Puppeteer {
 			std::map<std::string, int> ResponseMap = ParseJson<std::map<std::string, int>>(response);
 			ImageData Image{ ResponseMap["width"], ResponseMap["height"] };
 
-
-			RECEIVES(response);
+			RECEIVES(response, this->m_Socket);
 			this->m_MutexPtr->unlock();
 
-			if (ResponseMap["size"] <= 1) continue; // When there are no changes, the size is 1 
+			if (ResponseMap["size"] <= 1) continue; 
 
 			Image.Texture = new char[ResponseMap["size"]];
 			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
 
-			if(m_MutexPtr == reinterpret_cast<void*>(0xdddddddddddddddd) || m_MutexPtr == nullptr) {
+			if (m_MutexPtr == reinterpret_cast<void*>(0xdddddddddddddddd) || m_MutexPtr == nullptr) {
 				delete[] Image.Texture;
 				return;
 			}
@@ -312,15 +258,17 @@ namespace Puppeteer {
 
 		if (!m_Textures.empty()) {
 			ImageData Image = m_Textures.front();
+
 			m_ImageSize = { static_cast<float>(Image.Width), static_cast<float>(Image.Height) };
 			ImVec2 ScreenSizeMin = ImGui::GetWindowContentRegionMin();
 			ImVec2 ScreenSizeMax = ImGui::GetWindowContentRegionMax();
-			CalculateImageSize({ScreenSizeMax.x - ScreenSizeMin.x, ScreenSizeMax.y - ScreenSizeMin.y}, m_ImageSize);
+			CalculateImageSize({ ScreenSizeMax.x - ScreenSizeMin.x, ScreenSizeMax.y - ScreenSizeMin.y }, m_ImageSize);
 
-			if(m_Texture != 0) glDeleteTextures(1, &m_Texture);
+			if (m_Texture != 0) glDeleteTextures(1, &m_Texture);
 			glBindTexture(GL_TEXTURE_2D, m_Texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.Width, Image.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, Image.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
+
 			ImGui::Image((ImTextureID)m_Texture, m_ImageSize);
 			if (ImGui::IsItemHovered() && m_Input) {
 				ImVec2 mousePositionAbsolute = ImGui::GetMousePos();
@@ -342,30 +290,9 @@ namespace Puppeteer {
 				}
 				m_LastMousePos = mousePositionRelative;
 			}
-			delete[] Image.Texture;
-			m_Textures.pop();
-		}
-		else if (m_Texture != 0) {
-			ImGui::Image((ImTextureID)m_Texture, m_ImageSize);
-			if (ImGui::IsItemHovered() && m_Input) {
-				ImVec2 mousePositionAbsolute = ImGui::GetMousePos();
-				ImVec2 screenPositionAbsolute = ImGui::GetItemRectMin();
-				ImVec2 mousePositionRelative = ImVec2(mousePositionAbsolute.x - screenPositionAbsolute.x, mousePositionAbsolute.y - screenPositionAbsolute.y);
-				if(m_LastMousePos.x != mousePositionRelative.x || m_LastMousePos.y != mousePositionRelative.y) 
-					MouseMoves((int)mousePositionRelative.x, (int)mousePositionRelative.y);
-
-				for (int key = 512; key < ImGuiKey_COUNT; key++) {
-					if (ImGui::IsKeyPressed((ImGuiKey)key)) {
-						if (key < 641) KeyPressed(ImGuiToWin[key]);
-						else if (key < 645) MouseButton(MouseDown[key]);
-						else if (key < 648) MouseScrolled(ImGui::GetIO().MouseWheel < 0 ? -1 : 1);
-					}
-					if (ImGui::IsKeyReleased((ImGuiKey)key)) {
-						if (key < 641) KeyReleased(ImGuiToWin[key]);
-						else if (key < 645) MouseButton(MouseUp[key]);
-					}
-				}
-				m_LastMousePos = mousePositionRelative;
+			if (m_Textures.size() != 1) {
+				delete[] Image.Texture;
+				m_Textures.pop();
 			}
 		}
 
@@ -373,11 +300,9 @@ namespace Puppeteer {
 
 		if (ActiveLayerIndex != m_LayerNumber) { ImGui::PopStyleVar(); return; }
 
-		std::stringstream Controls;
-		Controls << "Controls " << m_Name;
 
 		ImGui::SetNextWindowDockID(1, ImGuiCond_FirstUseEver);
-		ImGui::Begin(Controls.str().data());
+		ImGui::Begin(std::string(std::string("Controls ") + m_Name).data());
 
 		char* toggleUserInput = (m_UserInput) ? "Enable User Input" : "Disable User Input";
 		if (ImGui::Button(toggleUserInput) || 
@@ -388,10 +313,10 @@ namespace Puppeteer {
 			)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_Tab)) ImGui::SetKeyboardFocusHere(0);
 			else {
-				m_UserInput = !m_UserInput;
 				m_MutexPtr->lock();
 				Action.Type = ActionType::LockInput;
-				SENDS(Action);
+				m_UserInput = !m_UserInput;
+				SENDS(Action, this->m_Socket);
 				m_MutexPtr->unlock();
 			}
 		}
@@ -417,7 +342,7 @@ namespace Puppeteer {
 				m_UpdatingTexture = false;
 				if(m_keepSocketAlive != 1) {
 					Action.Type = ActionType::Close;
-					SENDS(Action);
+					SENDS(Action, this->m_Socket);
 				}
 				app->RemoveLayer(this);
 				m_MutexPtr->unlock();
@@ -433,7 +358,7 @@ namespace Puppeteer {
 		Action.Inputdata = key;
 		Action.Flags = 0x0000;
 		if (m_Socket) {
-			SENDS(Action);
+			SENDS(Action, this->m_Socket);
 		}
 		m_MutexPtr->unlock();
 	}
@@ -444,7 +369,7 @@ namespace Puppeteer {
 		Action.Inputdata = key;
 		Action.Flags = 0x0002;
 		if (m_Socket) {
-			SENDS(Action);
+			SENDS(Action, this->m_Socket);
 		}
 		m_MutexPtr->unlock();
 	}
@@ -455,7 +380,7 @@ namespace Puppeteer {
 		Action.Inputdata = 0;
 		Action.Flags = Flags;
 		if (m_Socket) {
-			SENDS(Action);
+			SENDS(Action, this->m_Socket);
 		}
 		m_MutexPtr->unlock();
 	}
@@ -468,7 +393,7 @@ namespace Puppeteer {
 		Action.Inputdata = 0;
 		Action.Flags = 0x0001 | 0x4000 | 0x8000;
 		if (m_Socket) {
-			SENDS(Action);
+			SENDS(Action, this->m_Socket);
 		}
 		m_MutexPtr->unlock();
 	}
@@ -481,7 +406,7 @@ namespace Puppeteer {
 		Action.Inputdata = offset * 100;
 		Action.Flags = 0x0800;
 		if (m_Socket) {
-			SENDS(Action);
+			SENDS(Action, this->m_Socket);
 		}
 		m_MutexPtr->unlock();
 	}

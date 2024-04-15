@@ -1,19 +1,7 @@
 #pragma once
 
-#include "Core/Layer.h"
-#include "Renderer/Framebuffer.h"
-
-#include "Platform/Windows/PCInfo/PCInfo.h"
-
-#include "Puppeteer/PuppetLayer.h"
-
-#include <glm/glm.hpp>
-#include <glad/glad.h>
-
-namespace Puppeteer
-{
-	class InfoLayer : public Layer
-	{
+namespace Puppeteer {
+	class InfoLayer : public Layer {
 		public:
 			InfoLayer();
 			virtual void OnAttach() override;

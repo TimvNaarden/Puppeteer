@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "InfoLayer.h"
-#include "imgui.h"
-#include <imgui_internal.h>
 
-#include <OpenXLSX.hpp>
-#include <nfd.h>
 
 namespace Puppeteer {
 

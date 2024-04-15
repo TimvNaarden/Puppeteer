@@ -110,13 +110,22 @@ project "Master"
         defines "DEBUG"
         runtime "Debug"
         symbols "on"
+		libdirs{
+			"libs/Debug"
+		}
 
     filter "configurations:Release"
         defines "RELEASE"
         runtime "Release"
         optimize "on"
+		libdirs{
+			"libs/Release"
+		}
 
     filter "configurations:Dist"
         defines "DIST"
         runtime "Release"
         optimize "on"
+		libdirs{
+			"libs/Dist"
+		}
