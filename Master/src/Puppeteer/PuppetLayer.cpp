@@ -168,7 +168,9 @@ namespace Puppeteer {
 				return;
 			}
 			this->m_MutexPtr->lock();
-			if(m_UpdatingTexture) this->m_Textures.push(Image);
+			if (this->m_UpdatingTexture) {
+				this->m_Textures.push(Image);
+			}
 			this->m_MutexPtr->unlock();
 		}
 	}
@@ -257,7 +259,9 @@ namespace Puppeteer {
 		
 
 		if (!m_Textures.empty()) {
+			this->m_MutexPtr->lock();
 			ImageData Image = m_Textures.front();
+			this->m_MutexPtr->unlock();
 
 			m_ImageSize = { static_cast<float>(Image.Width), static_cast<float>(Image.Height) };
 			ImVec2 ScreenSizeMin = ImGui::GetWindowContentRegionMin();
@@ -291,8 +295,10 @@ namespace Puppeteer {
 				m_LastMousePos = mousePositionRelative;
 			}
 			if (m_Textures.size() != 1) {
+				this->m_MutexPtr->lock();
 				delete[] Image.Texture;
 				m_Textures.pop();
+				this->m_MutexPtr->unlock();
 			}
 		}
 

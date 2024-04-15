@@ -4,7 +4,7 @@
 
 namespace Puppeteer {
 
-	InfoLayer::InfoLayer() {
+	InfoLayer::InfoLayer() {	
 		m_ActiveIndex = 0;
 		m_TextureID = 0;
 
@@ -104,6 +104,7 @@ namespace Puppeteer {
 		ImGui::SameLine(0, 10);
 
 		if (ImGui::Button("Export PC Info")) {
+			NFD_Init();
 			nfdchar_t* outPath;
 			nfdresult_t result = NFD_PickFolder(&outPath, NULL);
 			if (result == NFD_OKAY) {
@@ -152,11 +153,12 @@ namespace Puppeteer {
 				Error = "Exported PC Info to " + std::string(outPath);
 				NFD_FreePath(outPath);
 				modalOpen = true;
+				
 			} else if (result == NFD_ERROR) {
-		
 				Error = "Error: " + std::string(NFD_GetError());
 				modalOpen = true;
 			}
+			NFD_Quit();
 		}
 
 		ImGui::End();

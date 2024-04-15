@@ -8,8 +8,7 @@ namespace Puppeteer
 {
     Application* Application::s_Instance = nullptr;
 
-	Application::Application(const WindowProps& props, ApplicationCommandLineArgs args)
-	{
+	Application::Application(const WindowProps& props, ApplicationCommandLineArgs args) {
         s_Instance = this;
 
         m_Window = Window::Create(props);
@@ -20,8 +19,7 @@ namespace Puppeteer
         PushOverlay(m_ImGuiLayer);
 	}
 
-    void Application::OnEvent(Event& e)
-    {
+    void Application::OnEvent(Event& e) {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
@@ -34,29 +32,24 @@ namespace Puppeteer
         }
     }
     
-    void Application::PushLayer(Layer* layer)
-    {
+    void Application::PushLayer(Layer* layer) {
         m_LayersToPush.push(layer);
     }
 
-    void Application::PushOverlay(Layer* overlay)
-    {
+    void Application::PushOverlay(Layer* overlay) {
         m_LayerStack.PushOverlay(overlay);
         overlay->OnAttach();
     }
 
-    void Application::RemoveLayer(Layer* layer)
-    {
+    void Application::RemoveLayer(Layer* layer) {
         m_LayersToRemove.push(layer);
 
     }
 
-    void Application::Run()
-	{
+    void Application::Run() {
         m_Running = true;
         float lastFrameTime = 0.0f;
-        while (m_Running)
-        {
+        while (m_Running) {
             while (!m_LayersToPush.empty()) {
                 Layer* layer = m_LayersToPush.front();
                 m_LayerStack.PushLayer(layer);
@@ -89,16 +82,13 @@ namespace Puppeteer
         }
 	}
 
-    bool Application::OnWindowClose(WindowCloseEvent& e)
-    {
+    bool Application::OnWindowClose(WindowCloseEvent& e) {
         m_Running = false;
         return true;
     }
 
-    bool Application::OnWindowResize(WindowResizeEvent& e)
-    {
-        if (e.GetWidth() == 0 || e.GetHeight() == 0)
-        {
+    bool Application::OnWindowResize(WindowResizeEvent& e)  {
+        if (e.GetWidth() == 0 || e.GetHeight() == 0) {
             m_Minimized = true;
             return false;
         }

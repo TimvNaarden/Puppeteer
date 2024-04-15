@@ -186,6 +186,7 @@ namespace Puppeteer {
 		} 
 		ImGui::SameLine();
 		if (ImGui::Button("Import PC list")) {
+			NFD_Init();
 			nfdchar_t* outPath;
 			nfdresult_t result = NFD_OpenDialog(&outPath, NULL, NULL, NULL);
 			if (result == NFD_OKAY) {
@@ -240,9 +241,11 @@ namespace Puppeteer {
 				modalOpen = true;
 			}
 			SAVE();
+			NFD_Quit();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Export PC list")) {
+			NFD_Init();
 			nfdchar_t* outPath = NULL;
 			nfdresult_t result = NFD_PickFolder(&outPath, NULL);
 
@@ -273,6 +276,7 @@ namespace Puppeteer {
 				Error = "Error: " + std::string(NFD_GetError());
 				modalOpen = true;
 			}
+			NFD_Quit();
 		}
 		// End right side
 		ImGui::Columns(1);
