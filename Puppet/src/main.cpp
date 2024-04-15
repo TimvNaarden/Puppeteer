@@ -38,7 +38,7 @@ namespace Puppeteer {
         logFile << "Socket created" << std::endl;
 
         std::thread(&CheckSession).detach();
-        logFile << "Session Check Enbaled" << std::endl;
+        logFile << "Session Check Enabled" << std::endl;
         StartPuppetSocket(&client);
 
         logFile << std::endl;

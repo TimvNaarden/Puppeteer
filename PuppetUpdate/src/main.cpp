@@ -21,7 +21,6 @@ struct Version {
 };
 
 static std::string version = "V0.0.0";
-std::fstream logFile{ "PuppetUpdateLog.txt", std::ios::app };
 
 SERVICE_STATUS        g_ServiceStatus = { 0 };
 SERVICE_STATUS_HANDLE g_StatusHandle = NULL;
@@ -170,7 +169,7 @@ DWORD GetWinlogonPIDInSession(DWORD dwSessionId) {
 }
 
 DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
-
+    std::fstream logFile{ "PuppetUpdateLog.txt", std::ios::app };
     // Get the current session ID
     DWORD currentSessionId = WTSGetActiveConsoleSessionId();
     logFile << "Session ID " << currentSessionId << std::endl;
@@ -282,6 +281,17 @@ BOOL ServiceExists(const TCHAR* serviceName) {
 }
 
 static void GetPuppetVersion() {
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
+    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
+        if (ExecutablePath[i] == '\\') {
+            ExecutablePath[i + 1] = '\0';
+            break;
+        }
+    }
+    if (!ExecutablePath) return;
+    if (_wchdir(ExecutablePath) != 0) return;
+
     FILE* file;
     file = _popen("Puppet.exe -v", "r");
     if (file == NULL) {
@@ -335,6 +345,7 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::stri
 }
 
 static void UpdatePuppet() {
+    std::fstream logFile{ "PuppetUpdateLog.txt", std::ios::app };
     CURL* curl;
     CURLcode res;
     std::string config_data;
@@ -374,7 +385,7 @@ static void UpdatePuppet() {
 
     std::map<std::string, std::string> config = ParseJson<std::map<std::string, std::string>>(config_data);
     logFile << "Current version: " << version << std::endl;
-    logFile << "New version: " << config["version"] << std::endl;
+    logFile << "New version: " << "V" << config["version"] << std::endl;
 
     if (CompareVersions(config["version"], version.substr(1, version.size() -1))) {
         logFile << "New version Found" << std::endl;
@@ -390,6 +401,19 @@ static void UpdatePuppet() {
 }
 
 int main(int argc, char* argv[]) {  
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
+
+    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
+        if (ExecutablePath[i] == '\\') {
+            ExecutablePath[i + 1] = '\0';
+            break;
+        }
+    }
+    if (!ExecutablePath) return 1;
+    if (_wchdir(ExecutablePath) != 0) return 1;
+
+    std::fstream logFile{ "PuppetUpdateLog.txt", std::ios::app };
     if (argc > 1 && strcmp(argv[1], "service") == 0) {
         logFile << "Creating service" << std::endl;
         LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
@@ -440,17 +464,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
-    GetModuleFileName(NULL, ExecutablePath, 260);
 
-    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
-        if (ExecutablePath[i] == '\\') {
-            ExecutablePath[i + 1] = '\0';
-            break;
-        }
-    }
-    if (!ExecutablePath) return 1;
-    if (_wchdir(ExecutablePath) != 0) return 1;
 
     SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
     if (scmHandle == NULL) return 1;

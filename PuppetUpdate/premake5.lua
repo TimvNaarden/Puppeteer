@@ -18,14 +18,10 @@ workspace "PuppetUpdate"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["Networking"] = "%{wks.location}/vendor/Networking/include"
-IncludeDir["Database"] = "%{wks.location}/vendor/Database"
 
 filter {}
 -- Create a solution folder inside visual studio
 group "Dependencies"
-    include "vendor/Networking"
-    include "vendor/Database"
 group "" -- End the solution folder here
 
 
