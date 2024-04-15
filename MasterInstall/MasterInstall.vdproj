@@ -81,6 +81,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_344A4901E5184BDDAB8242581D8C8114"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_390F95FCAE0146CDBCFEE4C21EF9890F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -334,12 +340,6 @@
         "Entry"
         {
         "MsmKey" = "8:_D88627845C9447B0909E3AD77D7201FF"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EE544F097B224AA7AB9604B5EFEA8B50"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -710,6 +710,26 @@
             "TargetName" = "8:OpenSans-LightItalic.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_344A4901E5184BDDAB8242581D8C8114"
+            {
+            "SourcePath" = "8:..\\Master\\libs\\lz4.dll"
+            "TargetName" = "8:lz4.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1564,26 +1584,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE544F097B224AA7AB9604B5EFEA8B50"
-            {
-            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\lz4.dll"
-            "TargetName" = "8:lz4.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EFE97914E57248D4AA6398A8266667BE"
             {
             "SourcePath" = "8:..\\Master\\assets\\fonts\\OpenSans\\OpenSans-Light.ttf"
@@ -1814,7 +1814,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Puppeteer Master"
         "ProductCode" = "8:{FC50B174-6597-4B08-9270-E676AC304FBC}"
-        "PackageCode" = "8:{FE29739E-9F62-4351-906B-19423AE0B58C}"
+        "PackageCode" = "8:{7B22F42B-4BA9-452E-A3BC-FC79B178D2EE}"
         "UpgradeCode" = "8:{1FD16C0B-D3BE-4857-9E2D-0AB64B1952C9}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -1945,7 +1945,7 @@
             "Target" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
             "Folder" = "8:_C140E7957B34461AA0A0CC48CCA5DDC7"
             "WorkingFolder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Icon" = "8:"
+            "Icon" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E98F8C0299AC4172B798F1DBAD117F21"
@@ -1959,7 +1959,7 @@
             "Target" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
             "Folder" = "8:_4BC2ACE467D94225B440EAF2149DE4A5"
             "WorkingFolder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Icon" = "8:"
+            "Icon" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
             "Feature" = "8:"
             }
         }

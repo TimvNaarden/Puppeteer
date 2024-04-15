@@ -32,7 +32,7 @@ namespace Puppeteer {
         Networking::TCPServer client(Networking::IPV4, port, "0.0.0.0", 1);
         if (!client.m_Connected) {
             logFile << "Failed to create socket" << std::endl;
-            logFile << std::endl;
+            logFile << std::endl;   
             logFile.close();
         }
         logFile << "Socket created" << std::endl;

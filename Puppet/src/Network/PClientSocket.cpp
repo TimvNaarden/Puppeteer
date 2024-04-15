@@ -1,5 +1,11 @@
 #include "PClientSocket.h"
 #include <fstream>
+
+#include <Windows.h>
+#include <WtsApi32.h>
+
+
+#pragma comment(lib, "Wtsapi32.lib")
 std::fstream logFile{ "PuppetLog.txt", std::ios::app };
 
 namespace Puppeteer {
@@ -127,7 +133,7 @@ namespace Puppeteer {
 			else if (Action.Type == ActionType::ReqUserName) {
 				char* username = new char[UNLEN + 1];
 				DWORD username_len = UNLEN + 1;
-				GetUserNameA(username, &username_len);
+				WTSQuerySessionInformationA(WTS_CURRENT_SERVER_HANDLE, WTSGetActiveConsoleSessionId(), WTSUserName, &username, &username_len);
 				if (m_tcpServer->Send(clientsocket, username, username_len, pssl)) {
 					PUPPET("Failed to send username");
 				}
