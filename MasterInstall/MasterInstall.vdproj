@@ -22,7 +22,7 @@
         "Entry"
         {
         "MsmKey" = "8:_03B8721287CA6061585F48A81F53C4AC"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -33,20 +33,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_084DED3E448648C5BC5B7FC966E79928"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0DC2A1047BC74102B1A691A73AD0D49C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_166BFAD26B0BF2908D48486E3AFD6F83"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,7 +46,7 @@
         "Entry"
         {
         "MsmKey" = "8:_17E03753EC69C37408339BBAEE1102C7"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -82,7 +70,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3006452E0E4357AA6DE4EF172F8E0416"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -106,18 +94,24 @@
         "Entry"
         {
         "MsmKey" = "8:_39778B18F2ED496FC77A41D6C5012EFC"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4152533D3D2DAFA820868322AB8364ED"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4732F9C4214646A99E53CB5D33870709"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4A214816B68540599C68502856E2071B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -136,24 +130,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4DF4DD84C7880FAEBE2E104EF9E470A5"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4F03362280BF4F9B80CB5B2C4418A6C4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_54344028073B4CE891A9910FB449A6F4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -166,7 +148,7 @@
         "Entry"
         {
         "MsmKey" = "8:_5EB9DFD79814C242D00329BDD238AC1B"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -178,7 +160,7 @@
         "Entry"
         {
         "MsmKey" = "8:_658CEF9E69B56E5F552ECCB3B973D7ED"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -196,7 +178,7 @@
         "Entry"
         {
         "MsmKey" = "8:_6F24DFEAB624CCFE6B8733390F04CC3A"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -213,14 +195,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_76E39AB9DE71435DBEE254385224EC35"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_833EA5B2136CA792B305B98879E12607"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -244,7 +220,7 @@
         "Entry"
         {
         "MsmKey" = "8:_9C09C930B28AA17B9857DAF8D1143179"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -268,6 +244,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A7F058C031304429AF2869566B051314"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -334,7 +316,7 @@
         "Entry"
         {
         "MsmKey" = "8:_C2EBA9EFC5E1496E3B3C9907B80BBCC7"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -346,7 +328,7 @@
         "Entry"
         {
         "MsmKey" = "8:_D30723C8E8E99BFF0FDF5DCC221B0043"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -370,19 +352,19 @@
         "Entry"
         {
         "MsmKey" = "8:_F1E9AE467443F8742F7D480B1848D776"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_F36C14166D262FBDFE57204FB0A5489A"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_F64DF54B1C82F4F0BE5694ECCCFF3145"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -393,8 +375,14 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_FDD691D1AE324A889F0CABE94E5FFC7C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_FF5B1ADFAE3DC7A02BC152FB6E56E44C"
-        "OwnerKey" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+        "OwnerKey" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -422,6 +410,46 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
+        }
+        "Dist"
+        {
+        "DisplayName" = "8:Dist"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Dist\\MasterInstall.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -512,7 +540,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -522,46 +550,6 @@
             "TargetName" = "8:OpenSans_SemiCondensed-ExtraBoldItalic.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_084DED3E448648C5BC5B7FC966E79928"
-            {
-            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\libssl-3-x64.dll"
-            "TargetName" = "8:libssl-3-x64.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0DC2A1047BC74102B1A691A73AD0D49C"
-            {
-            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\libcrypto-3-x64.dll"
-            "TargetName" = "8:libcrypto-3-x64.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -632,7 +620,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -836,6 +824,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4A214816B68540599C68502856E2071B"
+            {
+            "SourcePath" = "8:..\\Master\\libs\\Dist\\nfd.lib"
+            "TargetName" = "8:nfd.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B6FC43EBDC24A9AB9133A95F06A4832"
             {
             "SourcePath" = "8:..\\Logo.ico"
@@ -902,26 +910,6 @@
             "TargetName" = "8:OpenSans-ExtraBold.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_54344028073B4CE891A9910FB449A6F4"
-            {
-            "SourcePath" = "8:..\\Master\\libs\\nfd.lib"
-            "TargetName" = "8:nfd.lib"
-            "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1072,7 +1060,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1102,26 +1090,6 @@
             "TargetName" = "8:OpenSans_Condensed-Bold.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_76E39AB9DE71435DBEE254385224EC35"
-            {
-            "SourcePath" = "8:..\\Master\\libs\\OpenXLSX.lib"
-            "TargetName" = "8:OpenXLSX.lib"
-            "Tag" = "8:"
-            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1532,7 +1500,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1672,7 +1640,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1702,6 +1670,26 @@
             "TargetName" = "8:OpenSans_Condensed-ExtraBold.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7981A7DD253A4FD69604E4F8988983D9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FDD691D1AE324A889F0CABE94E5FFC7C"
+            {
+            "SourcePath" = "8:..\\Master\\libs\\Dist\\OpenXLSX.lib"
+            "TargetName" = "8:OpenXLSX.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1826,7 +1814,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Puppeteer Master"
         "ProductCode" = "8:{FC50B174-6597-4B08-9270-E676AC304FBC}"
-        "PackageCode" = "8:{AE160A58-B6A3-4D59-BC00-46F161B019CD}"
+        "PackageCode" = "8:{FE29739E-9F62-4351-906B-19423AE0B58C}"
         "UpgradeCode" = "8:{1FD16C0B-D3BE-4857-9E2D-0AB64B1952C9}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -1946,7 +1934,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2D1E7CB2071E4845BF22D9027AE47649"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1724304AD3B74807B7431C568635C64E"
             {
             "Name" = "8:Puppeteer Master"
             "Arguments" = "8:"
@@ -1954,13 +1942,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+            "Target" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
             "Folder" = "8:_C140E7957B34461AA0A0CC48CCA5DDC7"
             "WorkingFolder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Icon" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7DF5B96FCDB24B70835D47FD383236CC"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E98F8C0299AC4172B798F1DBAD117F21"
             {
             "Name" = "8:Puppeteer Master"
             "Arguments" = "8:"
@@ -1968,10 +1956,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_54AA41D1BB0D432287C861660A9CC43B"
+            "Target" = "8:_AACE627D4D2A4822A96CF9F2C4256D08"
             "Folder" = "8:_4BC2ACE467D94225B440EAF2149DE4A5"
             "WorkingFolder" = "8:_E7A6032C28474BDABA89F559D59DF69F"
-            "Icon" = "8:_4B6FC43EBDC24A9AB9133A95F06A4832"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
@@ -2373,9 +2361,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_54AA41D1BB0D432287C861660A9CC43B"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AACE627D4D2A4822A96CF9F2C4256D08"
             {
-            "SourcePath" = "8:..\\Master\\bin\\Release-windows-x86_64\\Master\\Master.exe"
+            "SourcePath" = "8:..\\Master\\bin\\Dist-windows-x86_64\\Master\\Master.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E7A6032C28474BDABA89F559D59DF69F"

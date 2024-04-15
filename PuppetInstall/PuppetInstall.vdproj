@@ -15,8 +15,74 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_00AE6FA6AFF86AB46CAC787CE3738388"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_03F0962CE1ABACC4B2B0516593CC66E9"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0D212DD66B6453DC1B7EF5853CF0FDDA"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1F511477F7D396FB40FF3C1A3C85599B"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_20F1C5B3166D42427217D92AC1C51CAC"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_362CE2FA8AAA9254F0AC9F471669D8FC"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_39EEA63A2FE80A1769D9CBF31D154DDA"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3BCF946DE7924C9C9E4792D1AA146C24"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4357949EBA3D3B01D92EBE65866024E6"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E242395609C4A76AB8E66D5BEBDA269"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93897867B70A5416D44B84D1968AB36A"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -27,8 +93,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DDFDF06F63F7D9C33E978DA9563E3812"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F476EA28F0D42C7B97E2F25533418B47"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F571B6DF128A46958D156687CDD060AF"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F72A3BCF3045AC0199A175E5778428BF"
+        "OwnerKey" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -40,6 +124,38 @@
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
         "OutputFilename" = "8:Debug\\PuppetInstall.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
+        }
+        "Dist"
+        {
+        "DisplayName" = "8:Dist"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Dist\\PuppetInstall.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -103,20 +219,19 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_C51660585BB34AFF8E573C9839203898"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_2A1BA61813B045449787EEF5A422E3C0"
             {
-            "Name" = "8:Primary Output from PuppetUpdate (Release x64)"
+            "Name" = "8:Primary Output from PuppetUpdate (Active)"
             "Condition" = "8:"
-            "Object" = "8:_EA075C3027874F1F838C6B088AD50444"
+            "Object" = "8:_049A869363C54A7D89EAD73F8AC7B89F"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
             "Arguments" = "8:service"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_1C5437B3_6D4F_4068_8980_FA6305502160"
+            "Identifier" = "8:_CDEE157D_7267_409F_8BCE_BBA25F5562D1"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
-            "Run64Bit" = "11:TRUE"
             }
         }
         "DefaultFeature"
@@ -133,6 +248,146 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_00AE6FA6AFF86AB46CAC787CE3738388"
+            {
+            "SourcePath" = "8:VCRUNTIME140_1.dll"
+            "TargetName" = "8:VCRUNTIME140_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_03F0962CE1ABACC4B2B0516593CC66E9"
+            {
+            "SourcePath" = "8:WTSAPI32.dll"
+            "TargetName" = "8:WTSAPI32.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D212DD66B6453DC1B7EF5853CF0FDDA"
+            {
+            "SourcePath" = "8:api-ms-win-crt-math-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-math-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1F511477F7D396FB40FF3C1A3C85599B"
+            {
+            "SourcePath" = "8:api-ms-win-crt-convert-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-convert-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20F1C5B3166D42427217D92AC1C51CAC"
+            {
+            "SourcePath" = "8:urlmon.dll"
+            "TargetName" = "8:urlmon.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:4"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_362CE2FA8AAA9254F0AC9F471669D8FC"
+            {
+            "SourcePath" = "8:api-ms-win-crt-filesystem-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-filesystem-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_39EEA63A2FE80A1769D9CBF31D154DDA"
+            {
+            "SourcePath" = "8:VCRUNTIME140.dll"
+            "TargetName" = "8:VCRUNTIME140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3BCF946DE7924C9C9E4792D1AA146C24"
             {
             "SourcePath" = "8:..\\PuppetUpdate\\bin\\Release-windows-x86_64\\PuppetUpdate\\zlib1.dll"
@@ -151,6 +406,66 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4357949EBA3D3B01D92EBE65866024E6"
+            {
+            "SourcePath" = "8:api-ms-win-crt-stdio-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-stdio-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7E242395609C4A76AB8E66D5BEBDA269"
+            {
+            "SourcePath" = "8:api-ms-win-crt-heap-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-heap-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_93897867B70A5416D44B84D1968AB36A"
+            {
+            "SourcePath" = "8:MSVCP140.dll"
+            "TargetName" = "8:MSVCP140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B1DFD31CFD5B46DC815E814F38A0DAB1"
@@ -173,6 +488,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DDFDF06F63F7D9C33E978DA9563E3812"
+            {
+            "SourcePath" = "8:api-ms-win-crt-runtime-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-runtime-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F476EA28F0D42C7B97E2F25533418B47"
+            {
+            "SourcePath" = "8:api-ms-win-crt-locale-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-locale-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F571B6DF128A46958D156687CDD060AF"
             {
             "SourcePath" = "8:..\\PuppetUpdate\\bin\\Release-windows-x86_64\\PuppetUpdate\\libcurl.dll"
@@ -191,6 +546,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F72A3BCF3045AC0199A175E5778428BF"
+            {
+            "SourcePath" = "8:api-ms-win-crt-string-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-string-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -250,7 +625,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Puppeteer Client"
         "ProductCode" = "8:{505144A5-EDA9-48D9-A4A6-95F87E19B7F7}"
-        "PackageCode" = "8:{5AC6AAA2-2DC5-46B2-95B4-BB39F06CCCF0}"
+        "PackageCode" = "8:{F2B0204E-6D22-43E0-BF6E-FA262FA90D03}"
         "UpgradeCode" = "8:{5548FA9B-B83F-4B6B-8502-A8EA1F63E0A0}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -370,20 +745,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E4A93AAAF15744329A193B8453131CEA"
-            {
-            "Name" = "8:Puppet"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_EA075C3027874F1F838C6B088AD50444"
-            "Folder" = "8:_4A0D38D2E2AF45F8B59FEA768C3B47F6"
-            "WorkingFolder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
-            "Icon" = "8:_B1DFD31CFD5B46DC815E814F38A0DAB1"
-            "Feature" = "8:"
-            }
         }
         "UserInterface"
         {
@@ -783,9 +1144,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_EA075C3027874F1F838C6B088AD50444"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_049A869363C54A7D89EAD73F8AC7B89F"
             {
-            "SourcePath" = "8:..\\PuppetUpdate\\bin\\Release-windows-x86_64\\PuppetUpdate\\PuppetUpdate.exe"
+            "SourcePath" = "8:..\\PuppetUpdate\\bin\\Dist-windows-x86_64\\PuppetUpdate\\PuppetUpdate.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_19C8ED92BCE541ABADE2BBFDD8D8EE34"
@@ -803,7 +1164,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|x64"
+            "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{66F4E538-5257-75DD-FBDC-AD93E71E4160}"
             "ShowKeyOutput" = "11:TRUE"

@@ -27,6 +27,10 @@ Debug/*
 */*.json
 **/*.json
 
+*.msi
+*/*.msi
+**/*.msi
+
 .vs/*
 */.vs/*
 **/.vs/*

@@ -30,6 +30,7 @@ HANDLE                g_ServiceStopEvent = INVALID_HANDLE_VALUE;
 VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv);
 VOID WINAPI ServiceCtrlHandler(DWORD);
 DWORD WINAPI ServiceWorkerThread(LPVOID lpParam);
+DWORD GetWinlogonPIDInSession(DWORD dwSessionId);
 BOOL ServiceExists(const TCHAR* serviceName);
 
 void UpdatePuppet();
@@ -38,6 +39,20 @@ static Version ParseVersion(std::string version);
 static bool CompareVersions(std::string version1, std::string version2);
 
 VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
+    // Go into the directory of the executable so that log file is easy to find
+    LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
+    GetModuleFileName(NULL, ExecutablePath, 260);
+
+    for (int i = wcslen(ExecutablePath) - 1; i >= 0; i--) {
+        if (ExecutablePath[i] == '\\') {
+            ExecutablePath[i + 1] = '\0';
+            break;
+        }
+    }
+    if (!ExecutablePath) return;
+    if (_wchdir(ExecutablePath) != 0) return;
+
+
     DWORD Status = E_FAIL;
 
     g_StatusHandle = RegisterServiceCtrlHandler(SERVICE_NAME, ServiceCtrlHandler);
@@ -133,6 +148,27 @@ VOID WINAPI ServiceCtrlHandler(DWORD CtrlCode) {
     }
 }
 
+DWORD GetWinlogonPIDInSession(DWORD dwSessionId) {
+    DWORD dwWinlogonPID = 0;
+    PWTS_PROCESS_INFO pProcessInfo = NULL;
+    DWORD dwProcessCount = 0;
+
+    if (WTSEnumerateProcesses(WTS_CURRENT_SERVER_HANDLE, 0, 1, &pProcessInfo, &dwProcessCount)) {
+        for (DWORD i = 0; i < dwProcessCount; ++i) {
+            if (_wcsicmp(pProcessInfo[i].pProcessName, L"winlogon.exe") == 0 && pProcessInfo[i].SessionId == dwSessionId) {
+                dwWinlogonPID = pProcessInfo[i].ProcessId;
+                break;
+            }
+        }
+        WTSFreeMemory(pProcessInfo);
+    }
+    else {
+        std::cerr << "WTSEnumerateProcesses failed. Error: " << GetLastError() << std::endl;
+    }
+
+    return dwWinlogonPID;
+}
+
 DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
 
     // Get the current session ID
@@ -150,55 +186,50 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
             currentSessionId = newSessionId;
             // Start an exe in the new session
             const wchar_t* exePath = L"Puppet.exe";
-            HANDLE userToken;
-            if (WTSQueryUserToken(WTSGetActiveConsoleSessionId(), &userToken) == 0) {
-                logFile << GetLastError() << std::endl;
-                logFile << "Failed to get user token." << std::endl;
-                logFile.close();
-                currentSessionId = 0;
-                continue;
+            DWORD winlogonPID = GetWinlogonPIDInSession(newSessionId);
+            if (winlogonPID != 0) {
+               logFile << "Winlogon.exe PID in session " << newSessionId << ": " << winlogonPID << std::endl;
             }
-            HANDLE primaryToken;
-            if (!DuplicateTokenEx(userToken, TOKEN_ALL_ACCESS, NULL, SecurityImpersonation, TokenPrimary, &primaryToken)) {
-                CloseHandle(userToken);
-                logFile << "Failed to duplicate token." << std::endl;
-                logFile.close();
-                currentSessionId = 0;
-                continue;
+            else {
+                logFile << "Failed to get winlogon.exe PID in session " << newSessionId << std::endl;
             }
 
-            CloseHandle(userToken);
-
-            TOKEN_ELEVATION_TYPE elevationType;
-            DWORD infoLength;
-            if (!GetTokenInformation(primaryToken, TokenElevationType, &elevationType, sizeof(elevationType), &infoLength)) {
-                CloseHandle(primaryToken);
-                logFile << "Failed to get token elevation type." << std::endl;
+            HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, winlogonPID);
+            if (hProcess == NULL) {
+                logFile << "Failed to open winlogon.exe process. Error: " << GetLastError() << std::endl;
                 logFile.close();
-                currentSessionId = 0;
-                continue;
+                return 1;
             }
-            if (elevationType == TokenElevationTypeLimited) {
-                // Token is limited, need to elevate
-                TOKEN_LINKED_TOKEN linkedToken;
-                if (!GetTokenInformation(primaryToken, TokenLinkedToken, &linkedToken, sizeof(linkedToken), &infoLength)) {
-                    CloseHandle(primaryToken);
-                    logFile << "Failed to get linked token." << std::endl;
-                    logFile.close();
-                    currentSessionId = 0;
-                    continue;
-                }
 
-                CloseHandle(primaryToken);
-                primaryToken = linkedToken.LinkedToken;
+            // Get access token of winlogon.exe
+            HANDLE hToken = NULL;
+            if (!OpenProcessToken(hProcess, TOKEN_DUPLICATE, &hToken)) {
+                logFile << "Failed to open token of winlogon.exe. Error: " << GetLastError() << std::endl;
+                CloseHandle(hProcess);
+                logFile.close();
+                return 1;
             }
+
+            // Duplicate the token to get a primary token
+            HANDLE hPrimaryToken = NULL;
+            if (!DuplicateTokenEx(hToken, MAXIMUM_ALLOWED, NULL, SecurityIdentification, TokenPrimary, &hPrimaryToken)) {
+                logFile << "Failed to duplicate token. Error: " << GetLastError() << std::endl;
+                CloseHandle(hToken);
+                CloseHandle(hProcess);
+                logFile.close();
+                return 1;
+            }
+
+            // Close handles
+            CloseHandle(hToken);
+            CloseHandle(hProcess);
 
             // Start the process in the user's session with elevated privileges
             STARTUPINFO si = { sizeof(si) };
             si.lpDesktop = L"winsta0\\default"; // Ensure it runs on the interactive desktop
             PROCESS_INFORMATION pi;
             if (!CreateProcessAsUser(
-                userToken,  // User token   
+                hPrimaryToken,  // User token   
                 exePath,    // Path to the executable
                 NULL,       // Command line
                 NULL,       // Process attributes
@@ -211,13 +242,13 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam) {
                 &pi         // Process information
             )) {
                 logFile << "Failed to create process: " << GetLastError() << std::endl;
-                CloseHandle(userToken);
+                CloseHandle(hPrimaryToken);
             }
             else {
                 logFile << "Process created." << std::endl;
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
-                CloseHandle(userToken);
+                CloseHandle(hPrimaryToken);
             }
         }
     }
@@ -358,7 +389,7 @@ static void UpdatePuppet() {
     }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {  
     if (argc > 1 && strcmp(argv[1], "service") == 0) {
         logFile << "Creating service" << std::endl;
         LPWSTR ExecutablePath = new WCHAR[MAX_PATH];
