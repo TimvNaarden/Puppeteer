@@ -336,7 +336,6 @@ namespace Puppeteer {
 				GridAction.Type = ActionType::ReqUserName;
 				if (s->Send((char*)&GridAction, sizeof(GridAction)) != 0) {
 					m_Clients.erase(client.Name);
-					delete[] response;
 					m_Mutex.unlock();
 					continue;
 				}
