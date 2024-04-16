@@ -23,6 +23,10 @@ Debug/*
 */*.txt
 **/*.txt
 
+*.zip
+*/*.zip
+**/*.zip
+
 *.json
 */*.json
 **/*.json

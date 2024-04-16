@@ -269,6 +269,7 @@ namespace Puppeteer {
 			CalculateImageSize({ ScreenSizeMax.x - ScreenSizeMin.x, ScreenSizeMax.y - ScreenSizeMin.y }, m_ImageSize);
 
 			if (m_Texture != 0) glDeleteTextures(1, &m_Texture);
+			glGenTextures(1, &m_Texture);
 			glBindTexture(GL_TEXTURE_2D, m_Texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.Width, Image.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, Image.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);

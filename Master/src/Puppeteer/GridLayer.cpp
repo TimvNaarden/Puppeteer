@@ -116,7 +116,7 @@ namespace Puppeteer {
 		m_ViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
 
-		if (m_First || (std::time(0) - m_Lastrun) >= 5) {
+		if (m_First || (std::time(0) - m_Lastrun) >= 10) {
 			m_First = false;
 			std::thread(&GridLayer::GetImages, this).detach();
 			m_Lastrun = std::time(0);
