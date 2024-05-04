@@ -4,9 +4,13 @@
 #include <Windows.h>
 #include <WtsApi32.h>
 
+#include <mutex>
+
 
 #pragma comment(lib, "Wtsapi32.lib")
 std::fstream logFile{ "PuppetLog.txt", std::ios::app };
+std::mutex mtx;
+bool Injected;
 
 namespace Puppeteer {
 	enum class ActionType {
@@ -43,16 +47,32 @@ namespace Puppeteer {
 	HHOOK g_mouseHook;
 
 	LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
-		return 1;
+		mtx.lock();
+		if (Injected) {
+			Injected = false;
+			mtx.unlock();
+			return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
+		}
+		mtx.unlock();
+		if (m_Block) return 1;
+		return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
 	}
 
 	LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
-		return 1;
+		mtx.lock();
+		if (Injected) {
+			Injected = false;
+			mtx.unlock();
+			return CallNextHookEx(g_mouseHook, nCode, wParam, lParam);
+		}
+		mtx.unlock();
+		if (m_Block) return 1;
+		return CallNextHookEx(g_mouseHook, nCode, wParam, lParam);
 	}
 
 	Screencap m_Cap(GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
 	PCInfo m_PCInfo;
-	bool m_Block;
+	bool m_Block = false;
 	DirectX11 m_dx11;
 
 	int StartPuppetSocket(Networking::TCPServer* m_tcpServer) {
@@ -102,15 +122,31 @@ namespace Puppeteer {
 		if (!pssl) { PUPPET("Client Closed"); return; }
 		if (!AcceptConnection(m_tcpServer, clientsocket, pssl)) { return; }
 		logFile << "Client succesfully connected" << std::endl;
+
+		g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
+		if (!g_keyboardHook) {
+			PUPPET("Couldn't add keyboard Input Handler");
+			logFile << "Couldn't add keyboard Input Handle" << std::endl;
+		}
+
+		//g_mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+		//if (!g_mouseHook) {
+		//	PUPPET("Couldn't add mouse Input Handle");
+		//	logFile << "Couldn't add mouse Input Handle" << std::endl;
+		//}
+
 		while (true) {
 			char* packet;
 			if (m_tcpServer->Receive(clientsocket, packet, pssl)) {
 				PUPPET("Client closed");
+				logFile << "Client closed" << std::endl;
 				BlockInput(false);
-				if (g_keyboardHook != 0 && g_mouseHook != 0) {
+				if (g_keyboardHook != 0)  {
 					UnhookWindowsHookEx(g_keyboardHook);
-					UnhookWindowsHookEx(g_mouseHook);
+					//UnhookWindowsHookEx(g_mouseHook);
 					PUPPET("Input unblocked")
+					logFile << "Input unblocked" << std::endl;
+					if(m_Block) m_Block = false;
 				}
 				return;
 			}
@@ -124,9 +160,11 @@ namespace Puppeteer {
 				char* pc = pcdata.data();
 				if (m_tcpServer->Send(clientsocket, pc, 0, pssl)) {
 					PUPPET("Failed to send PC Info");
+					logFile << "Failed to send PC Info" << std::endl;
 				}
 				else {
 					PUPPET("PC Info sent");
+					logFile << "PC Info sent" << std::endl;
 				}
 				continue;
 			}
@@ -136,14 +174,17 @@ namespace Puppeteer {
 				WTSQuerySessionInformationA(WTS_CURRENT_SERVER_HANDLE, WTSGetActiveConsoleSessionId(), WTSUserName, &username, &username_len);
 				if (m_tcpServer->Send(clientsocket, username, username_len, pssl)) {
 					PUPPET("Failed to send username");
+					logFile << "Failed to send username" << std::endl;
 				}
 				else {
 					PUPPET("Username sent");
+					logFile << "Username sent" << std::endl;
 				}
 				delete[] username;
 				continue;
 			}
 			else if (Action.Type == ActionType::Screen) {
+				
 				
 				unsigned char* screenc = m_Cap.CaptureScreen(0,0);
 				
@@ -174,16 +215,20 @@ namespace Puppeteer {
 				char* screendatas = screendata.data();
 				if (m_tcpServer->Send(clientsocket, screendatas, 0, pssl)) {
 					PUPPET("Failed to send screen");
+					logFile << "Failed to send screen" << std::endl;
 				}
 				else {
 					PUPPET("Screen sent");
+					logFile << "Screen sent" << std::endl;
 				}
 				char* screens = compressedResults.data();
 				if (m_tcpServer->Send(clientsocket, screens, csize, pssl)) {
 					PUPPET("Failed to send screen data");
+					logFile << "Failed to send screen data" << std::endl;
 				}
 				else {
 					PUPPET("Screen data sent");
+					logFile << "Screen data sent" << std::endl;
 				}
 				continue;
 			}
@@ -193,12 +238,17 @@ namespace Puppeteer {
 				keyStrokes[0].type = INPUT_KEYBOARD;
 				keyStrokes[0].ki.wVk = Action.Inputdata;
 				keyStrokes[0].ki.dwFlags = Action.Flags;
-
+				mtx.lock();
+				Injected = true;
 				if (SendInput(1, keyStrokes, sizeof(INPUT)) != 1) {
+					mtx.unlock();
 					PUPPET("Failed to send keystrokes");
+					logFile << "Failed to send keystrokes" << std::endl;
 				}
 				else {
+					mtx.unlock();
 					PUPPET("Keystrokes sent");
+					logFile << "Keystrokes sent" << std::endl;
 				}
 				continue;
 			}
@@ -212,12 +262,17 @@ namespace Puppeteer {
 				mouseAction[0].mi.mouseData = Action.Inputdata;
 				mouseAction[0].mi.dwFlags = Action.Flags;
 				mouseAction[0].mi.time = 0;
-
+				//mtx.lock();
+				//Injected = true;
 				if (SendInput(1, mouseAction, sizeof(INPUT)) != 1) {
+					//mtx.unlock();
 					PUPPET("Failed to send mouse");
+					logFile << "Failed to send mouse" << std::endl;
 				}
 				else {
+					//mtx.unlock();
 					PUPPET("Mouse sent");
+					logFile << "Mouse sent" << std::endl;
 				}
 				continue;
 			}
@@ -225,28 +280,13 @@ namespace Puppeteer {
 				m_Block = !m_Block;
 				if (m_Block) {
 					BlockInput(true);
-					g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
-					if (!g_keyboardHook) {
-						PUPPET("Couldn't block keyboard input");
-					}
-
-					g_mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
-					if (!g_mouseHook) {
-						PUPPET("Couldn't block mouse input");
-					}
 					PUPPET("Input blocked");
-					
-					
+					logFile << "Input blocked" << std::endl;
 				}
 				else {
 					BlockInput(false);
-					
-					if (g_keyboardHook != 0 && g_mouseHook != 0) {
-						UnhookWindowsHookEx(g_keyboardHook);
-						UnhookWindowsHookEx(g_mouseHook);
-					}
-					PUPPET("Input unblocked");
-					
+					PUPPET("Input unblocked");	
+					logFile << "Input unblocked" << std::endl;
 				}
 				continue;
 			}
@@ -254,12 +294,13 @@ namespace Puppeteer {
 				PUPPET("Client closed");
 				BlockInput(false);
 				
-				if (m_Block && g_keyboardHook != 0 && g_mouseHook != 0) {
+				if (m_Block && g_keyboardHook != 0 ) {
 					UnhookWindowsHookEx(g_keyboardHook);
-					UnhookWindowsHookEx(g_mouseHook);
+					//UnhookWindowsHookEx(g_mouseHook);
 					PUPPET("Input unblocked")
+					logFile << "Input unblocked" << std::endl;
 				}
-				
+				if (m_Block) m_Block = false;
 				logFile << "Client closed" << std::endl;
 				delete[] packet;
 				return;

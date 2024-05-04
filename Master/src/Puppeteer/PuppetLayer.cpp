@@ -149,6 +149,7 @@ namespace Puppeteer {
 			RECEIVES(response, this->m_Socket);
 			if (response[0] < 32 || response[0] > 126 || response[1] < 32 || response[1] > 126) {
 				this->m_MutexPtr->unlock();
+				this->m_Socket = nullptr;
 				return;
 			}
 
@@ -158,18 +159,19 @@ namespace Puppeteer {
 			RECEIVES(response, this->m_Socket);
 			this->m_MutexPtr->unlock();
 
-			if (ResponseMap["size"] <= 1) continue; 
+			if (ResponseMap["csize"] == 1) continue; 
 
 			Image.Texture = new char[ResponseMap["size"]];
 			int bDecompressed = LZ4_decompress_safe(response, Image.Texture, ResponseMap["csize"], ResponseMap["size"]);
 
 			if (m_MutexPtr == reinterpret_cast<void*>(0xdddddddddddddddd) || m_MutexPtr == nullptr) {
 				delete[] Image.Texture;
+				this->m_Socket = nullptr;
 				return;
 			}
 			this->m_MutexPtr->lock();
 			if (this->m_UpdatingTexture) {
-				this->m_Textures.push(Image);
+				if(m_Textures.size() < 0x1000 ) this->m_Textures.push(Image);
 			}
 			this->m_MutexPtr->unlock();
 		}
@@ -231,7 +233,7 @@ namespace Puppeteer {
 
 	void PuppetLayer::OnImGuiRender() {
 		if (!m_Initialized) return;
-		if (!m_Socket) { app->RemoveLayer(this); return; }
+		if (m_Socket == nullptr) { app->RemoveLayer(this); return; }
 		if (m_Name == "") return;
 
 		// Viewport
@@ -259,9 +261,14 @@ namespace Puppeteer {
 		
 
 		if (!m_Textures.empty()) {
-			this->m_MutexPtr->lock();
+			//this->m_MutexPtr->lock();
+			if (m_Textures.size() > 1) {
+				delete[] m_Textures.front().Texture;
+				m_Textures.pop();
+			}
+
 			ImageData Image = m_Textures.front();
-			this->m_MutexPtr->unlock();
+			//this->m_MutexPtr->unlock();
 
 			m_ImageSize = { static_cast<float>(Image.Width), static_cast<float>(Image.Height) };
 			ImVec2 ScreenSizeMin = ImGui::GetWindowContentRegionMin();
@@ -269,7 +276,7 @@ namespace Puppeteer {
 			CalculateImageSize({ ScreenSizeMax.x - ScreenSizeMin.x, ScreenSizeMax.y - ScreenSizeMin.y }, m_ImageSize);
 
 			if (m_Texture != 0) glDeleteTextures(1, &m_Texture);
-			glGenTextures(1, &m_Texture);
+			//glGenTextures(1, &m_Texture);
 			glBindTexture(GL_TEXTURE_2D, m_Texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.Width, Image.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, Image.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
@@ -295,12 +302,7 @@ namespace Puppeteer {
 				}
 				m_LastMousePos = mousePositionRelative;
 			}
-			if (m_Textures.size() != 1) {
-				this->m_MutexPtr->lock();
-				delete[] Image.Texture;
-				m_Textures.pop();
-				this->m_MutexPtr->unlock();
-			}
+			
 		}
 
 		ImGui::End();
@@ -320,11 +322,13 @@ namespace Puppeteer {
 			)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_Tab)) ImGui::SetKeyboardFocusHere(0);
 			else {
-				m_MutexPtr->lock();
-				Action.Type = ActionType::LockInput;
-				m_UserInput = !m_UserInput;
-				SENDS(Action, this->m_Socket);
-				m_MutexPtr->unlock();
+				std::thread([&]() {
+					m_MutexPtr->lock();
+					Action.Type = ActionType::LockInput;
+					m_UserInput = !m_UserInput;
+					SENDS(Action, this->m_Socket);
+					m_MutexPtr->unlock();
+				}).detach();
 			}
 		}
 		char* toggleInput = (!m_Input) ? "Enable Input" : "Disable Input";
@@ -345,14 +349,16 @@ namespace Puppeteer {
 				)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_Tab)) ImGui::SetKeyboardFocusHere(0);
 			else {
-				m_MutexPtr->lock();
-				m_UpdatingTexture = false;
-				if(m_keepSocketAlive != 1) {
-					Action.Type = ActionType::Close;
-					SENDS(Action, this->m_Socket);
-				}
-				app->RemoveLayer(this);
-				m_MutexPtr->unlock();
+				std::thread([&]() {
+					m_MutexPtr->lock();
+					m_UpdatingTexture = false;
+					if (m_keepSocketAlive != 1) {
+						Action.Type = ActionType::Close;
+						SENDS(Action, this->m_Socket);
+					}
+					app->RemoveLayer(this);
+					m_MutexPtr->unlock();
+				}).detach();
 			}
 		}
 		ImGui::End();
@@ -360,62 +366,72 @@ namespace Puppeteer {
 	}
 
 	void PuppetLayer::KeyPressed(int key) {
-		m_MutexPtr->lock();
-		Action.Type = ActionType::Keystrokes;
-		Action.Inputdata = key;
-		Action.Flags = 0x0000;
-		if (m_Socket) {
-			SENDS(Action, this->m_Socket);
-		}
-		m_MutexPtr->unlock();
+		std::thread([&, key]() {
+			m_MutexPtr->lock();
+			Action.Type = ActionType::Keystrokes;
+			Action.Inputdata = key;
+			Action.Flags = 0x0000;
+			if (m_Socket) {
+				SENDS(Action, this->m_Socket);
+			}
+			m_MutexPtr->unlock();
+		}).detach();
 	}
 
 	void PuppetLayer::KeyReleased(int key) {
-		m_MutexPtr->lock();
-		Action.Type = ActionType::Keystrokes;
-		Action.Inputdata = key;
-		Action.Flags = 0x0002;
-		if (m_Socket) {
-			SENDS(Action, this->m_Socket);
-		}
-		m_MutexPtr->unlock();
+		std::thread([&, key]() {
+			m_MutexPtr->lock();
+			Action.Type = ActionType::Keystrokes;
+			Action.Inputdata = key;
+			Action.Flags = 0x0002;
+			if (m_Socket) {
+				SENDS(Action, this->m_Socket);
+			}
+			m_MutexPtr->unlock();
+		}).detach();
 	}
 
 	void PuppetLayer::MouseButton(int Flags) {
-		m_MutexPtr->lock();
-		Action.Type = ActionType::Mouse;
-		Action.Inputdata = 0;
-		Action.Flags = Flags;
-		if (m_Socket) {
-			SENDS(Action, this->m_Socket);
-		}
-		m_MutexPtr->unlock();
+		std::thread([&, Flags]() {
+			m_MutexPtr->lock();
+			Action.Type = ActionType::Mouse;
+			Action.Inputdata = 0;
+			Action.Flags = Flags;
+			if (m_Socket) {
+				SENDS(Action, this->m_Socket);
+			}
+			m_MutexPtr->unlock();
+		}).detach();
 	}
 
 	void PuppetLayer::MouseMoves(int x, int y) {
-		m_MutexPtr->lock();
-		Action.Type = ActionType::Mouse;
-		Action.dx = x * (65536 / m_ImageSize.x);
-		Action.dy = y * (65536 / m_ImageSize.y);
-		Action.Inputdata = 0;
-		Action.Flags = 0x0001 | 0x4000 | 0x8000;
-		if (m_Socket) {
-			SENDS(Action, this->m_Socket);
-		}
-		m_MutexPtr->unlock();
+		std::thread([&, x, y]() {
+			m_MutexPtr->lock();
+			Action.Type = ActionType::Mouse;
+			Action.dx = x * (65536 / m_ImageSize.x);
+			Action.dy = y * (65536 / m_ImageSize.y);
+			Action.Inputdata = 0;
+			Action.Flags = 0x0001  | 0x8000;
+			if (m_Socket) {
+				SENDS(Action, this->m_Socket);
+			}
+			m_MutexPtr->unlock();
+		}).detach();
 	}
 
 	void PuppetLayer::MouseScrolled(int offset) {
-		m_MutexPtr->lock();
-		Action.Type = ActionType::Mouse;
-		Action.dx = 0;
-		Action.dy = 0;
-		Action.Inputdata = offset * 100;
-		Action.Flags = 0x0800;
-		if (m_Socket) {
-			SENDS(Action, this->m_Socket);
-		}
-		m_MutexPtr->unlock();
+		std::thread([&, offset]() {
+			m_MutexPtr->lock();
+			Action.Type = ActionType::Mouse;
+			Action.dx = 0;
+			Action.dy = 0;
+			Action.Inputdata = offset * 100;
+			Action.Flags = 0x0800;
+			if (m_Socket) {
+				SENDS(Action, this->m_Socket);
+			}
+			m_MutexPtr->unlock();
+		}).detach();
 	}
 
 	void PuppetLayer::OnEvent(Event& event) {}

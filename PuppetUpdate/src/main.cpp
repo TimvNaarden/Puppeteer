@@ -149,6 +149,7 @@ VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv) {
 
 LPHANDLER_FUNCTION_EX WINAPI ServiceCtrlHandler(DWORD CtrlCode, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext) {
     std::fstream logFile{ "PuppetUpdateLog.txt", std::ios::app };
+    logFile << "ServiceCtrlHandler" << std::endl;
     switch (CtrlCode) {
         case SERVICE_CONTROL_STOP: [[fallthrough]];
         case SERVICE_CONTROL_SHUTDOWN:

@@ -25,8 +25,7 @@ Screencap::Screencap(int width, int height)
 	m_BI.biClrImportant = 0;
 }
 
-Screencap::~Screencap()
-{
+Screencap::~Screencap() {
 	// Cleanup
 	delete[] m_Buffer;
 	DeleteObject(m_hBitmap);
@@ -34,8 +33,7 @@ Screencap::~Screencap()
 	ReleaseDC(NULL, m_hScreenDC);
 }
 
-void Screencap::Resize(int width, int height)
-{
+void Screencap::Resize(int width, int height) {
 	m_Width = width;
 	m_Height = height;
 	m_hBitmap = CreateCompatibleBitmap(m_hScreenDC, width, height);
@@ -47,8 +45,7 @@ void Screencap::Resize(int width, int height)
 	m_Buffer = new unsigned char[m_BufferSize];
 }
 
-unsigned char* Screencap::CaptureScreen(int x, int y)
-{
+unsigned char* Screencap::CaptureScreen(int x, int y){
 	// Capture the screen contents into the bitmap
 	BitBlt(m_hCaptureDC, 0, 0, m_Width, m_Height, m_hScreenDC, x, y, SRCCOPY);
 

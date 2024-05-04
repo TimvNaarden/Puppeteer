@@ -197,7 +197,7 @@ namespace Puppeteer {
 		int index = 0;
 		for (GridImage image : m_CurrentImages) {
 			ImGui::BeginGroup();
-			
+
 			glBindTexture(GL_TEXTURE_2D, textures[index]);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.data.Width, image.data.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, image.data.Texture);
 			glGenerateMipmap(GL_TEXTURE_2D);
@@ -381,11 +381,18 @@ namespace Puppeteer {
 				m_Mutex.unlock();
 				LZ4_decompress_safe(response, ForVec.data.Texture, ResponseMap["csize"], ResponseMap["size"]);
 				delete[] response;
+				if (ResponseMap["csize"] == 1) {
+					delete[] ForVec.username;
+					delete[] ForVec.name;
+					delete[] ForVec.ip;
+
+					continue;
+				}
 				strcpy(ForVec.name, client.Name);
 				strcpy(ForVec.ip, client.Ip);
 				ForQue.emplace_back(ForVec);
 			}
 		} 
-		m_Images.emplace(ForQue);
+		if(!ForQue.empty()) m_Images.emplace(ForQue);
 	}
 }
