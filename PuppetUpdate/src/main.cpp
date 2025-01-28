@@ -479,7 +479,7 @@ static void UpdatePuppet() {
 			logFile.close();
 			return;
 		}
-        ShellExecuteA(NULL, "open", "tar", "-xf temp.zip", NULL, SW_HIDE);
+        ShellExecuteA(NULL, "runas", "tar", "-xf temp.zip", NULL, SW_HIDE);
         DeleteFileW(L"temp.zip");
 
         logFile << "Puppet updated" << std::endl;
