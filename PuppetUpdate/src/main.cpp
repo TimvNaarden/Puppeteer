@@ -8,6 +8,8 @@
 #include <strsafe.h>
 #include <urlmon.h>
 #include <Windows.h>
+#include <thread>
+#include <chrono>
 #pragma comment(lib, "urlmon.lib")
 
 #include <crtdbg.h>
@@ -480,6 +482,7 @@ static void UpdatePuppet() {
 			return;
 		}
         ShellExecuteA(NULL, "runas", "tar", "-xf temp.zip", NULL, SW_HIDE);
+		std::this_thread::sleep_for(std::chrono::seconds(2));
         DeleteFileW(L"temp.zip");
 
         logFile << "Puppet updated" << std::endl;
