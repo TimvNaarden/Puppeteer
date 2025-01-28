@@ -55,7 +55,7 @@ project "Puppet"
 
     libdirs
     {
-        "libs"
+        "libs",
     }
     links
     {

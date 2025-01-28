@@ -9,7 +9,6 @@
 static const std::string version = "V1.0.0";
 static int port = 54000;
 
-
 namespace Puppeteer {
 	static int RunPuppet() {
         logFile << "Puppeteer started" << std::endl;
@@ -31,14 +30,10 @@ namespace Puppeteer {
 	}
 } 
 
-
-static int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int main() {
     if(std::string(GetCommandLineA()).find("-v") != std::string::npos) {
         std::cout << version;
         return 0;
     }
 	return Puppeteer::RunPuppet();
 }
-
-
-
